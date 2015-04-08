@@ -1,0 +1,16 @@
+# Python bytecode
+*.py[cod]
+
+# Python package stuff
+*.egg-info
+
+# ROOT shared objects and dictionaries
+*.so
+*.d
+
+# Ignore generated output
+plots/
+results/
+workspace/
+limits.eps
+optimization.eps
