@@ -16,12 +16,12 @@ print('Using Ohman\'s environment...')
 # set_persistent_cache_debug(True)
 
 # Set the persistent cache
-#persistent_cache = RedisPersistentCache(
-    #unix_socket_path='/home/ohman/.cache.sock'
-#)
+persistent_cache = RedisPersistentCache(
+    unix_socket_path='/home/ohman/src/owls/cache.sock'
+)
 
 # Disable the persistent cache
-persistent_cache = None
+#persistent_cache = None
 
 # Create parallelization backend
 #parallelization_backend = MultiprocessingParallelizationBackend(24)
