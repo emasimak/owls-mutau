@@ -13,4 +13,4 @@ rm -rf "$OUTPUT"
   --regions-file "$OWLS/share/taujets/regions.py" \
   --distributions-file "$OWLS/share/taujets/distributions.py" \
   --environment-file "$CONTRIB/environment.py" \
-  data_prefix=~/data/one/taujetsSFv02-05_merged/
+  data_prefix=~/data/one/taujetsSFv02-06_merged/
