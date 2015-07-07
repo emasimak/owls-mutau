@@ -17,7 +17,8 @@ print('Using Ohman\'s environment...')
 
 # Set the persistent cache
 persistent_cache = RedisPersistentCache(
-    unix_socket_path='/home/ohman/src/owls/cache.sock'
+    unix_socket_path='/home/ohman/src/owls/cache.sock',
+    #debug=True,
 )
 
 # Disable the persistent cache
