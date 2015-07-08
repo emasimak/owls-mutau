@@ -36,7 +36,7 @@ Create a `virtualenv`
 1. `virtualenv env --system-site-packages`
 2. `source env/bin/activate`
 
-Prompt should now read something like
+Your prompt should now read something like
 
   `(env)~/owls $`
 
@@ -52,14 +52,16 @@ Install the OWLS python modules
 Try the installation
 --------------------
 
-1. Create your contrib directory: `mkdir owls-taunu/contrib/<user>`
-2. Copy the environment file: `cp owls-taunu/contrib/ohman/environment.py
-   owls-taunu/contrib/<user>`
+1. Create your contrib directory
+    `mkdir owls-taunu/contrib/<user>`
+2. Copy the environment file
+    `cp owls-taunu/contrib/ohman/environment.py owls-taunu/contrib/<user>`
 3. Edit the environment file to your liking
-4. Copy a plotting script: `cp owls-taunu/contrib/ohman/plot-trigger-sf.sh
-   owls-taunu/contrib/<user>`
+4. Copy a plotting script
+    `cp owls-taunu/contrib/ohman/plot-trigger-sf.sh owls-taunu/contrib/<user>`
 5. Edit the plotting script to your liking
-6. Run the script: `./owls-taunu/contrib/<user>/plot-trigger-sf.sh`
+6. Run the script
+    `./owls-taunu/contrib/<user>/plot-trigger-sf.sh`
 
 Starting the `virtualenv` in a new shell
 ----------------------------------------
