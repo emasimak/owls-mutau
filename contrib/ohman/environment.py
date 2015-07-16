@@ -1,6 +1,6 @@
 # owls-cache imports
-from owls_cache.transient import set_cache_debug as set_transient_cache_debug
-from owls_cache.persistent import set_cache_debug as set_persistent_cache_debug
+from owls_cache.persistent import \
+        set_cache_debug as set_persistent_cache_debug
 from owls_cache.persistent.caches.redis import RedisPersistentCache
 
 # owls-parallel imports
@@ -12,20 +12,18 @@ from owls_parallel.backends.multiprocessing import \
 print('Using Ohman\'s environment...')
 
 # Enable cache debugging
-# set_transient_cache_debug(True)
-# set_persistent_cache_debug(True)
+#set_persistent_cache_debug(True)
 
 # Set the persistent cache
 persistent_cache = RedisPersistentCache(
     #unix_socket_path='/home/ohman/src/owls/cache.sock',
-    #debug=True,
 )
 
 # Disable the persistent cache
 #persistent_cache = None
 
 # Create parallelization backend
-#parallelization_backend = MultiprocessingParallelizationBackend(24)
+parallelization_backend = MultiprocessingParallelizationBackend(24)
 
 # Disable parallelization
-parallelization_backend = None
+#parallelization_backend = None
