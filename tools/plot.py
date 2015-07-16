@@ -136,6 +136,8 @@ distributions = dict((
 cache = getattr(environment_file, 'persistent_cache', None)
 backend = getattr(environment_file, 'parallelization_backend', None)
 
+# Create the parallelization environment
+parallel = ParallelizedEnvironment(backend)
 
 # Create output directories
 for region_name in regions:
@@ -150,10 +152,6 @@ for region_name in regions:
             region_path
         ))
         exit(1)
-
-
-# Create the parallelization environment
-parallel = ParallelizedEnvironment(backend)
 
 
 # Run in a cached environment
@@ -196,17 +194,21 @@ with caching_into(cache):
                     signal_histogram.Add(result)
 
             # Scale histogram if necessary and set title
-            # TODO: Remove the mass specification here
-            # TODO: Change multiplier format back to .1f
-            if arguments.signal_scale != 1.0:
-                signal_histogram.Scale(arguments.signal_scale)
-                signal_histogram.SetTitle(
-                    'VH [125 GeV, {0:.0f}x]'.format(
-                        arguments.signal_scale
+            if signal_histogram is not None:
+                if arguments.signal_scale != 1.0:
+                    signal_histogram.Scale(arguments.signal_scale)
+                    signal_histogram.SetTitle(
+                        'HPlus [{1} GeV, {0:.0f}x]'.format(
+                            arguments.signal_scale,
+                            definitions.higgs_mass
+                        )
                     )
-                )
-            else:
-                signal_histogram.SetTitle('VH [125 GeV]')
+                else:
+                    signal_histogram.SetTitle(
+                        'HPlus [{1} GeV]'.format(
+                            definitions.higgs_mass
+                        )
+                    )
 
             # Loop over background samples and compute their histograms
             background_histograms = []
@@ -322,10 +324,11 @@ with caching_into(cache):
             if not arguments.no_counts:
                 for h in chain((data_histogram, signal_histogram),
                                background_histograms):
-                    h.SetTitle('{0} ({1:.1f})'.format(
-                        h.GetTitle(),
-                        h.Integral(1, h.GetNbinsX())
-                    ))
+                    if h is not None:
+                        h.SetTitle('{0} ({1:.1f})'.format(
+                            h.GetTitle(),
+                            h.Integral(1, h.GetNbinsX())
+                        ))
 
             # Create a background stack
             background_stack = histogram_stack(*background_histograms)
