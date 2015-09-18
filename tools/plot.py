@@ -89,6 +89,11 @@ parser.add_argument('-s',
                     type = float,
                     help = 'A scale factor for rendering signal',
                     metavar = '<signal-scale-factor>')
+parser.add_argument('-x',
+                    '--extensions',
+                    nargs = '+',
+                    default = ['pdf'],
+                    help = 'save these extensions (default: pdf)')
 parser.add_argument('definitions',
                     nargs = '*',
                     help = 'definitions to use within modules in the form x=y',
@@ -114,7 +119,6 @@ sqrt_s = model['sqrt_s']
 signals = model['signals']
 backgrounds = model['backgrounds']
 data = model['data']
-
 
 # Extract regions
 regions = dict((
@@ -158,6 +162,9 @@ for region_name in regions:
 with caching_into(cache):
     # Run in a parallelized environment
     while parallel.run():
+        if parallel.computed():
+            print('Creating plots...')
+
         # Loop over regions and distributions
         for region_name, distribution_name in product(regions, distributions):
             # Grab the region/distribution objects
@@ -198,15 +205,9 @@ with caching_into(cache):
                 if arguments.signal_scale != 1.0:
                     signal_histogram.Scale(arguments.signal_scale)
                     signal_histogram.SetTitle(
-                        'HPlus [{1} GeV, {0:.0f}x]'.format(
-                            arguments.signal_scale,
-                            definitions.higgs_mass
-                        )
-                    )
-                else:
-                    signal_histogram.SetTitle(
-                        'HPlus [{1} GeV]'.format(
-                            definitions.higgs_mass
+                        '{0} {1:.0f}x]'.format(
+                            signal_histogram.GetTitle(),
+                            arguments.signal_scale
                         )
                     )
 
@@ -336,6 +337,8 @@ with caching_into(cache):
             # Create a ratio plot
             ratio = ratio_histogram(data_histogram, background_stack)
 
+            # TODO: Implement parallel plotting. Implement and use the
+            # owls_taunu.taujets.plot_model() function.
             # Create a plot
             plot = Plot('',
                         distribution.x_label(),
@@ -343,28 +346,35 @@ with caching_into(cache):
                         ratio = True)
 
             # Draw the histograms
-            plot.draw(((background_stack, uncertainty), 'hist'),
-                      (signal_histogram, 'hist'),
-                      (data_histogram, 'ep'))
+            plot.draw(((background_stack, uncertainty), None, 'hist'),
+                      (signal_histogram, None, 'hist'),
+                      (data_histogram, None, 'ep'))
 
             # Draw the ratio plot
             plot.draw_ratio_histogram(ratio, error_band = ratio_uncertainty)
 
             # Draw a legend
-            plot.draw_legend(data_histogram,
-                             signal_histogram,
-                             background_stack)
+            # TODO: We want the data histogram on top of the legend, and
+            # therefore we need to provide (drawable, style) to draw_legend.
+            # Because of the way that ROOT TColor works with hex colours, we
+            # can't simply style the histogram before plotting.
+            # As a workaround, we could use the drawable title to identify
+            # the drawable in the Plot object, but that's unreliable.
+            #plot.draw_legend(data_histogram,
+                             #signal_histogram,
+                             #background_stack)
+            plot.draw_legend()
 
             # Draw an ATLAS stamp
             plot.draw_atlas_label(luminosity,
                                   sqrt_s,
-                                  custom_label = region.label(),
+                                  custom_label = [region.label()],
                                   atlas_label = None)
 
             # Compute the plot output path
             plot_output_path = join(arguments.output,
                                     region_name,
-                                    '{0}.pdf'.format(distribution_name))
+                                    distribution_name)
 
             # Save plot
-            plot.save(plot_output_path)
+            plot.save(plot_output_path, arguments.extensions)
