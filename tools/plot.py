@@ -151,11 +151,6 @@ for region_name in regions:
     # Try to create it
     if not exists(region_path):
         makedirs(region_path)
-    elif not isdir(region_path):
-        print('error: non-directory region output path ({0}) exists'.format(
-            region_path
-        ))
-        exit(1)
 
 
 # Run in a cached environment
