@@ -116,9 +116,15 @@ environment_file = load_module(arguments.environment_file, definitions)
 model = getattr(model_file, arguments.model)
 luminosity = model['luminosity']
 sqrt_s = model['sqrt_s']
-signals = model['signals']
+if model.has_key('data'):
+    data = model['data']
+else:
+    data = None
+if definitions.has_key('higgs_mass'):
+    signal = model['signal']
+else:
+    signal = None
 backgrounds = model['backgrounds']
-data = model['data']
 
 # Extract regions
 regions = dict((
@@ -167,36 +173,31 @@ with caching_into(cache):
             distribution = distributions[distribution_name]
 
             # Create the data histogram
-            data_process = data['process']
-            data_estimation = data['estimation']
-            data_histogram = data_estimation(distribution)(
-                data_process,
-                region
-            )
-            data_histogram.SetTitle('Data')
+            data_histogram = None
+            if data is not None:
+                data_process = data['process']
+                data_estimation = data['estimation']
+                data_histogram = data_estimation(distribution)(
+                    data_process,
+                    region
+                )
+                data_histogram.SetTitle('Data')
 
-            # If this region is blinded, then zero-out the data histogram
-            if region.metadata().get('blinded', False):
-                data_histogram.Reset('M')
+                # If this region is blinded, then zero-out the data histogram
+                if region.metadata().get('blinded', False):
+                    data_histogram.Reset('M')
 
-            # Loop over signal samples and compute a combined signal histogram
+            # Create the signal histogram
             signal_histogram = None
-            for signal in itervalues(signals):
+            if signal is not None:
                 # Extract parameters
                 process = signal['process']
                 estimation = signal['estimation']
 
                 # Compute the histogram
-                result = estimation(distribution)(process, region)
+                signal_histogram = estimation(distribution)(process, region)
 
-                # Store or add it
-                if signal_histogram is None:
-                    signal_histogram = result
-                else:
-                    signal_histogram.Add(result)
-
-            # Scale histogram if necessary and set title
-            if signal_histogram is not None:
+                # Scale histogram if necessary and set title
                 if arguments.signal_scale != 1.0:
                     signal_histogram.Scale(arguments.signal_scale)
                     signal_histogram.SetTitle(
@@ -297,6 +298,9 @@ with caching_into(cache):
                     # Print out histogram content
                     for h in chain((data_histogram, signal_histogram),
                                    background_histograms):
+                        if h is None:
+                            continue
+
                         f.write('--- {0} ---\n'.format(h.GetTitle()))
                         f.write('[{0} unweighted entries]\n'.format(
                             h.GetEntries()
@@ -320,17 +324,20 @@ with caching_into(cache):
             if not arguments.no_counts:
                 for h in chain((data_histogram, signal_histogram),
                                background_histograms):
-                    if h is not None:
-                        h.SetTitle('{0} ({1:.1f})'.format(
-                            h.GetTitle(),
-                            h.Integral(1, h.GetNbinsX())
-                        ))
+                    if h is None:
+                        continue
+
+                    h.SetTitle('{0} ({1:.1f})'.format(
+                        h.GetTitle(),
+                        h.Integral(1, h.GetNbinsX())
+                    ))
 
             # Create a background stack
             background_stack = histogram_stack(*background_histograms)
 
             # Create a ratio plot
-            ratio = ratio_histogram(data_histogram, background_stack)
+            if data is not None:
+                ratio = ratio_histogram(data_histogram, background_stack)
 
             # TODO: Implement parallel plotting. Implement and use the
             # owls_taunu.taujets.plot_model() function.
@@ -338,15 +345,19 @@ with caching_into(cache):
             plot = Plot('',
                         distribution.x_label(),
                         distribution.y_label(),
-                        ratio = True)
+                        ratio = (data is not None))
 
             # Draw the histograms
-            plot.draw(((background_stack, uncertainty), None, 'hist'),
+            plot.draw((background_stack, None, 'hist'),
                       (signal_histogram, None, 'hist'),
                       (data_histogram, None, 'ep'))
+            #plot.draw(((background_stack, uncertainty), None, 'hist'),
+                      #(signal_histogram, None, 'hist'),
+                      #(data_histogram, None, 'ep'))
 
             # Draw the ratio plot
-            plot.draw_ratio_histogram(ratio, error_band = ratio_uncertainty)
+            if data is not None:
+                plot.draw_ratio_histogram(ratio, error_band = ratio_uncertainty)
 
             # Draw a legend
             # TODO: We want the data histogram on top of the legend, and
