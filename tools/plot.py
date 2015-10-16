@@ -372,9 +372,10 @@ with caching_into(cache):
             plot.draw_legend()
 
             # Draw an ATLAS stamp
+            label = [region.label(), model['label']]
             plot.draw_atlas_label(luminosity,
                                   sqrt_s,
-                                  custom_label = [region.label()],
+                                  custom_label = label,
                                   atlas_label = None)
 
             # Compute the plot output path
