@@ -4,7 +4,8 @@
 CONTRIB=$(dirname "$0")
 OWLS="$CONTRIB/../.."
 
-REGIONS="mu_tau mu_tau_1p mu_tau_3p mu_tau_tight mu_tau_os mu_tau_ss"
+REGIONS="mu_tau mu_tau_1p mu_tau_3p mu_tau_tight \
+  mu_tau_xe70 mu_tau_tau35 mu_tau_tau25"
 DISTRIBUTIONS="tau_pt tau_pt_alt tau_pt_alt2 tau_eta tau_phi \
   tau_bdt_score tau_n_tracks \
   mu_pt mu_eta mu_phi deta_mutau dphi_mutau \
@@ -50,21 +51,36 @@ DATA_PREFIX=/disk/d0/ohman/taujetsSFv03-05_merged/
   #enable_systematics=False \
   #luminosity=$LUMINOSITY
 
-## Plot with MC estimation, jet/e/mu fakes split
-#"$OWLS/tools/plot.py" \
-  #--output "results/plots_mutau" \
-  #--extensions $EXTENSIONS \
-  #--model-file "$OWLS/share/taujets/models.py" \
-  #--model "mc_fakes2" \
-  #--regions-file "$OWLS/share/taujets/regions.py" \
-  #--regions $REGIONS \
-  #--distributions-file "$OWLS/share/taujets/distributions.py" \
-  #--distributions $DISTRIBUTIONS \
-  #--environment-file "$CONTRIB/environment.py" \
-  #--error-label "Stat. Unc." \
-  #data_prefix=$DATA_PREFIX \
-  #enable_systematics=False \
-  #luminosity=$LUMINOSITY
+"$OWLS/tools/plot.py" \
+  --output "results/plots_mutau" \
+  --extensions $EXTENSIONS \
+  --model-file "$OWLS/share/taujets/models.py" \
+  --model "mc_fakes2" \
+  --regions-file "$OWLS/share/taujets/regions.py" \
+  --regions mu_tau \
+  --distributions-file "$OWLS/share/taujets/distributions.py" \
+  --distributions tau_pt \
+  --environment-file "$CONTRIB/environment.py" \
+  --error-label "Stat. Unc." \
+  data_prefix=$DATA_PREFIX \
+  enable_systematics=False \
+  luminosity=$LUMINOSITY
+
+# Plot with MC estimation, jet/e/mu fakes split
+"$OWLS/tools/plot.py" \
+  --output "results/plots_mutau" \
+  --extensions $EXTENSIONS \
+  --model-file "$OWLS/share/taujets/models.py" \
+  --model "mc_fakes2" \
+  --regions-file "$OWLS/share/taujets/regions.py" \
+  --regions $REGIONS mu_tau_os mu_tau_ss \
+  --distributions-file "$OWLS/share/taujets/distributions.py" \
+  --distributions $DISTRIBUTIONS \
+  --environment-file "$CONTRIB/environment.py" \
+  --error-label "Stat. Unc." \
+  data_prefix=$DATA_PREFIX \
+  enable_systematics=False \
+  luminosity=$LUMINOSITY
 
 # Plot with OSSS estimation, jet/e/mu fakes split
 "$OWLS/tools/plot.py" \
@@ -73,7 +89,7 @@ DATA_PREFIX=/disk/d0/ohman/taujetsSFv03-05_merged/
   --model-file "$OWLS/share/taujets/models.py" \
   --model "osss_fakes2" \
   --regions-file "$OWLS/share/taujets/regions.py" \
-  --regions mu_tau mu_tau_tight mu_tau_1p mu_tau_3p \
+  --regions $REGIONS \
   --distributions-file "$OWLS/share/taujets/distributions.py" \
   --distributions $DISTRIBUTIONS \
   --environment-file "$CONTRIB/environment.py" \
