@@ -25,6 +25,8 @@ from owls_hep.uncertainty import uncertainty_band, combined_uncertainty_band, \
 from owls_hep.plotting import Plot, histogram_stack, combined_histogram, \
     ratio_histogram
 
+Plot.PLOT_HEADER_HEIGHT = 500
+Plot.PLOT_LEGEND_LEFT = 0.65
 
 # Parse command line arguments
 parser = argparse.ArgumentParser(
@@ -348,12 +350,12 @@ with caching_into(cache):
                         ratio = (data is not None))
 
             # Draw the histograms
-            plot.draw((background_stack, None, 'hist'),
-                      (signal_histogram, None, 'hist'),
-                      (data_histogram, None, 'ep'))
-            #plot.draw(((background_stack, uncertainty), None, 'hist'),
+            #plot.draw((background_stack, None, 'hist'),
                       #(signal_histogram, None, 'hist'),
                       #(data_histogram, None, 'ep'))
+            plot.draw(((background_stack, uncertainty), None, 'hist'),
+                      (signal_histogram, None, 'hist'),
+                      (data_histogram, None, 'ep'))
 
             # Draw the ratio plot
             if data is not None:
