@@ -4,9 +4,11 @@
 CONTRIB=$(dirname "$0")
 OWLS="$CONTRIB/../.."
 
-#REGIONS="mu_tau mu_tau_1p mu_tau_3p mu_tau_tight \
-  #mu_tau_xe70 mu_tau_tau35 mu_tau_tau25"
+REGIONS="mu_tau mu_tau_1p mu_tau_3p mu_tau_xe70 mu_tau_tau35 mu_tau_tau25"
 REGIONS="mu_tau mu_tau_tau25 mu_tau_tau35"
+REGIONS="mu_tau mu_tau_tau25 mu_tau_tau35 \
+  mu_tau_ttbar mu_tau_ttbar_tau25 mu_tau_ttbar_tau35"
+#REGIONS="mu_tau"
 DISTRIBUTIONS="tau_pt tau_pt_alt tau_pt_alt2 tau_eta tau_phi \
   tau_bdt_score tau_n_tracks \
   mu_pt mu_eta mu_phi deta_mutau dphi_mutau \
@@ -89,6 +91,22 @@ DATA_PREFIX=/disk/d0/ohman/taujetsSFv03-05_merged/
   --extensions $EXTENSIONS \
   --model-file "$OWLS/share/taujets/models.py" \
   --model "osss_fakes2" \
+  --regions-file "$OWLS/share/taujets/regions.py" \
+  --regions $REGIONS \
+  --distributions-file "$OWLS/share/taujets/distributions.py" \
+  --distributions $DISTRIBUTIONS \
+  --environment-file "$CONTRIB/environment.py" \
+  --error-label "Stat. Unc." \
+  data_prefix=$DATA_PREFIX \
+  enable_systematics=False \
+  luminosity=$LUMINOSITY
+
+# Plot with FF estimation, e/mu fakes split
+"$OWLS/tools/plot.py" \
+  --output "results/plots_mutau_fakes" \
+  --extensions $EXTENSIONS \
+  --model-file "$OWLS/share/taujets/models.py" \
+  --model "ff" \
   --regions-file "$OWLS/share/taujets/regions.py" \
   --regions $REGIONS \
   --distributions-file "$OWLS/share/taujets/distributions.py" \
