@@ -49,6 +49,11 @@ parser.add_argument('-E',
                     required = True,
                     help = 'the path to the environment definition module',
                     metavar = '<environment-file>')
+parser.add_argument('-o',
+                    '--output',
+                    help = 'the path to the file where to store the output '
+                    'of the computation',
+                    metavar = '<environment-file>')
 parser.add_argument('definitions',
                     nargs = '*',
                     help = 'definitions to use within modules in the form x=y',
@@ -85,8 +90,10 @@ met_et = Histogram(
         )
 
 # Get computation environment
-#cache = getattr(environment_file, 'persistent_cache', None)
-cache = None
+cache = getattr(environment_file, 'persistent_cache', None)
+#cache = None
+
+r_qcd_dict = {}
 
 # Run in a cached environment
 with caching_into(cache):
@@ -113,5 +120,11 @@ with caching_into(cache):
         r_qcd = os_counts / ss_counts
         r_qcd_uncertainty = sqrt((os_uncertainty / os_counts)**2 +
                                  (ss_uncertainty / ss_counts)**2) * r_qcd
+        r_qcd_dict[region_name] = (r_qcd, r_qcd_uncertainty)
         print('{0}: r_QCD = {1:.2f} ± {2:.2f}'. \
               format(region.label(), r_qcd, r_qcd_uncertainty))
+
+if arguments.output is not None:
+    with open(arguments.output, 'w') as f:
+        f.write(str(r_qcd_dict))
+        f.write('\n')
