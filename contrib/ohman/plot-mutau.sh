@@ -100,14 +100,32 @@ rm -rf $OUTPUT
   enable_systematics=False \
   luminosity=$LUMINOSITY
 
-## Plot with OSSS estimation, jet/e/mu fakes split
+# Plot with OSSS estimation
 OUTPUT="results/plots_mutau_osss"
 rm -rf $OUTPUT
+
+# b/light/gluon jet fakes
+"$OWLS/tools/plot.py" \
+  --output $OUTPUT \
+  --extensions $EXTENSIONS \
+  --model-file "$OWLS/share/taujets/models.py" \
+  --model "osss_fakes" \
+  --regions-file "$OWLS/share/taujets/regions.py" \
+  --regions mu_tau_jetfake \
+  --distributions-file "$OWLS/share/taujets/distributions.py" \
+  --distributions $DISTRIBUTIONS \
+  --environment-file "$CONTRIB/environment.py" \
+  --error-label "Stat. Unc." \
+  data_prefix=$DATA_PREFIX \
+  enable_systematics=False \
+  luminosity=$LUMINOSITY
+
+# ttbar true/e/mu/jet fake, others
 #"$OWLS/tools/plot.py" \
   #--output $OUTPUT \
   #--extensions $EXTENSIONS \
   #--model-file "$OWLS/share/taujets/models.py" \
-  #--model "osss_fakes2" \
+  #--model "osss_fakes3" \
   #--regions-file "$OWLS/share/taujets/regions.py" \
   #--regions $REGIONS \
   #--distributions-file "$OWLS/share/taujets/distributions.py" \
@@ -118,11 +136,15 @@ rm -rf $OUTPUT
   #enable_systematics=False \
   #luminosity=$LUMINOSITY
 
+OUTPUT="results/plots_mutau_osss_check"
+rm -rf $OUTPUT
+
+# jet fakes, ztt, ttbar, others
 "$OWLS/tools/plot.py" \
   --output $OUTPUT \
   --extensions $EXTENSIONS \
   --model-file "$OWLS/share/taujets/models.py" \
-  --model "osss_fakes" \
+  --model "osss_fakes2" \
   --regions-file "$OWLS/share/taujets/regions.py" \
   --regions mu_tau_jetfake \
   --distributions-file "$OWLS/share/taujets/distributions.py" \
