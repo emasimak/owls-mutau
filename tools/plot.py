@@ -20,6 +20,7 @@ from owls_parallel import ParallelizedEnvironment
 
 # owls-hep imports
 from owls_hep.module import load as load_module
+from owls_hep.region import Reweighted
 from owls_hep.uncertainty import uncertainty_band, combined_uncertainty_band, \
     ratio_uncertainty_band
 from owls_hep.plotting import Plot, histogram_stack, combined_histogram, \
@@ -143,7 +144,6 @@ distributions = dict((
     in arguments.distributions
 ))
 
-
 # Get computation environment
 cache = getattr(environment_file, 'persistent_cache', None)
 backend = getattr(environment_file, 'parallelization_backend', None)
@@ -159,6 +159,16 @@ for region_name in regions:
     # Try to create it
     if not exists(region_path):
         makedirs(region_path)
+
+
+def patch_region(region, sample_type):
+    weight = region.metadata().get('weight', {})
+    if sample_type in weight:
+        #print('Applying weight {} to sample type {}'.\
+              #format(weight[sample_type], sample_type))
+        return region.varied(Reweighted(weight[sample_type]))
+    else:
+        return region
 
 
 # Run in a cached environment
@@ -195,9 +205,14 @@ with caching_into(cache):
                 # Extract parameters
                 process = signal['process']
                 estimation = signal['estimation']
+                signal_region = patch_region(
+                    region,
+                    process.metadata().get('sample_type', None)
+                )
 
                 # Compute the histogram
-                signal_histogram = estimation(distribution)(process, region)
+                signal_histogram = \
+                        estimation(distribution)(process, signal_region)
 
                 # Scale histogram if necessary and set title
                 if arguments.signal_scale != 1.0:
@@ -217,10 +232,14 @@ with caching_into(cache):
                 process = background['process']
                 estimation = background['estimation']
                 uncertainties = background.get('uncertainties', [])
+                background_region = patch_region(
+                    region,
+                    process.metadata().get('sample_type', None)
+                )
 
                 # Compute the nominal histogram
                 background_histograms.append(
-                    estimation(distribution)(process, region)
+                    estimation(distribution)(process, background_region)
                 )
 
                 # Set up error bands
@@ -230,7 +249,7 @@ with caching_into(cache):
                 sample_uncertainty_bands.append(
                     uncertainty_band(
                         process,
-                        region,
+                        background_region,
                         distribution,
                         None,
                         estimation
@@ -242,7 +261,7 @@ with caching_into(cache):
                     sample_uncertainty_bands.append(
                         uncertainty_band(
                             process,
-                            region,
+                            background_region,
                             distribution,
                             uncertainty,
                             estimation
