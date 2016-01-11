@@ -4,14 +4,14 @@
 CONTRIB=$(dirname "$0")
 OWLS="$CONTRIB/../.."
 
-REGIONS="mu_tau mu_tau_jetfake"
-DATA_PREFIX=/disk/d0/ohman/taujetsSFv03-05_merged/
+REGIONS="mu_tau_qcd_cr qcd_cr1 qcd_cr2 qcd_cr3 qcd_cr4"
+DATA_PREFIX="/disk/d1/ohman/tagprobe_2015-11-09_merged"
 
 # Compute r_QCD
 "$OWLS/tools/compute-rqcd.py" \
-  --model-file "$OWLS/share/taujets/models.py" \
-  --regions-file "$OWLS/share/taujets/regions.py" \
+  --model-file "$OWLS/share/mutau/models.py" \
+  --regions-file "$OWLS/share/mutau/regions.py" \
   --regions $REGIONS \
   --environment-file "$CONTRIB/environment.py" \
-  --output "$OWLS/share/taujets/r_qcd.dict" \
+  --output "$OWLS/share/mutau/r_qcd.dict" \
   data_prefix=$DATA_PREFIX

@@ -18,7 +18,7 @@ from owls_hep.utility import integral
 from owls_hep.histogramming import Histogram
 
 # owls-taunu imports
-from owls_taunu.taujets.variations import OS, SS
+from owls_taunu.mutau.variations import OS, SS
 
 # Parse command line arguments
 parser = argparse.ArgumentParser(
@@ -72,7 +72,7 @@ environment_file = load_module(arguments.environment_file, definitions)
 
 
 # Extract processes
-data = model_file.qcd_data
+data = model_file.data
 
 # Extract regions
 regions = dict((
