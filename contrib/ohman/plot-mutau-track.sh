@@ -9,9 +9,7 @@ CONTRIB=$(dirname "$0")
 OWLS="$CONTRIB/../.."
 
 MC_REGIONS="mu_tau_os \
-  mu_tau_qcd_cr_os \
-  mu_tau_qcd_cr_6_10_os \
-  mu_tau_qcd_cr_10_13_os \
+  mu_tau_qcd_cr \
   mu_tau_w_cr_os \
   mu_tau_fake_cr_os \
   mu_tau_fake_cr_bveto_os"

@@ -29,12 +29,10 @@ sqrt_s = 13.0 * 1000 * 1000 # MeV
 
 
 r_qcd = {
-    'mu_tau': (1.2462957702256179, 0.006469730015434542), # taken from qcd_cr1
-    'qcd_cr1': (1.2462957702256179, 0.006469730015434542),
-    'qcd_cr2': (1.2500163563325177, 0.006066506181587367),
-    'qcd_cr3': (1.699530516431925, 0.040704940691753094),
-    'qcd_cr4': (1.332228666114333, 0.035876190285246655),
-    'qcd_cr5': (1.2290379523389232, 0.03477053921717272)
+    'mu_tau': (1.2290379523389232, 0.03477053921717272),
+    'mu_tau_qcd_cr': (1.2290379523389232, 0.03477053921717272),
+    'mu_tau_qcd_cr_anti_tau': (1.0874001774622892, 0.011994208164661423),
+    'mu_tau_qcd_cr_anti_tau_bveto': (1.2500163563325177, 0.006066506181587367)
 }
 
 MonteCarlo = partial(MonteCarlo, luminosity = luminosity)
@@ -356,7 +354,7 @@ mc_uncertainties = []
 
 # Create models
 mc = {
-    'label': 'MC only',
+    'label': 'MC vs data',
     'luminosity': luminosity,
     'sqrt_s': sqrt_s,
     'data': {
@@ -403,7 +401,7 @@ mc = {
 }
 
 mc_fakes = {
-    'label': 'MC only',
+    'label': 'MC vs Data',
     'luminosity': luminosity,
     'sqrt_s': sqrt_s,
     'data': {
@@ -460,7 +458,7 @@ mc_fakes = {
 }
 
 mc_fakes2 = {
-    'label': 'MC only',
+    'label': 'MC vs Data',
     'luminosity': luminosity,
     'sqrt_s': sqrt_s,
     'data': {
@@ -531,7 +529,7 @@ mc_fakes2 = {
     )),
 }
 mc_sub = {
-    'label': 'MC (Bkg sub)',
+    'label': 'MC vs Data (Bkg sub)',
     'luminosity': luminosity,
     'sqrt_s': sqrt_s,
     'data': {

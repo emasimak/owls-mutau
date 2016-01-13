@@ -11,25 +11,27 @@ OWLS="$CONTRIB/../.."
 MC_REGIONS="\
   mu_tau_os \
   mu_tau_ss \
+  mu_tau_noiso_os \
+  mu_tau_noiso_ss \
   mu_tau_qcd_cr_os \
   mu_tau_qcd_cr_ss \
+  mu_tau_qcd_cr_anti_tau_os \
+  mu_tau_qcd_cr_anti_tau_ss \
+  mu_tau_qcd_cr_anti_tau_bveto_os \
+  mu_tau_qcd_cr_anti_tau_bveto_ss \
   mu_tau_w_cr_os \
   mu_tau_w_cr_ss \
+  mu_tau_w_cr_anti_tau_os \
+  mu_tau_w_cr_anti_tau_ss \
   mu_tau_fake_cr_os \
   mu_tau_fake_cr_ss \
   mu_tau_fake_cr_bveto_os \
-  mu_tau_fake_cr_bveto_ss \
-  qcd_cr1 \
-  qcd_cr2 \
-  qcd_cr3 \
-  qcd_cr4 \
-  qcd_cr5"
+  mu_tau_fake_cr_bveto_ss"
 OSSS_REGIONS="\
-  mu_tau_rqcd1 \
-  mu_tau_rqcd2 \
-  mu_tau_rqcd3 \
-  mu_tau_rqcd4 \
-  mu_tau_rqcd5"
+  mu_tau \
+  mu_tau_anti_iso_rqcd \
+  mu_tau_anti_tau_rqcd \
+  mu_tau_anti_tau_bveto_rqcd"
 DISTRIBUTIONS="tau_pt"
 #EXTENSIONS="pdf eps"
 EXTENSIONS="pdf"

@@ -4,10 +4,7 @@
 CONTRIB=$(dirname "$0")
 OWLS="$CONTRIB/../.."
 
-MC_REGIONS="mu_tau_noiso \
-  mu_tau_qcd_cr_os \
-  mu_tau_qcd_cr_6_10_os \
-  mu_tau_qcd_cr_10_13_os"
+MC_REGIONS="mu_tau_noiso"
 DISTRIBUTIONS="mu_iso_trk mu_iso_cal"
 #EXTENSIONS="pdf eps"
 EXTENSIONS="pdf"
