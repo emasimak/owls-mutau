@@ -1,24 +1,36 @@
 #!/bin/bash
 
 
-# Plot many distributions for
-# - OS/SS/Incl MC processes
-# - OS/SS/Incl MC split in fakes
-# - OS-SS r_QCD anti-tau
-# - OS-SS r_QCD anti-iso
+# Plot tau pT for a wide range of regions
 
 
 # Compute the path to the owls-taunu directory
 CONTRIB=$(dirname "$0")
 OWLS="$CONTRIB/../.."
 
-MC_REGIONS="mu_tau mu_tau_os mu_tau_ss"
-OSSS_REGIONS="mu_tau mu_tau_w_cr"
-DISTRIBUTIONS="tau_pt tau_eta tau_phi \
-  tau_bdt_score tau_n_tracks \
-  mu_pt mu_eta mu_phi deta dphi dr \
-  met_et met_phi mt \
-  mu nvx bjet_multiplicity jet_multiplicity"
+MC_REGIONS="\
+  mu_tau_os \
+  mu_tau_ss \
+  mu_tau_qcd_cr_os \
+  mu_tau_qcd_cr_ss \
+  mu_tau_w_cr_os \
+  mu_tau_w_cr_ss \
+  mu_tau_fake_cr_os \
+  mu_tau_fake_cr_ss \
+  mu_tau_fake_cr_bveto_os \
+  mu_tau_fake_cr_bveto_ss \
+  qcd_cr1 \
+  qcd_cr2 \
+  qcd_cr3 \
+  qcd_cr4 \
+  qcd_cr5"
+OSSS_REGIONS="\
+  mu_tau_rqcd1 \
+  mu_tau_rqcd2 \
+  mu_tau_rqcd3 \
+  mu_tau_rqcd4 \
+  mu_tau_rqcd5"
+DISTRIBUTIONS="tau_pt"
 #EXTENSIONS="pdf eps"
 EXTENSIONS="pdf"
 LUMINOSITY=3340.00 # 1/pb
