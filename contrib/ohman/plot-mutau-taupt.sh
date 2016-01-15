@@ -10,38 +10,49 @@ OWLS="$CONTRIB/../.."
 
 MC_REGIONS="\
   mu_tau_os \
+  mu_tau_tau25_os \
   mu_tau_ss \
-  mu_tau_noiso_os \
-  mu_tau_noiso_ss \
+  mu_tau_4_8_os \
+  mu_tau_4_8_ss \
+  mu_tau_6_10_os \
+  mu_tau_6_10_ss \
+  mu_tau_10_13_os \
+  mu_tau_10_13_tau25_os \
+  mu_tau_10_13_ss \
+  mu_tau_qcd_cr \
   mu_tau_qcd_cr_os \
   mu_tau_qcd_cr_ss \
-  mu_tau_qcd_cr_anti_tau_os \
-  mu_tau_qcd_cr_anti_tau_ss \
-  mu_tau_qcd_cr_anti_tau_bveto_os \
-  mu_tau_qcd_cr_anti_tau_bveto_ss \
+  mu_tau_w_cr \
   mu_tau_w_cr_os \
   mu_tau_w_cr_ss \
-  mu_tau_w_cr_anti_tau_os \
-  mu_tau_w_cr_anti_tau_ss \
-  mu_tau_fake_cr_os \
-  mu_tau_fake_cr_ss \
-  mu_tau_fake_cr_bveto_os \
-  mu_tau_fake_cr_bveto_ss"
+  mu_tau_w_cr2 \
+  mu_tau_w_cr2_os \
+  mu_tau_w_cr2_ss \
+  mu_tau_w_cr3 \
+  mu_tau_w_cr3_os \
+  mu_tau_w_cr3_ss \
+  "
+
 OSSS_REGIONS="\
   mu_tau \
-  mu_tau_anti_iso_rqcd \
-  mu_tau_anti_tau_rqcd \
-  mu_tau_anti_tau_bveto_rqcd"
-DISTRIBUTIONS="tau_pt"
+  mu_tau_tau25 \
+  mu_tau_btag_rqcd \
+  mu_tau_4_8 \
+  mu_tau_6_10 \
+  mu_tau_10_13 \
+  mu_tau_10_13_tau25 \
+  mu_tau_w_cr \
+  "
+
+DISTRIBUTIONS="tau_pt tau_pt_b2 mt"
 #EXTENSIONS="pdf eps"
 EXTENSIONS="pdf"
 LUMINOSITY=3340.00 # 1/pb
 DATA_PREFIX="/disk/d1/ohman/tagprobe_2015-11-09_merged"
 
-# Plot with MC estimation, jet/e/mu fakes split
-OUTPUT="results_mutau/plots_mc"
 
 # Plots with only MC backgrounds, and split into MC processes
+OUTPUT="results_mutau/plots_mc"
 "$OWLS/tools/plot.py" \
   --output $OUTPUT \
   --extensions $EXTENSIONS \
@@ -57,10 +68,10 @@ OUTPUT="results_mutau/plots_mc"
   enable_systematics=False \
   luminosity=$LUMINOSITY
 
-OUTPUT="results_mutau/plots_mc_fakes"
 
 # Plots with only MC backgrounds, and split into truth and fakes for ttbar
 # and single top
+OUTPUT="results_mutau/plots_mc_fakes"
 "$OWLS/tools/plot.py" \
   --output $OUTPUT \
   --extensions $EXTENSIONS \
@@ -76,11 +87,10 @@ OUTPUT="results_mutau/plots_mc_fakes"
   enable_systematics=False \
   luminosity=$LUMINOSITY
 
-## Plot with OSSS estimation
-OUTPUT="results_mutau/plots_osss_fakes"
 
 # Plots with OS-SS backgrounds, and split into truth and fakes for ttbar and
 # single top
+OUTPUT="results_mutau/plots_osss_fakes"
 "$OWLS/tools/plot.py" \
   --output $OUTPUT \
   --extensions $EXTENSIONS \

@@ -4,7 +4,10 @@
 CONTRIB=$(dirname "$0")
 OWLS="$CONTRIB/../.."
 
-REGIONS="mu_tau_qcd_cr mu_tau_qcd_cr_anti_tau mu_tau_qcd_cr_anti_tau_bveto"
+REGIONS="\
+  mu_tau_qcd_cr \
+  mu_tau_qcd_cr_btag \
+  "
 DATA_PREFIX="/disk/d1/ohman/tagprobe_2015-11-09_merged"
 
 # Compute r_QCD

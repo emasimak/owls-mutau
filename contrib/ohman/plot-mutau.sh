@@ -2,21 +2,21 @@
 
 
 # Plot many distributions for
-# - OS/SS/Incl MC processes
-# - OS/SS/Incl MC split in fakes
-# - OS-SS r_QCD anti-tau
-# - OS-SS r_QCD anti-iso
+# - OS Data vs MC
+# - OS-SS
 
 
 # Compute the path to the owls-taunu directory
 CONTRIB=$(dirname "$0")
 OWLS="$CONTRIB/../.."
 
-MC_REGIONS="mu_tau mu_tau_os mu_tau_ss"
-OSSS_REGIONS="mu_tau mu_tau_w_cr"
+MC_REGIONS="mu_tau_os mu_tau_tau25_os mu_tau_10_13_os mu_tau_10_13_tau25_os"
+OSSS_REGIONS="mu_tau mu_tau_tau25 mu_tau_10_13 mu_tau_10_13_tau25 mu_tau_w_cr"
 DISTRIBUTIONS="tau_pt tau_eta tau_phi \
   tau_bdt_score tau_n_tracks \
-  mu_pt mu_eta mu_phi deta dphi dr \
+  tau_n_trk_core_wide \
+  mu_pt mu_eta mu_phi \
+  deta dphi dr \
   met_et met_phi mt \
   mu nvx bjet_multiplicity jet_multiplicity"
 #EXTENSIONS="pdf eps"

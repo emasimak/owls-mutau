@@ -21,11 +21,9 @@ class OSSS(Estimation):
         self._luminosity = luminosity
 
     def components(self, process, region):
-        # Extract region metadata
-        channel = region.metadata()['channel']
-
-        # Figure out r_qcd based on the channel
-        r_qcd = self._r_qcd[channel][0]
+        # Extract the r_qcd value from the rqcd label
+        rqcd_label = region.metadata()['rqcd']
+        r_qcd = self._r_qcd[rqcd_label][0]
 
         # Combine components
         return [
@@ -48,11 +46,9 @@ class SSData(Estimation):
         self._r_qcd = r_qcd
 
     def components(self, process, region):
-        # Extract region metadata
-        channel = region.metadata()['channel']
-
-        # Figure out r_qcd based on the channel
-        r_qcd = self._r_qcd[channel][0]
+        # Extract the r_qcd value from the rqcd label
+        rqcd_label = region.metadata()['rqcd']
+        r_qcd = self._r_qcd[rqcd_label][0]
 
         # Combine components
         return [

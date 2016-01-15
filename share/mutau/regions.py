@@ -35,8 +35,10 @@ definitions = {
     'isolation': (
         'lep_0_iso_ptcone40/1000.0/lep_0_pt < 0.01 && '
         'lep_0_iso_etcone20/1000.0/lep_0_pt < 0.04'),
-
     # Looser isolation cuts
+    'isolation_4_8': (
+        'lep_0_iso_ptcone40/1000.0/lep_0_pt < 0.04 && '
+        'lep_0_iso_etcone20/1000.0/lep_0_pt < 0.08'),
     'isolation_6_10': (
         'lep_0_iso_ptcone40/1000.0/lep_0_pt < 0.06 && '
         'lep_0_iso_etcone20/1000.0/lep_0_pt < 0.10'),
@@ -58,15 +60,16 @@ definitions = {
 
     # mu+tau T&P
     'mu_tau': (
-        'n_jets >= 2 && '
         'n_electrons == 0 && '
         'n_muons == 1 && lep_0_id_medium && lep_0_pt > 22'),
 
-    # More jets
+    # Jet requirement
+    '2jets': 'n_jets >= 2',
     '3jets': 'n_jets >= 3',
 
     # W CR
     'wcr': 'met_reco_et > 30 && lephad_mt_lep0_met > 60',
+    'wcr2': 'met_reco_et > 30 && lephad_mt_lep0_met > 80',
 }
 
 expr = partial(expression_substitute, definitions = definitions)
@@ -104,66 +107,87 @@ _variations = [
 
 # mu+tau region with r_QCD from mu_tau_qcd_cr 
 mu_tau_anti_iso_rqcd = Region(
-    expr('[mu_trigger] && [mu_tau] && [medium_tau] && [bjet] && [isolation]'),
+    expr('[mu_trigger] && [mu_tau] && [medium_tau] && [2jets] && [bjet] && [isolation]'),
     expr('[weight] * [weight_b]'),
     '#mu+#tau (anti-iso r_{QCD})',
-    {'weight': {'mc': expr('[weight_mu]')}, 'channel': 'mu_tau_qcd_cr'}
-)
-
-# mu+tau region with r_QCD from mu_tau_qcd_cr_anti_tau
-mu_tau_anti_tau_rqcd = Region(
-    expr('[mu_trigger] && [mu_tau] && [medium_tau] && [bjet] && [isolation]'),
-    expr('[weight] * [weight_b]'),
-    '#mu+#tau (anti-#tau r_{QCD})',
-    {'weight': {'mc': expr('[weight_mu]')}, 'channel': 'mu_tau_qcd_cr_anti_tau'}
+    {'weight': {'mc': expr('[weight_mu]')}, 'rqcd': 'mu_tau_qcd_cr'}
 )
 
 # mu+tau region with r_QCD from mu_tau_qcd_cr_anti_tau_bveto
-mu_tau_anti_tau_bveto_rqcd = Region(
-    expr('[mu_trigger] && [mu_tau] && [medium_tau] && [bjet] && [isolation]'),
+mu_tau_btag_rqcd = Region(
+    expr('[mu_trigger] && [mu_tau] && [medium_tau] && [2jets] && [bjet] && [isolation]'),
     expr('[weight] * [weight_b]'),
-    '#mu+#tau (anti-#tau, b-veto r_{QCD})',
-    {'weight': {'mc': expr('[weight_mu]')}, 'channel': 'mu_tau_qcd_cr_anti_tau_bveto'}
+    '#mu+#tau (anti-iso, b-tag r_{QCD})',
+    {'weight': {'mc': expr('[weight_mu]')}, 'rqcd': 'mu_tau_qcd_cr_btag'}
 )
 
 # Nominal mu+tau region and variations
 _vary_me('mu_tau',
-         '[mu_tau] && [mu_trigger] && [medium_tau] && [bjet] && [isolation]',
+         '[mu_trigger] && [mu_tau] && [medium_tau] && [2jets] && [bjet] && [isolation]',
          '[weight] * [weight_b]',
          '#mu+#tau',
-         {'weight': {'mc': expr('[weight_mu]')}, 'channel': 'mu_tau'},
+         {'weight': {'mc': expr('[weight_mu]')}, 'rqcd': 'mu_tau_qcd_cr'},
+         _variations)
+
+_vary_me('mu_tau_4_8',
+         '[mu_trigger] && [mu_tau] && [medium_tau] && [2jets] && [bjet] && [isolation_4_8]',
+         '[weight] * [weight_b]',
+         '#mu+#tau (iso_4_8)',
+         {'weight': {'mc': expr('[weight_mu]')}, 'rqcd': 'mu_tau_qcd_cr'},
+         _variations)
+
+_vary_me('mu_tau_6_10',
+         '[mu_trigger] && [mu_tau] && [medium_tau] && [2jets] && [bjet] && [isolation_6_10]',
+         '[weight] * [weight_b]',
+         '#mu+#tau (iso_6_10)',
+         {'weight': {'mc': expr('[weight_mu]')}, 'rqcd': 'mu_tau_qcd_cr'},
+         _variations)
+
+_vary_me('mu_tau_10_13',
+         '[mu_trigger] && [mu_tau] && [medium_tau] && [2jets] && [bjet] && [isolation_10_13]',
+         '[weight] * [weight_b]',
+         '#mu+#tau (iso_10_13)',
+         {'weight': {'mc': expr('[weight_mu]')}, 'rqcd': 'mu_tau_qcd_cr'},
          _variations)
 
 # mu+tau region and variations without isolation cut
 _vary_me('mu_tau_noiso',
-         '[mu_tau] && [mu_trigger] && [medium_tau] && [bjet]',
+         '[mu_trigger] && [mu_tau] && [medium_tau] && [2jets] && [bjet]',
          '[weight] * [weight_b]',
          '#mu+#tau',
-         {'weight': {'mc': expr('[weight_mu]')}, 'channel': 'mu_tau'},
+         {'weight': {'mc': expr('[weight_mu]')}, 'rqcd': 'mu_tau_qcd_cr'},
          _variations)
 
 # QCD CR with anti-isolation
 _vary_me('mu_tau_qcd_cr',
-         expr('[mu_trigger] && [mu_tau] && [medium_tau] && [bjet] && ![isolation_10_13]'),
-         expr('[weight] * [weight_b]'),
+         expr('[mu_trigger] && [mu_tau] && [medium_tau] && [2jets] && ![isolation_10_13]'),
+         expr('[weight]'),
          'QCD CR (anti-iso)',
-         {'weight': {'mc': expr('[weight_mu]')}, 'channel': 'mu_tau'},
+         {'weight': {'mc': expr('[weight_mu]')}, 'rqcd': 'mu_tau_qcd_cr'},
+         _variations)
+
+# QCD CR with anti-isolation
+_vary_me('mu_tau_qcd_cr_btag',
+         expr('[mu_trigger] && [mu_tau] && [medium_tau] && [2jets] && [bjet] && ![isolation_10_13]'),
+         expr('[weight] * [weight_b]'),
+         'QCD CR (anti-iso, btag)',
+         {'weight': {'mc': expr('[weight_mu]')}, 'rqcd': 'mu_tau_qcd_cr'},
          _variations)
 
 # QCD CR with anti-tau cut
 _vary_me('mu_tau_qcd_cr_anti_tau',
-         expr('[mu_trigger] && [mu_tau] && [very_loose_not_medium_tau] && [bjet] && ![isolation_10_13]'),
-         expr('[weight] * [weight_b]'),
-         'QCD CR (anti-#tau)',
-         {'weight': {'mc': expr('[weight_mu]')}, 'channel': 'mu_tau'},
+         expr('[mu_trigger] && [mu_tau] && [very_loose_not_medium_tau] && [2jets] && ![isolation_10_13]'),
+         expr('[weight]'),
+         'QCD CR (anti-#tau, anti-iso)',
+         {'weight': {'mc': expr('[weight_mu]')}, 'rqcd': 'mu_tau_qcd_cr'},
          _variations)
 
 # QCD CR with b-veto and anti-tau cut
-_vary_me('mu_tau_qcd_cr_anti_tau_bveto',
-         expr('[mu_trigger] && [mu_tau] && [very_loose_not_medium_tau] && [bveto] && ![isolation]'),
+_vary_me('mu_tau_qcd_cr_anti_tau_btag',
+         expr('[mu_trigger] && [mu_tau] && [very_loose_not_medium_tau] && [2jets] && [bjet] && ![isolation_10_13]'),
          expr('[weight] * [weight_b]'),
-         'QCD CR (anti-#tau, b-veto)',
-         {'weight': {'mc': expr('[weight_mu]')}, 'channel': 'mu_tau'},
+         'QCD CR (anti-#tau, anti-iso, b-tag)',
+         {'weight': {'mc': expr('[weight_mu]')}, 'rqcd': 'mu_tau_qcd_cr'},
          _variations)
 
 # W CR
@@ -171,29 +195,45 @@ _vary_me('mu_tau_w_cr',
          expr('[mu_trigger] && [mu_tau] && [medium_tau] && [bveto] && [wcr] && [isolation]'),
          expr('[weight] * [weight_b]'),
          'W CR',
-         {'weight': {'mc': expr('[weight_mu]')}, 'channel': 'mu_tau'},
+         {'weight': {'mc': expr('[weight_mu]')}, 'rqcd': 'mu_tau_qcd_cr'},
          _variations)
 
-# W CR with anti-tau cut
+# W CR
+_vary_me('mu_tau_w_cr2',
+         expr('[mu_trigger] && [mu_tau] && [medium_tau] && [bveto] && [wcr2] && [isolation]'),
+         expr('[weight] * [weight_b]'),
+         'W CR (m_{T} > 80)',
+         {'weight': {'mc': expr('[weight_mu]')}, 'rqcd': 'mu_tau_qcd_cr'},
+         _variations)
+
+# W CR
+_vary_me('mu_tau_w_cr3',
+         expr('[mu_trigger] && [mu_tau] && [medium_tau] && [bjet] && [wcr] && [isolation]'),
+         expr('[weight] * [weight_b]'),
+         'W CR (b-tag)',
+         {'weight': {'mc': expr('[weight_mu]')}, 'rqcd': 'mu_tau_qcd_cr'},
+         _variations)
+
+# W anti-tau CR
 _vary_me('mu_tau_w_cr_anti_tau',
          expr('[mu_trigger] && [mu_tau] && [very_loose_not_medium_tau] && [bveto] && [wcr] && [isolation]'),
          expr('[weight] * [weight_b]'),
          'W CR (anti-#tau)',
-         {'weight': {'mc': expr('[weight_mu]')}, 'channel': 'mu_tau'},
+         {'weight': {'mc': expr('[weight_mu]')}, 'rqcd': 'mu_tau_qcd_cr'},
          _variations)
 
 # Jet fake CR
 _vary_me('mu_tau_fake_cr',
-         expr('[mu_trigger] && [mu_tau] && [medium_tau] && [bjet] && [3jets] && [isolation]'),
+         expr('[mu_trigger] && [mu_tau] && [medium_tau] && [3jets] && [bjet] && [isolation]'),
          expr('[weight] * [weight_b]'),
          'Jet fake CR (b-tag, >= 3j)',
-         {'weight': {'mc': expr('[weight_mu]')}, 'channel': 'mu_tau'},
+         {'weight': {'mc': expr('[weight_mu]')}, 'rqcd': 'mu_tau_qcd_cr'},
          _variations)
 
 # Jet fake CR with b-veto
 _vary_me('mu_tau_fake_cr_bveto',
-         expr('[mu_trigger] && [mu_tau] && [medium_tau] && [bveto] && [3jets] && [isolation]'),
+         expr('[mu_trigger] && [mu_tau] && [medium_tau] && [3jets] && [bveto] && [isolation]'),
          expr('[weight] * [weight_b]'),
          'Jet fake CR (b-veto, >= 3j)',
-         {'weight': {'mc': expr('[weight_mu]')}, 'channel': 'mu_tau'},
+         {'weight': {'mc': expr('[weight_mu]')}, 'rqcd': 'mu_tau_qcd_cr'},
          _variations)

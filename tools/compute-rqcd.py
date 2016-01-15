@@ -22,7 +22,7 @@ from owls_taunu.mutau.variations import OS, SS
 
 # Parse command line arguments
 parser = argparse.ArgumentParser(
-    description = 'Computer r_QCD'
+    description = 'Compute r_QCD'
 )
 parser.add_argument('-M',
                     '--model-file',
@@ -120,6 +120,8 @@ with caching_into(cache):
         r_qcd = os_counts / ss_counts
         r_qcd_uncertainty = sqrt((os_uncertainty / os_counts)**2 +
                                  (ss_uncertainty / ss_counts)**2) * r_qcd
+        # Round to 3 decimals
+        r_qcd, r_qcd_uncertainty = round(r_qcd, 3), round(r_qcd_uncertainty, 3)
         r_qcd_dict[region_name] = (r_qcd, r_qcd_uncertainty)
         print('{0}: r_QCD = {1:.2f} ± {2:.2f}'. \
               format(region.label(), r_qcd, r_qcd_uncertainty))

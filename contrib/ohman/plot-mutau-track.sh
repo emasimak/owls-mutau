@@ -10,9 +10,12 @@ OWLS="$CONTRIB/../.."
 
 MC_REGIONS="mu_tau_os \
   mu_tau_qcd_cr \
+  mu_tau_qcd_cr_os \
+  mu_tau_qcd_cr_btag \
+  mu_tau_qcd_cr_btag_os \
+  mu_tau_w_cr \
   mu_tau_w_cr_os \
-  mu_tau_fake_cr_os \
-  mu_tau_fake_cr_bveto_os"
+  "
 DISTRIBUTIONS="tau_n_trk_core_wide"
 #EXTENSIONS="pdf eps"
 EXTENSIONS="pdf"
