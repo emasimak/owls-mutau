@@ -127,15 +127,15 @@ mu_iso_trk = Histogram(
         'lep_0_iso_ptcone40/1000.0/lep_0_pt',
         (20, 0.001, 0.2),
         '',
-        '#mu ptcone40/pt',
+        '#mu p_{T}^{cone40}/p_{T}',
         'Events'
         )
 
 mu_iso_cal = Histogram(
         'lep_0_iso_etcone20/1000.0/lep_0_pt',
-        (20, -0.1, 0.2),
+        (30, -0.1, 0.2),
         '',
-        '#mu etcone20/pt',
+        '#mu E_{T}^{cone20}/E_{T}',
         'Events'
         )
 
