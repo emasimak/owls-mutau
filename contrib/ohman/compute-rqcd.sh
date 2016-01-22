@@ -6,7 +6,7 @@ OWLS="$CONTRIB/../.."
 
 REGIONS="\
   mu_tau_qcd_cr \
-  mu_tau_qcd_cr_btag \
+  mu_tau_gradient_qcd_cr \
   "
 DATA_PREFIX="/disk/d1/ohman/tagprobe_2015-11-09_merged"
 

@@ -132,10 +132,26 @@ mu_iso_trk = Histogram(
         )
 
 mu_iso_cal = Histogram(
-        'lep_0_iso_etcone20/1000.0/lep_0_pt',
+        'lep_0_iso_etcone20/1000.0/lep_0_et',
         (30, -0.1, 0.2),
         '',
         '#mu E_{T}^{cone20}/E_{T}',
+        'Events'
+        )
+
+mu_iso_var_trk = Histogram(
+        'lep_0_iso_ptvarcone40/1000.0/lep_0_pt',
+        (20, 0.001, 0.2),
+        '',
+        '#mu p_{T}^{varcone40}/p_{T}',
+        'Events'
+        )
+
+mu_iso_topo_cal = Histogram(
+        'lep_0_iso_topoetcone20/1000.0/lep_0_et',
+        (30, -0.1, 0.2),
+        '',
+        '#mu E_{T}^{topocone20}/E_{T}',
         'Events'
         )
 

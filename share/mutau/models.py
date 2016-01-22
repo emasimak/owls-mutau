@@ -17,6 +17,12 @@ from owls_hep.expression import expression_substitute
 
 # owls-taunu imports
 from owls_taunu.mutau.estimation import OSData, SSData, OSSS
+from owls_taunu.mutau.uncertainties import TestSystFlat, TestSystShape, \
+        MuonEffStat, MuonEffSys, \
+        MuonEffTrigStat, MuonEffTrigSys, \
+        MuonIsoStat, MuonIsoSys, \
+        MuonIdSys, MuonMsSys, MuonScaleSys, \
+        RqcdStat
 
 # Load configuration
 configuration = definitions()
@@ -30,7 +36,7 @@ sqrt_s = 13.0 * 1000 * 1000 # MeV
 
 r_qcd = {
     'mu_tau_qcd_cr': (1.266, 0.016),
-    'mu_tau_qcd_cr_btag': (1.229, 0.035)
+    'mu_tau_gradient_qcd_cr': (1.25, 0.017)
 }
 
 MonteCarlo = partial(MonteCarlo, luminosity = luminosity)
@@ -83,10 +89,10 @@ data = Process(
     ),
     tree = nominal_tree,
     label = 'Data',
+    sample_type = 'data',
     line_color = 1,
     fill_color = 1,
     marker_style = 8,
-    metadata = {'sample_type': 'data'},
 )
 
 ss_data = Process(
@@ -95,9 +101,9 @@ ss_data = Process(
     ),
     tree = nominal_tree,
     label = 'SS Data',
+    sample_type = 'data',
     line_color = 1,
     fill_color = 424,
-    metadata = {'sample_type': 'data'},
 )
 
 zll = Process(
@@ -107,9 +113,9 @@ zll = Process(
     ),
     tree = nominal_tree,
     label = 'Z#rightarrow ll',
+    sample_type = 'mc',
     line_color = 1,
     fill_color = 424,
-    metadata = {'sample_type': 'mc'},
 )
 
 ztautau = Process(
@@ -118,9 +124,9 @@ ztautau = Process(
     ),
     tree = nominal_tree,
     label = 'Z#rightarrow#tau#tau',
+    sample_type = 'mc',
     line_color = 1,
     fill_color = 64,
-    metadata = {'sample_type': 'mc'},
 )
 
 wlnu = Process(
@@ -132,9 +138,9 @@ wlnu = Process(
     ),
     tree = nominal_tree,
     label = 'W#rightarrow l#nu',
+    sample_type = 'mc',
     line_color = 1,
     fill_color = 804,
-    metadata = {'sample_type': 'mc'},
 )
 
 wtaunu = Process(
@@ -144,9 +150,9 @@ wtaunu = Process(
     ),
     tree = nominal_tree,
     label = 'W#rightarrow #tau#nu',
+    sample_type = 'mc',
     line_color = 1,
     fill_color = 806,
-    metadata = {'sample_type': 'mc'},
 )
 
 diboson = Process(
@@ -174,9 +180,9 @@ diboson = Process(
     ),
     tree = nominal_tree,
     label = 'Diboson',
+    sample_type = 'mc',
     line_color = 1,
     fill_color = 92,
-    metadata = {'sample_type': 'mc'},
 )
 
 single_top = Process(
@@ -185,14 +191,14 @@ single_top = Process(
         file('410012.root'),
         file('410013.root'),
         file('410014.root'),
-        #file('410025.root'),
-        #file('410026.root'),
+        file('410025.root'),
+        file('410026.root'),
     ),
     tree = nominal_tree,
     label = 'Single Top',
+    sample_type = 'mc',
     line_color = 1,
     fill_color = 595,
-    metadata = {'sample_type': 'mc'},
 )
 
 single_top_true = single_top.patched(
@@ -233,20 +239,21 @@ single_top_gfake = single_top.patched(
 ttbar = Process(
     (
         file('410000.root'),
-        file('410007.root'),
+        #file('410007.root'),
     ),
     tree = nominal_tree,
     label = 't#bar{t}',
+    sample_type = 'mc',
     line_color = 1,
     fill_color = 0,
-    metadata = {'sample_type': 'mc'},
 )
 
 ttbar_true = ttbar.patched(
     tau_truth_matched,
     label = 't#bar{t} (true #tau)',
     line_color = 1,
-    fill_color = 0
+    fill_color = 0,
+    #metadata = {'print_me': True},
 )
 
 ttbar_fake = ttbar.patched(
@@ -303,13 +310,13 @@ other = Process(
     zll.files() + \
         ztautau.files() + \
         wlnu.files() + \
-        wtaunu.files() + \
-        diboson.files(),
+        #diboson.files() + \
+        wtaunu.files(),
     tree = nominal_tree,
     label = 'Other',
+    sample_type = 'mc',
     line_color = 1,
     fill_color = 92,
-    metadata = {'sample_type': 'mc'},
 )
 
 other_true = other.patched(
@@ -348,7 +355,30 @@ other_gfake = other.patched(
 )
 
 
-mc_uncertainties = []
+#mc_uncertainties = [
+    #TestSystFlat,
+    #TestSystShape,
+#]
+
+mc_uncertainties = [
+    MuonEffStat,
+    MuonEffSys,
+    MuonEffTrigStat,
+    MuonEffTrigSys,
+    MuonIsoStat,
+    MuonIsoSys,
+    MuonIdSys,
+    MuonMsSys,
+    MuonScaleSys,
+]
+ss_data_uncertainties = [
+    RqcdStat,
+]
+
+
+if not enable_systematics:
+    mc_uncertainties = []
+    ss_data_uncertainties = []
 
 # Create models
 mc = {
@@ -360,11 +390,11 @@ mc = {
         'estimation': Plain,
     },
     'backgrounds': OrderedDict((
-        ('diboson', {
-            'process': diboson,
-            'estimation': MonteCarlo,
-            'uncertainties': mc_uncertainties,
-        }),
+        #('diboson', {
+            #'process': diboson,
+            #'estimation': MonteCarlo,
+            #'uncertainties': mc_uncertainties,
+        #}),
         ('wtaunu', {
             'process': wtaunu,
             'estimation': MonteCarlo,
@@ -385,11 +415,11 @@ mc = {
             'estimation': MonteCarlo,
             'uncertainties': mc_uncertainties,
         }),
-        ('single_top', {
-            'process': single_top,
-            'estimation': MonteCarlo,
-            'uncertainties': mc_uncertainties,
-        }),
+        #('single_top', {
+            #'process': single_top,
+            #'estimation': MonteCarlo,
+            #'uncertainties': mc_uncertainties,
+        #}),
         ('ttbar', {
             'process': ttbar,
             'estimation': MonteCarlo,
@@ -412,11 +442,11 @@ mc_fakes = {
             'estimation': MonteCarlo,
             'uncertainties': mc_uncertainties,
         }),
-        ('single_top_lepfake', {
-            'process': single_top_lfake,
-            'estimation': MonteCarlo,
-            'uncertainties': mc_uncertainties,
-        }),
+        #('single_top_lepfake', {
+            #'process': single_top_lfake,
+            #'estimation': MonteCarlo,
+            #'uncertainties': mc_uncertainties,
+        #}),
         ('ttbar_lepfake', {
             'process': ttbar_lfake,
             'estimation': MonteCarlo,
@@ -427,11 +457,11 @@ mc_fakes = {
             'estimation': MonteCarlo,
             'uncertainties': mc_uncertainties,
         }),
-        ('single_top_jetfake', {
-            'process': single_top_jetfake,
-            'estimation': MonteCarlo,
-            'uncertainties': mc_uncertainties,
-        }),
+        #('single_top_jetfake', {
+            #'process': single_top_jetfake,
+            #'estimation': MonteCarlo,
+            #'uncertainties': mc_uncertainties,
+        #}),
         ('ttbar_jetfake', {
             'process': ttbar_jetfake,
             'estimation': MonteCarlo,
@@ -442,11 +472,11 @@ mc_fakes = {
             'estimation': MonteCarlo,
             'uncertainties': mc_uncertainties,
         }),
-        ('single_top_true', {
-            'process': single_top_true,
-            'estimation': MonteCarlo,
-            'uncertainties': mc_uncertainties,
-        }),
+        #('single_top_true', {
+            #'process': single_top_true,
+            #'estimation': MonteCarlo,
+            #'uncertainties': mc_uncertainties,
+        #}),
         ('ttbar_true', {
             'process': ttbar_true,
             'estimation': MonteCarlo,
@@ -454,114 +484,6 @@ mc_fakes = {
         }),
     )),
 }
-
-mc_fakes2 = {
-    'label': 'MC vs Data',
-    'luminosity': luminosity,
-    'sqrt_s': sqrt_s,
-    'data': {
-        'process': data,
-        'estimation': Plain,
-    },
-    'backgrounds': OrderedDict((
-        ('other_lepfake', {
-            'process': other_lfake,
-            'estimation': MonteCarlo,
-            'uncertainties': mc_uncertainties,
-        }),
-        ('single_top_lepfake', {
-            'process': single_top_lfake,
-            'estimation': MonteCarlo,
-            'uncertainties': mc_uncertainties,
-        }),
-        ('ttbar_lepfake', {
-            'process': ttbar_lfake,
-            'estimation': MonteCarlo,
-            'uncertainties': mc_uncertainties,
-        }),
-        ('other_gfake', {
-            'process': other_gfake,
-            'estimation': MonteCarlo,
-            'uncertainties': mc_uncertainties,
-        }),
-        ('single_top_gfake', {
-            'process': single_top_gfake,
-            'estimation': MonteCarlo,
-            'uncertainties': mc_uncertainties,
-        }),
-        ('ttbar_gfake', {
-            'process': ttbar_gfake,
-            'estimation': MonteCarlo,
-            'uncertainties': mc_uncertainties,
-        }),
-        ('other_qfake', {
-            'process': other_qfake,
-            'estimation': MonteCarlo,
-            'uncertainties': mc_uncertainties,
-        }),
-        ('single_top_qfake', {
-            'process': single_top_qfake,
-            'estimation': MonteCarlo,
-            'uncertainties': mc_uncertainties,
-        }),
-        ('ttbar_qfake', {
-            'process': ttbar_qfake,
-            'estimation': MonteCarlo,
-            'uncertainties': mc_uncertainties,
-        }),
-        ('other_true', {
-            'process': other_true,
-            'estimation': MonteCarlo,
-            'uncertainties': mc_uncertainties,
-        }),
-        ('single_top_true', {
-            'process': single_top_true,
-            'estimation': MonteCarlo,
-            'uncertainties': mc_uncertainties,
-        }),
-        ('ttbar_true', {
-            'process': ttbar_true,
-            'estimation': MonteCarlo,
-            'uncertainties': mc_uncertainties,
-        }),
-    )),
-}
-mc_sub = {
-    'label': 'MC vs Data (Bkg sub)',
-    'luminosity': luminosity,
-    'sqrt_s': sqrt_s,
-    'data': {
-        'process': data,
-        'estimation': Plain,
-    },
-    'subtractions': dict((
-        ('other', {
-            'process': other,
-            'estimation': MonteCarlo,
-            'uncertainties': mc_uncertainties,
-        }),
-        ('single_top', {
-            'process': single_top,
-            'estimation': MonteCarlo,
-            'uncertainties': mc_uncertainties,
-        }),
-        ('ttbar_fake', {
-            'process': ttbar_fake,
-            'estimation': MonteCarlo,
-            'uncertainties': mc_uncertainties,
-        }),
-    )),
-    'backgrounds': OrderedDict((
-        ('ttbar_true', {
-            'process': ttbar_true,
-            'estimation': MonteCarlo,
-            'uncertainties': mc_uncertainties,
-        }),
-    )),
-}
-
-ss_data_uncertainties = []
-fakes_uncertainties = []
 
 # Create OS-SS models
 osss = {
@@ -674,11 +596,11 @@ osss_fakes = {
             'estimation': OSSS,
             'uncertainties': mc_uncertainties,
         }),
-        ('single_top_lfake', {
-            'process': single_top_lfake,
-            'estimation': OSSS,
-            'uncertainties': mc_uncertainties,
-        }),
+        #('single_top_lfake', {
+            #'process': single_top_lfake,
+            #'estimation': OSSS,
+            #'uncertainties': mc_uncertainties,
+        #}),
         ('ttbar_lfake', {
             'process': ttbar_lfake,
             'estimation': OSSS,
@@ -689,11 +611,11 @@ osss_fakes = {
             'estimation': OSSS,
             'uncertainties': mc_uncertainties,
         }),
-        ('single_top_jetfake', {
-            'process': single_top_jetfake,
-            'estimation': OSSS,
-            'uncertainties': mc_uncertainties,
-        }),
+        #('single_top_jetfake', {
+            #'process': single_top_jetfake,
+            #'estimation': OSSS,
+            #'uncertainties': mc_uncertainties,
+        #}),
         ('ttbar_jetfake', {
             'process': ttbar_jetfake,
             'estimation': OSSS,
@@ -703,16 +625,19 @@ osss_fakes = {
             'process': other_true,
             'estimation': OSSS,
             'uncertainties': mc_uncertainties,
+            'treat_as_signal': True,
         }),
-        ('single_top_true', {
-            'process': single_top_true,
-            'estimation': OSSS,
-            'uncertainties': mc_uncertainties,
-        }),
+        #('single_top_true', {
+            #'process': single_top_true,
+            #'estimation': OSSS,
+            #'uncertainties': mc_uncertainties,
+            #'treat_as_signal': True,
+        #}),
         ('ttbar_true', {
             'process': ttbar_true,
             'estimation': OSSS,
             'uncertainties': mc_uncertainties,
+            'treat_as_signal': True,
         }),
     )),
 }
