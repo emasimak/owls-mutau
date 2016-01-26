@@ -316,13 +316,6 @@ nvx = Histogram(
         'Events'
         )
 
-tau_pt_trig_eff = Efficiency(
-        'tau_0_pt',
-        (0, 20, 30, 40, 60, 80, 100, 120, 200, 300),
-        '',
-        '#tau p_{T} (GeV)',
-        'Efficiency'
-        )
 tau_pt_trig = Histogram(
         'tau_0_pt',
         (35, 40, 50, 60, 80, 100, 150, 300),
@@ -332,13 +325,11 @@ tau_pt_trig = Histogram(
         )
 tau_pt_trig_b1 = Histogram(
         'tau_0_pt',
-        #(0, 22, 24, 26, 28, 30, 32, 34, 36, 38, 40, 45, 50, 55, 60, 80, 120, 300),
-        (25, 27, 30, 35, 40, 45, 60, 80, 120, 300),
+        (25, 28, 30, 32, 34, 36, 39, 43, 53, 100, 150, 300),
         '',
         '#tau p_{T} (GeV)',
         'Efficiency'
         )
-
 tau_pt_trig_b2  = Histogram(
         'tau_0_pt',
         (25, 50, 80, 300),

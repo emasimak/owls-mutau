@@ -23,7 +23,8 @@ persistent_cache = RedisPersistentCache(
 #persistent_cache = None
 
 # Create parallelization backend
-parallelization_backend = MultiprocessingParallelizationBackend(24)
+#parallelization_backend = MultiprocessingParallelizationBackend(24)
+parallelization_backend = MultiprocessingParallelizationBackend(16)
 #parallelization_backend = MultiprocessingParallelizationBackend(1)
 
 # Disable parallelization

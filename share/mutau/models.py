@@ -191,8 +191,8 @@ single_top = Process(
         file('410012.root'),
         file('410013.root'),
         file('410014.root'),
-        file('410025.root'),
-        file('410026.root'),
+        #file('410025.root'),
+        #file('410026.root'),
     ),
     tree = nominal_tree,
     label = 'Single Top',
@@ -415,11 +415,11 @@ mc = {
             'estimation': MonteCarlo,
             'uncertainties': mc_uncertainties,
         }),
-        #('single_top', {
-            #'process': single_top,
-            #'estimation': MonteCarlo,
-            #'uncertainties': mc_uncertainties,
-        #}),
+        ('single_top', {
+            'process': single_top,
+            'estimation': MonteCarlo,
+            'uncertainties': mc_uncertainties,
+        }),
         ('ttbar', {
             'process': ttbar,
             'estimation': MonteCarlo,
@@ -437,16 +437,16 @@ mc_fakes = {
         'estimation': Plain,
     },
     'backgrounds': OrderedDict((
-        ('other_lepfake', {
+        ('other_lfake', {
             'process': other_lfake,
             'estimation': MonteCarlo,
             'uncertainties': mc_uncertainties,
         }),
-        #('single_top_lepfake', {
-            #'process': single_top_lfake,
-            #'estimation': MonteCarlo,
-            #'uncertainties': mc_uncertainties,
-        #}),
+        ('single_top_lepfake', {
+            'process': single_top_lfake,
+            'estimation': MonteCarlo,
+            'uncertainties': mc_uncertainties,
+        }),
         ('ttbar_lepfake', {
             'process': ttbar_lfake,
             'estimation': MonteCarlo,
@@ -457,11 +457,11 @@ mc_fakes = {
             'estimation': MonteCarlo,
             'uncertainties': mc_uncertainties,
         }),
-        #('single_top_jetfake', {
-            #'process': single_top_jetfake,
-            #'estimation': MonteCarlo,
-            #'uncertainties': mc_uncertainties,
-        #}),
+        ('single_top_jetfake', {
+            'process': single_top_jetfake,
+            'estimation': MonteCarlo,
+            'uncertainties': mc_uncertainties,
+        }),
         ('ttbar_jetfake', {
             'process': ttbar_jetfake,
             'estimation': MonteCarlo,
@@ -472,11 +472,11 @@ mc_fakes = {
             'estimation': MonteCarlo,
             'uncertainties': mc_uncertainties,
         }),
-        #('single_top_true', {
-            #'process': single_top_true,
-            #'estimation': MonteCarlo,
-            #'uncertainties': mc_uncertainties,
-        #}),
+        ('single_top_true', {
+            'process': single_top_true,
+            'estimation': MonteCarlo,
+            'uncertainties': mc_uncertainties,
+        }),
         ('ttbar_true', {
             'process': ttbar_true,
             'estimation': MonteCarlo,
@@ -538,45 +538,6 @@ osss = {
     )),
 }
 
-osss_sub = {
-    'label': 'OS-SS (Bkg sub)',
-    'luminosity': luminosity,
-    'sqrt_s': sqrt_s,
-    'data': {
-        'process': data,
-        'estimation': OSData,
-    },
-    'subtractions': dict((
-        ('ss_data', {
-            'process': ss_data,
-            'estimation': SSData,
-            'uncertainties': ss_data_uncertainties,
-        }),
-        ('other', {
-            'process': other,
-            'estimation': OSSS,
-            'uncertainties': mc_uncertainties,
-        }),
-        ('single_top', {
-            'process': single_top,
-            'estimation': OSSS,
-            'uncertainties': mc_uncertainties,
-        }),
-        ('ttbar_fake', {
-            'process': ttbar_fake,
-            'estimation': OSSS,
-            'uncertainties': mc_uncertainties,
-        }),
-    )),
-    'backgrounds': OrderedDict((
-        ('ttbar_true', {
-            'process': ttbar_true,
-            'estimation': MonteCarlo,
-            'uncertainties': mc_uncertainties,
-        }),
-    )),
-}
-
 osss_fakes = {
     'label': 'OS-SS',
     'luminosity': luminosity,
@@ -591,16 +552,16 @@ osss_fakes = {
             'estimation': SSData,
             'uncertainties': ss_data_uncertainties,
         }),
-        ('other_lepfake', {
+        ('other_lfake', {
             'process': other_lfake,
             'estimation': OSSS,
             'uncertainties': mc_uncertainties,
         }),
-        #('single_top_lfake', {
-            #'process': single_top_lfake,
-            #'estimation': OSSS,
-            #'uncertainties': mc_uncertainties,
-        #}),
+        ('single_top_lfake', {
+            'process': single_top_lfake,
+            'estimation': OSSS,
+            'uncertainties': mc_uncertainties,
+        }),
         ('ttbar_lfake', {
             'process': ttbar_lfake,
             'estimation': OSSS,
@@ -611,11 +572,11 @@ osss_fakes = {
             'estimation': OSSS,
             'uncertainties': mc_uncertainties,
         }),
-        #('single_top_jetfake', {
-            #'process': single_top_jetfake,
-            #'estimation': OSSS,
-            #'uncertainties': mc_uncertainties,
-        #}),
+        ('single_top_jetfake', {
+            'process': single_top_jetfake,
+            'estimation': OSSS,
+            'uncertainties': mc_uncertainties,
+        }),
         ('ttbar_jetfake', {
             'process': ttbar_jetfake,
             'estimation': OSSS,
@@ -627,12 +588,12 @@ osss_fakes = {
             'uncertainties': mc_uncertainties,
             'treat_as_signal': True,
         }),
-        #('single_top_true', {
-            #'process': single_top_true,
-            #'estimation': OSSS,
-            #'uncertainties': mc_uncertainties,
-            #'treat_as_signal': True,
-        #}),
+        ('single_top_true', {
+            'process': single_top_true,
+            'estimation': OSSS,
+            'uncertainties': mc_uncertainties,
+            'treat_as_signal': True,
+        }),
         ('ttbar_true', {
             'process': ttbar_true,
             'estimation': OSSS,
@@ -641,3 +602,68 @@ osss_fakes = {
         }),
     )),
 }
+
+osss_sub = {
+    'label': 'OS-SS',
+    'luminosity': luminosity,
+    'sqrt_s': sqrt_s,
+    'data': {
+        'process': data,
+        'estimation': OSData,
+    },
+    'signals': OrderedDict((
+        ('other_true', {
+            'process': other_true,
+            'estimation': OSSS,
+            'uncertainties': mc_uncertainties,
+        }),
+        ('single_top_true', {
+            'process': single_top_true,
+            'estimation': OSSS,
+            'uncertainties': mc_uncertainties,
+        }),
+        ('ttbar_true', {
+            'process': ttbar_true,
+            'estimation': OSSS,
+            'uncertainties': mc_uncertainties,
+        }),
+    )),
+    'backgrounds': OrderedDict((
+        ('ss_data', {
+            'process': ss_data,
+            'estimation': SSData,
+            'uncertainties': ss_data_uncertainties,
+        }),
+        ('other_lfake', {
+            'process': other_lfake,
+            'estimation': OSSS,
+            'uncertainties': mc_uncertainties,
+        }),
+        ('single_top_lfake', {
+            'process': single_top_lfake,
+            'estimation': OSSS,
+            'uncertainties': mc_uncertainties,
+        }),
+        ('ttbar_lfake', {
+            'process': ttbar_lfake,
+            'estimation': OSSS,
+            'uncertainties': mc_uncertainties,
+        }),
+        ('other_jetfake', {
+            'process': other_jetfake,
+            'estimation': OSSS,
+            'uncertainties': mc_uncertainties,
+        }),
+        ('single_top_jetfake', {
+            'process': single_top_jetfake,
+            'estimation': OSSS,
+            'uncertainties': mc_uncertainties,
+        }),
+        ('ttbar_jetfake', {
+            'process': ttbar_jetfake,
+            'estimation': OSSS,
+            'uncertainties': mc_uncertainties,
+        }),
+    )),
+}
+
