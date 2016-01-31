@@ -11,23 +11,36 @@ OWLS="$CONTRIB/../.."
 MC_REGIONS="\
   mu_tau_os mu_tau_ss \
   mu_tau_1p mu_tau_3p \
-  mu_tau_tau25_os \
-  mu_tau_qcd_cr_os mu_tau_qcd_cr_ss \
-  mu_tau_ttbar_cr_os mu_tau_ttbar_cr_ss \
+  mu_tau70_100_os mu_tau70_100_ss \
+  mu_tau70_100_1p mu_tau70_100_3p \
+  mu_tau60_80_os mu_tau60_80_ss \
+  mu_tau60_80_1p mu_tau60_80_3p \
+  mu_tau60_150_os mu_tau60_150_ss \
+  mu_tau60_150_1p mu_tau60_150_3p \
   "
 
 OSSS_REGIONS="\
-  mu_tau \
-  mu_tau_1p mu_tau_3p \
-  mu_tau_tau25 \
-  mu_tau_tau25_1p mu_tau_tau25_3p \
-  mu_tau_ttbar_cr \
-  mu_tau_ttbar_cr_tau25 \
-  mu_tau_dphi \
-  mu_tau_dphi_tau25 \
+  mu_tau70_100 \
+  mu_tau70_100_1p mu_tau70_100_3p \
+  mu_tau60_80 \
+  mu_tau60_80_1p mu_tau60_80_3p \
+  mu_tau60_150 \
+  mu_tau60_150_tau25_1p mu_tau60_150_tau25_3p \
+  mu_tau60_150_1p mu_tau60_150_3p \
   "
 
-DISTRIBUTIONS="tau_pt tau_pt_b2 jet_multiplicity"
+  #mu_tau70_100_tau25_1p mu_tau70_100_tau25_3p \
+  #mu_tau60_80_tau25_1p mu_tau60_80_tau25_3p \
+
+DISTRIBUTIONS="\
+  tau_pt tau_eta tau_phi \
+  tau_bdt_score tau_n_tracks \
+  mu_pt mu_eta mu_phi \
+  bjet_multiplicity jet_multiplicity \
+  deta dphi dr \
+  met_et met_phi mt \
+  mu nvx \
+  "
 #EXTENSIONS="pdf eps"
 EXTENSIONS="pdf"
 LUMINOSITY=3209.0 # 1/pb

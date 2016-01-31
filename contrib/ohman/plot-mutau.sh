@@ -11,20 +11,25 @@ CONTRIB=$(dirname "$0")
 OWLS="$CONTRIB/../.."
 
 MC_REGIONS="\
-  mu_tau_os mu_tau_tau25_os \
-  mu_tau_loose_os mu_tau_loose_tau25_os \
-  mu_tau_gradient_os mu_tau_gradient_tau25_os \
+  mu_tau_os mu_tau_ss \
+  mu_tau_1p mu_tau_3p \
+  mu_tau_tau25_1p mu_tau_tau25_3p \
   "
+  #mu_tau_tau25_os \
 
 OSSS_REGIONS="\
-  mu_tau mu_tau_tau25 \
-  mu_tau_loose mu_tau_loose_tau25 \
-  mu_tau_gradient mu_tau_gradient_tau25 \
+  mu_tau \
+  mu_tau_1p mu_tau_3p \
+  mu_tau_tau25_1p mu_tau_tau25_3p \
   "
+  #mu_tau_tau25 \
 
 OSSS_SYST_REGIONS="\
-  mu_tau_gradient mu_tau_gradient_tau25 \
+  mu_tau \
   "
+  #mu_tau_tau25 \
+  #mu_tau_1p mu_tau_3p \
+  #mu_tau_tau25_1p mu_tau_tau25_3p \
 
 DISTRIBUTIONS="\
   tau_pt tau_eta tau_phi \
@@ -100,19 +105,19 @@ OUTPUT="results_mutau/plots_osss_fakes"
 
 # Plots with OS-SS backgrounds, and split into truth and fakes for ttbar and
 # single top
-OUTPUT="results_mutau/plots_osss_fakes_syst"
-"$OWLS/tools/plot.py" \
-  --output $OUTPUT \
-  --extensions $EXTENSIONS \
-  --model-file "$OWLS/share/mutau/models.py" \
-  --model osss_fakes \
-  --regions-file "$OWLS/share/mutau/regions.py" \
-  --regions $OSSS_SYST_REGIONS \
-  --distributions-file "$OWLS/share/mutau/distributions.py" \
-  --distributions $DISTRIBUTIONS \
-  --environment-file "$CONTRIB/environment.py" \
-  --text-count \
-  --error-label "Stat. #otimes Sys. Unc." \
-  data_prefix=$DATA_PREFIX \
-  enable_systematics=True \
-  luminosity=$LUMINOSITY
+#OUTPUT="results_mutau/plots_osss_fakes_syst"
+#"$OWLS/tools/plot.py" \
+  #--output $OUTPUT \
+  #--extensions $EXTENSIONS \
+  #--model-file "$OWLS/share/mutau/models.py" \
+  #--model osss_fakes \
+  #--regions-file "$OWLS/share/mutau/regions.py" \
+  #--regions $OSSS_SYST_REGIONS \
+  #--distributions-file "$OWLS/share/mutau/distributions.py" \
+  #--distributions $DISTRIBUTIONS \
+  #--environment-file "$CONTRIB/environment.py" \
+  #--text-count \
+  #--error-label "Stat. #otimes Sys. Unc." \
+  #data_prefix=$DATA_PREFIX \
+  #enable_systematics=True \
+  #luminosity=$LUMINOSITY

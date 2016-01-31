@@ -30,9 +30,17 @@ definitions = {
     'mu_trigger': (
         '(HLT_mu20_iloose_L1MU15 && muTrigMatch_0_HLT_mu20_iloose_L1MU15)'),
 
-    # OS/SS for mu+tau selection
+    # OS/SS
     'os': 'lephad_qxq == -1',
     'ss': 'lephad_qxq == 1',
+
+    # 1p/3p
+    '1p': 'tau_0_n_tracks == 1',
+    '3p': 'tau_0_n_tracks == 3',
+
+    # tau triggers
+    'tau25': 'HLT_tau25_medium1_tracktwo && tau_0_trig_HLT_tau25_medium1_tracktwo',
+    'tau35': 'HLT_tau35_medium1_tracktwo && tau_0_trig_HLT_tau35_medium1_tracktwo',
 
     # Nominal isolation
     'iso': (
@@ -46,8 +54,12 @@ definitions = {
     'iso_gradient': 'lep_0_iso_wp >= 10000',
 
     # b-jet requirement and veto
+    '2bjet': 'n_bjets >= 2',
     'bjet': 'n_bjets >= 1',
     'bveto': 'n_bjets == 0',
+
+    # dphi test
+    'dphi': 'abs(lephad_dphi) < 1.0 || abs(lephad_dphi) > 1.2',
 
     # tau requirement
     'loose_tau': 'n_taus >= 1 && tau_0_pt > 25 && tau_0_jet_bdt_loose',
@@ -56,6 +68,10 @@ definitions = {
 
     'very_loose_not_medium_tau': 'n_taus >= 1 && tau_0_pt > 25 && tau_0_jet_bdt_score > 0.5 && !tau_0_jet_bdt_medium',
     'very_loose_not_loose_tau': 'n_taus >= 1 && tau_0_pt > 25 && tau_0_jet_bdt_score > 0.5 && !tau_0_jet_bdt_loose',
+
+    'medium_tau60_80': 'n_taus >= 1 && tau_0_pt > 60 && tau_0_pt < 80 && tau_0_jet_bdt_medium',
+    'medium_tau70_100': 'n_taus >= 1 && tau_0_pt > 70 && tau_0_pt < 100 && tau_0_jet_bdt_medium',
+    'medium_tau60_150': 'n_taus >= 1 && tau_0_pt > 60 && tau_0_pt < 150 && tau_0_jet_bdt_medium',
 
     # mu+tau T&P
     'mu_tau': (
@@ -94,29 +110,46 @@ _id_variations = [
 
 # mu+tau regions
 _variations = [
-    ('_tau25', '&& HLT_tau25_medium1_tracktwo', '', ' (tau25)'),
-    ('_tau35', '&& HLT_tau35_medium1_tracktwo', '', ' (tau35)'),
-    ('_tau25_os', '&& [os] && HLT_tau25_medium1_tracktwo', '', ' (tau25, OS)'),
-    ('_tau35_os', '&& [os] && HLT_tau35_medium1_tracktwo', '', ' (tau35, OS)'),
-    ('_1p', '&& tau_0_n_tracks == 1', '', ' (1-prong)'),
-    ('_3p', '&& tau_0_n_tracks == 3', '', ' (3-prong)'),
+    ('_tau25', '&& [tau25]', '', ' (tau25)'),
+    ('_tau25_1p', '&& [tau25] && [1p]', '', ' (tau25, 1-prong)'),
+    ('_tau25_3p', '&& [tau25] && [3p]', '', ' (tau25, 3-prong)'),
+    ('_tau25_os', '&& [tau25] && [os]', '', ' (tau25, OS)'),
+    ('_tau25_ss', '&& [tau25] && [ss]', '', ' (tau25, SS)'),
+    ('_1p', '&& [1p]', '', ' (1-prong)'),
+    ('_3p', '&& [3p]', '', ' (3-prong)'),
     ('_os', '&& [os]', '', ' (OS)'),
     ('_ss', '&& [ss]', '', ' (SS)'),
 ]
 
 # Nominal mu+tau region and variations
 _vary_me('mu_tau',
-         '[mu_trigger] && [mu_tau] && [medium_tau] && [2jets] && [bjet] && [iso]',
-         '[weight]',
-         '#mu+#tau (run1 iso)',
-         {'mc': expr('[weight_mu] * [weight_b]')},
-         {'rqcd': 'mu_tau_qcd_cr'},
-         _variations)
-
-_vary_me('mu_tau_gradient',
          '[mu_trigger] && [mu_tau] && [medium_tau] && [2jets] && [bjet] && [iso_gradient]',
          '[weight]',
-         '#mu+#tau (Gradient iso)',
+         '#mu+#tau',
+         {'mc': expr('[weight_mu_grad] * [weight_b]')},
+         {'rqcd': 'mu_tau_gradient_qcd_cr'},
+         _variations)
+
+_vary_me('mu_tau60_80',
+         '[mu_trigger] && [mu_tau] && [medium_tau60_80] && [2jets] && [bjet] && [iso_gradient]',
+         '[weight]',
+         '#mu+#tau (60-80)',
+         {'mc': expr('[weight_mu_grad] * [weight_b]')},
+         {'rqcd': 'mu_tau_gradient_qcd_cr'},
+         _variations)
+
+_vary_me('mu_tau70_100',
+         '[mu_trigger] && [mu_tau] && [medium_tau70_100] && [2jets] && [bjet] && [iso_gradient]',
+         '[weight]',
+         '#mu+#tau (70-100)',
+         {'mc': expr('[weight_mu_grad] * [weight_b]')},
+         {'rqcd': 'mu_tau_gradient_qcd_cr'},
+         _variations)
+
+_vary_me('mu_tau60_150',
+         '[mu_trigger] && [mu_tau] && [medium_tau60_150] && [2jets] && [bjet] && [iso_gradient]',
+         '[weight]',
+         '#mu+#tau (60-150)',
          {'mc': expr('[weight_mu_grad] * [weight_b]')},
          {'rqcd': 'mu_tau_gradient_qcd_cr'},
          _variations)
@@ -138,27 +171,27 @@ _vary_me('mu_tau_noiso',
          {'rqcd': 'mu_tau_qcd_cr'},
          _variations)
 
+# ttbar CR
+_vary_me('mu_tau_ttbar_cr',
+         expr('[mu_trigger] && [mu_tau] && [medium_tau] && [2jets] && [2bjet] && [iso_gradient]'),
+         expr('[weight]'),
+         'ttbar CR',
+         {'mc': expr('[weight_mu] * [weight_b]')},
+         {'rqcd': 'mu_tau_qcd_cr'},
+         _variations)
+
 # QCD CR with anti-isolation
 _vary_me('mu_tau_qcd_cr',
-         expr('[mu_trigger] && [mu_tau] && [medium_tau] && [2jets] && ![iso_loose]'),
+         expr('[mu_trigger] && [mu_tau] && [medium_tau] && [2jets] && ![iso_gradient]'),
          expr('[weight]'),
-         'QCD CR (Run1 loose iso)',
+         'QCD CR',
          {'mc': expr('[weight_mu]')},
          {'rqcd': 'mu_tau_qcd_cr'},
          _variations)
 
-# QCD CR with gradient anti-isolation
-_vary_me('mu_tau_gradient_qcd_cr',
-         expr('[mu_trigger] && [mu_tau] && [medium_tau] && [2jets] && ![iso_gradient]'),
-         expr('[weight]'),
-         'QCD CR (Gradient iso)',
-         {'mc': expr('[weight_mu_grad]')},
-         {'rqcd': 'mu_tau_gradient_qcd_cr'},
-         _variations)
-
 # QCD CR with anti-tau cut
 _vary_me('mu_tau_qcd_cr_anti_tau',
-         expr('[mu_trigger] && [mu_tau] && [very_loose_not_medium_tau] && [2jets] && ![iso_loose]'),
+         expr('[mu_trigger] && [mu_tau] && [very_loose_not_medium_tau] && [2jets] && ![iso_gradient]'),
          expr('[weight]'),
          'QCD CR (anti-#tau, anti-iso)',
          {'mc': expr('[weight_mu]')},
@@ -167,7 +200,7 @@ _vary_me('mu_tau_qcd_cr_anti_tau',
 
 # W CR
 _vary_me('mu_tau_w_cr',
-         expr('[mu_trigger] && [mu_tau] && [medium_tau] && [bveto] && [wcr] && [iso]'),
+         expr('[mu_trigger] && [mu_tau] && [medium_tau] && [bveto] && [wcr] && [iso_gradient]'),
          expr('[weight]'),
          'W CR',
          {'mc': expr('[weight_mu] * [weight_b]')},
@@ -176,7 +209,7 @@ _vary_me('mu_tau_w_cr',
 
 # W anti-tau CR
 _vary_me('mu_tau_w_cr_anti_tau',
-         expr('[mu_trigger] && [mu_tau] && [very_loose_not_medium_tau] && [bveto] && [wcr] && [iso]'),
+         expr('[mu_trigger] && [mu_tau] && [very_loose_not_medium_tau] && [bveto] && [wcr] && [iso_gradient]'),
          expr('[weight]'),
          'W CR (anti-#tau)',
          {'mc': expr('[weight_mu] * [weight_b]')},

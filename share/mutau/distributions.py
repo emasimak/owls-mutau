@@ -279,7 +279,7 @@ dphi = Histogram(
         'abs(lephad_dphi)',
         (16, 0, 3.2),
         '',
-        '#delta#phi(#mu,#tau)',
+        '#Delta#phi(#mu,#tau)',
         'Events'
         )
 
@@ -287,7 +287,7 @@ deta = Histogram(
         'abs(lephad_deta)',
         (16, 0, 3.2),
         '',
-        '#delta#phi(#mu,#tau)',
+        '#Delta#eta(#mu,#tau)',
         'Events'
         )
 
@@ -295,13 +295,13 @@ dr = Histogram(
         'abs(lephad_dr)',
         (16, 0, 3.2),
         '',
-        '#delta#phi(#mu,#tau)',
+        '#Delta#R(#mu,#tau)',
         'Events'
         )
 
 # Event variables
 mu = Histogram(
-        'n_avg_int',
+        'n_avg_int_cor',
         (40, 0, 40),
         '',
         '<#mu>',

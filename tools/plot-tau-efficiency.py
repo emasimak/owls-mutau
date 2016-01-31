@@ -72,19 +72,6 @@ parser.add_argument('-E',
                     required = True,
                     help = 'the path to the environment definition module',
                     metavar = '<environment-file>')
-parser.add_argument('-n',
-                    '--no-counts',
-                    action = 'store_true',
-                    help = 'disable event counts in legends')
-parser.add_argument('-t',
-                    '--no-trigger-match',
-                    dest = 'match_trigger',
-                    action = 'store_false',
-                    help = 'don\'t do trigger matching')
-parser.add_argument('-u',
-                    '--truth-matching',
-                    action = 'store_true',
-                    help = 'do tau truth matching')
 parser.add_argument('--root-output',
                     action = 'store_true',
                     help = 'write plotted histograms to a ROOT file',
@@ -130,6 +117,9 @@ backgrounds = model['backgrounds']
 
 triggered_tau25 = Filtered('HLT_tau25_medium1_tracktwo && '
                            'tau_0_trig_HLT_tau25_medium1_tracktwo')
+triggered_tau25_noiso = Filtered('HLT_tau25_medium1_tracktwo_L1TAU12 && '
+                                  'tau_0_trig_HLT_tau25_medium1_tracktwo_L1TAU12')
+
 triggered_tau35 = Filtered('HLT_tau35_medium1_tracktwo && '
                            'tau_0_trig_HLT_tau35_medium1_tracktwo')
 triggered_tau80 = Filtered('HLT_tau80_medium1_tracktwo && '
@@ -149,9 +139,25 @@ efficiencies = OrderedDict({
         'label': ['HLT_tau25_medium1_tracktwo'],
         'region': regions_file.mu_tau_3p,
         'title': '#mu+#tau (1-prong)',
-        'distribution': distributions_file.tau_pt_trig,
+        'distribution': distributions_file.tau_pt_trig_b1,
         'filter': triggered_tau25,
     },
+
+    'tau25_noiso_1p': {
+        'label': ['HLT_tau25_medium1_tracktwo_L1TAU12'],
+        'region': regions_file.mu_tau_1p,
+        'title': '#mu+#tau (1-prong)',
+        'distribution': distributions_file.tau_pt_trig_b1,
+        'filter': triggered_tau25_noiso,
+    },
+    'tau25_noiso_3p': {
+        'label': ['HLT_tau25_medium1_tracktwo_L1TAU12'],
+        'region': regions_file.mu_tau_3p,
+        'title': '#mu+#tau (1-prong)',
+        'distribution': distributions_file.tau_pt_trig_b1,
+        'filter': triggered_tau25_noiso,
+    },
+
     # TODO: Add tau35, tau80, tau125
 })
 
