@@ -1,4 +1,4 @@
-"""Standard data, and background models for the mu+tau analysis.
+"""Standard data, and background models for the tau+jets analysis.
 """
 
 # System imports
@@ -35,7 +35,8 @@ sqrt_s = 13.0 * 1000 * 1000 # MeV
 
 
 r_qcd = {
-    'mu_tau_qcd_cr': (1.25, 0.017)
+    'mu_tau_qcd_cr': (1.266, 0.016),
+    'mu_tau_gradient_qcd_cr': (1.25, 0.017)
 }
 
 MonteCarlo = partial(MonteCarlo, luminosity = luminosity)
@@ -44,27 +45,37 @@ SSData = partial(SSData, r_qcd = r_qcd)
 
 # Set up patches
 patch_definitions = {
-    'is_electron': 'tau_0_truth_isEle',
-    'is_muon': 'tau_0_truth_isMuon',
-    'is_tau': 'tau_0_truth_isTau',
-    'is_jet': 'tau_0_truth_isJet',
+    'is_had_tau': 'tau_0_matched_isHad',
+    'is_electron': 'abs(tau_0_matched_pdgId) == 11',
+    'is_muon': 'abs(tau_0_matched_pdgId) == 13',
+    'is_tau': 'abs(tau_0_matched_pdgId) == 15',
+    'is_b': 'abs(tau_0_matched_pdgId) == 5',
+    'is_light': 'abs(tau_0_matched_pdgId) > 0 && abs(tau_0_matched_pdgId) < 5',
+    'is_gluon': 'tau_0_matched_pdgId == 21',
 }
 
 expr = partial(expression_substitute, definitions = patch_definitions)
 
-tau_truth_matched = Patch(expr('[is_tau]'))
-tau_fake = Patch(expr('![is_tau]'))
-tau_electron_matched = Patch(expr('[is_electron]'))
-tau_muon_matched = Patch(expr('[is_muon]'))
-tau_lepton_matched = Patch(expr('[is_muon] || [is_electron]'))
-tau_jet_fake = Patch(expr('!([is_muon] || [is_electron] || [is_tau])'))
+patch_definitions.update({
+    'is_lepton': expr('[is_muon] || [is_electron]'),
+    'is_not_jet': expr('[is_muon] || [is_electron] || [is_tau]'),
+    'is_jet': expr('([is_light] || [is_b] || [is_gluon])'),
+})
+
+tau_truth_matched = Patch(expr('[is_had_tau] && [is_tau]'))
+tau_fake = Patch(expr('[is_had_tau] && ![is_tau]'))
+tau_electron_matched = Patch(expr('[is_had_tau] && [is_electron]'))
+tau_muon_matched = Patch(expr('[is_had_tau] && [is_muon]'))
+tau_lepton_matched = Patch(expr('[is_had_tau] && [is_lepton]'))
+tau_jet_fake = Patch(expr('[is_had_tau] && [is_jet]'))
+tau_non_jet_fake = Patch(expr('[is_not_jet]'))
+tau_b_jet_fake = Patch(expr('[is_jet] && [is_b]'))
+tau_light_jet_fake = Patch(expr('[is_jet] && [is_light]'))
+tau_quark_jet_fake = Patch(expr('[is_jet] && ![is_gluon]'))
+tau_gluon_jet_fake = Patch(expr('[is_jet] && [is_gluon]'))
 
 # Create some utility functions
 file = lambda name: join(data_prefix, name)
-
-# Pileup-reweighting with PRWHash
-# Friends are defined as (file, tree, index)
-prw_friend = (file('prwTree.all.root'), 'prwTree', 'PRWHash')
 
 # Create processes
 data = Process(
@@ -98,7 +109,6 @@ zll = Process(
     tree = nominal_tree,
     label = 'Z#rightarrow ll',
     sample_type = 'mc',
-    friends = (prw_friend,),
     line_color = 1,
     fill_color = 424,
 )
@@ -110,7 +120,6 @@ ztautau = Process(
     tree = nominal_tree,
     label = 'Z#rightarrow#tau#tau',
     sample_type = 'mc',
-    friends = (prw_friend,),
     line_color = 1,
     fill_color = 64,
 )
@@ -125,7 +134,6 @@ wlnu = Process(
     tree = nominal_tree,
     label = 'W#rightarrow l#nu',
     sample_type = 'mc',
-    friends = (prw_friend,),
     line_color = 1,
     fill_color = 804,
 )
@@ -138,7 +146,6 @@ wtaunu = Process(
     tree = nominal_tree,
     label = 'W#rightarrow #tau#nu',
     sample_type = 'mc',
-    friends = (prw_friend,),
     line_color = 1,
     fill_color = 806,
 )
@@ -146,30 +153,29 @@ wtaunu = Process(
 diboson = Process(
     (
         # PowhegPythia
-        file('361600.root'),
-        file('361601.root'),
-        file('361602.root'),
-        file('361603.root'),
-        file('361604.root'),
-        file('361605.root'),
-        file('361606.root'),
-        file('361607.root'),
-        file('361608.root'),
-        file('361609.root'),
-        file('361610.root'),
+        #file('361600.root'),
+        #file('361601.root'),
+        #file('361602.root'),
+        #file('361603.root'),
+        #file('361604.root'),
+        #file('361605.root'),
+        #file('361606.root'),
+        #file('361607.root'),
+        #file('361608.root'),
+        #file('361609.root'),
+        #file('361610.root'),
         # Sherpa
-        #file('361081.root'),
-        #file('361082.root'),
-        #file('361083.root'),
-        #file('361084.root'),
-        #file('361085.root'),
-        #file('361086.root'),
-        #file('361087.root'),
+        file('361081.root'),
+        file('361082.root'),
+        file('361083.root'),
+        file('361084.root'),
+        file('361085.root'),
+        file('361086.root'),
+        file('361087.root'),
     ),
     tree = nominal_tree,
     label = 'Diboson',
     sample_type = 'mc',
-    friends = (prw_friend,),
     line_color = 1,
     fill_color = 92,
 )
@@ -186,7 +192,6 @@ single_top = Process(
     tree = nominal_tree,
     label = 'Single Top',
     sample_type = 'mc',
-    friends = (prw_friend,),
     line_color = 1,
     fill_color = 595,
 )
@@ -212,6 +217,20 @@ single_top_jetfake = single_top.patched(
     fill_color = 411
 )
 
+single_top_qfake = single_top.patched(
+    tau_quark_jet_fake,
+    label = 'Single Top (q #rightarrow #tau)',
+    line_color = 1,
+    fill_color = 411
+)
+
+single_top_gfake = single_top.patched(
+    tau_gluon_jet_fake,
+    label = 'Single Top (g #rightarrow #tau)',
+    line_color = 1,
+    fill_color = 805
+)
+
 ttbar = Process(
     (
         file('410000.root'),
@@ -220,7 +239,6 @@ ttbar = Process(
     tree = nominal_tree,
     label = 't#bar{t}',
     sample_type = 'mc',
-    friends = (prw_friend,),
     line_color = 1,
     fill_color = 0,
 )
@@ -252,12 +270,11 @@ other = Process(
     zll.files() + \
         ztautau.files() + \
         wlnu.files() + \
-        diboson.files() + \
+        #diboson.files() + \
         wtaunu.files(),
     tree = nominal_tree,
     label = 'Other',
     sample_type = 'mc',
-    friends = (prw_friend,),
     line_color = 1,
     fill_color = 92,
 )
@@ -281,6 +298,20 @@ other_jetfake = other.patched(
     label = 'Other (j #rightarrow #tau)',
     line_color = 1,
     fill_color = 408
+)
+
+other_qfake = other.patched(
+    tau_quark_jet_fake,
+    label = 'Other (q #rightarrow #tau)',
+    line_color = 1,
+    fill_color = 408
+)
+
+other_gfake = other.patched(
+    tau_gluon_jet_fake,
+    label = 'Other (g #rightarrow #tau)',
+    line_color = 1,
+    fill_color = 806
 )
 
 
@@ -319,11 +350,11 @@ mc = {
         'estimation': Plain,
     },
     'backgrounds': OrderedDict((
-        ('diboson', {
-            'process': diboson,
-            'estimation': MonteCarlo,
-            'uncertainties': mc_uncertainties,
-        }),
+        #('diboson', {
+            #'process': diboson,
+            #'estimation': MonteCarlo,
+            #'uncertainties': mc_uncertainties,
+        #}),
         ('wtaunu', {
             'process': wtaunu,
             'estimation': MonteCarlo,

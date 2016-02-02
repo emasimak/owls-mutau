@@ -55,13 +55,18 @@ parser.add_argument('-M',
 parser.add_argument('-m',
                     '--model',
                     required = True,
-                    help = 'the model to plot',
+                    help = 'the model to compute efficencies for',
                     metavar = '<model>')
 parser.add_argument('-R',
                     '--regions-file',
                     required = True,
                     help = 'the path to the region definition module',
                     metavar = '<regions-file>')
+parser.add_argument('-r',
+                    '--region',
+                    required = True,
+                    help = 'the region to compute efficiencies for',
+                    metavar = '<region>')
 parser.add_argument('-D',
                     '--distributions-file',
                     required = True,
@@ -109,11 +114,17 @@ environment_file = load_module(arguments.environment_file, definitions)
 
 # Extract model
 model = getattr(model_file, arguments.model)
+region = getattr(regions_file, arguments.region)
 luminosity = model['luminosity']
 sqrt_s = model['sqrt_s']
 data = model['data']
 signals = model['signals']
 backgrounds = model['backgrounds']
+
+
+one_prong = region.varied(OneProng())
+three_prong = region.varied(ThreeProng())
+
 
 triggered_tau25 = Filtered('HLT_tau25_medium1_tracktwo && '
                            'tau_0_trig_HLT_tau25_medium1_tracktwo')
@@ -130,30 +141,30 @@ triggered_tau125 = Filtered('HLT_tau125_medium1_tracktwo && '
 efficiencies = OrderedDict({
     'tau25_1p': {
         'label': ['HLT_tau25_medium1_tracktwo'],
-        'region': regions_file.mu_tau_1p,
-        'title': '#mu+#tau (1-prong)',
+        'region': one_prong,
+        'title': ' (1-prong)',
         'distribution': distributions_file.tau_pt_trig_b1,
         'filter': triggered_tau25,
     },
     'tau25_3p': {
         'label': ['HLT_tau25_medium1_tracktwo'],
-        'region': regions_file.mu_tau_3p,
-        'title': '#mu+#tau (1-prong)',
+        'region': three_prong,
+        'title': ' (1-prong)',
         'distribution': distributions_file.tau_pt_trig_b1,
         'filter': triggered_tau25,
     },
 
     'tau25_noiso_1p': {
         'label': ['HLT_tau25_medium1_tracktwo_L1TAU12'],
-        'region': regions_file.mu_tau_1p,
-        'title': '#mu+#tau (1-prong)',
+        'region': one_prong,
+        'title': ' (1-prong)',
         'distribution': distributions_file.tau_pt_trig_b1,
         'filter': triggered_tau25_noiso,
     },
     'tau25_noiso_3p': {
         'label': ['HLT_tau25_medium1_tracktwo_L1TAU12'],
-        'region': regions_file.mu_tau_3p,
-        'title': '#mu+#tau (1-prong)',
+        'region': three_prong,
+        'title': ' (1-prong)',
         'distribution': distributions_file.tau_pt_trig_b1,
         'filter': triggered_tau25_noiso,
     },
@@ -377,7 +388,8 @@ with caching_into(cache):
             efficiency_filter = eff['filter']
             region = eff['region']
 
-            label = [eff['title'], model['label']] + eff['label']
+            label = [region.label() + eff['title'], model['label']] + \
+                    eff['label']
 
     ##############################################################
     # CREATE AND PLOT NOMINAL EFFICIENCIES AND SCALE FACTORS
