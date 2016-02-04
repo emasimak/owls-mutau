@@ -68,6 +68,7 @@ definitions = {
 
     # b-jet requirement and veto
     '2bjet': 'n_bjets >= 2',
+    '1bjet': 'n_bjets == 1',
     'bjet': 'n_bjets >= 1',
     'bveto': 'n_bjets == 0',
 
@@ -230,7 +231,25 @@ _vary_me('mu_tau_w_cr',
 _vary_me('mu_tau_ttbar_cr',
          expr('[mu_trigger] && [mu_tau] && [medium_tau] && [2jets] && [2bjet] && [iso_gradient]'),
          expr('[weight]'),
-         'ttbar CR',
+         '2b CR',
+         {'mc': expr('[weight_pileup] * [weight_mu] * [weight_b]')},
+         {'rqcd': 'mu_tau_qcd_cr'},
+         _variations)
+
+# ttbar CR loose
+_vary_me('mu_tau_loose_ttbar_cr',
+         expr('[mu_trigger] && [mu_tau] && [medium_tau] && [2jets] && [2bjet] && [iso_loose]'),
+         expr('[weight]'),
+         '2b CR',
+         {'mc': expr('[weight_pileup] * [weight_mu_loose] * [weight_b]')},
+         {'rqcd': 'mu_tau_qcd_cr'},
+         _variations)
+
+# ttbar CR
+_vary_me('mu_tau_1b_cr',
+         expr('[mu_trigger] && [mu_tau] && [medium_tau] && [2jets] && [1bjet] && [iso_gradient]'),
+         expr('[weight]'),
+         '1b CR',
          {'mc': expr('[weight_pileup] * [weight_mu] * [weight_b]')},
          {'rqcd': 'mu_tau_qcd_cr'},
          _variations)

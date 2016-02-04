@@ -32,6 +32,8 @@ MC_REGIONS=" \
   mu_tau_drcut_os \
   mu_tau_mtcut_os \
   mu_tau_ttbar_cr_os \
+  mu_tau_1b_cr_os \
+  mu_tau_loose_ttbar_cr_os \
   "
 OSSS_REGIONS=" \
   mu_tau_gradient \
@@ -40,6 +42,8 @@ OSSS_REGIONS=" \
   mu_tau_drcut \
   mu_tau_mtcut \
   mu_tau_ttbar_cr \
+  mu_tau_1b_cr \
+  mu_tau_loose_ttbar_cr \
   "
 
 DISTRIBUTIONS="tau_pt tau_pt_b2"

@@ -149,7 +149,7 @@ efficiencies = OrderedDict({
     'tau25_3p': {
         'label': ['HLT_tau25_medium1_tracktwo'],
         'region': three_prong,
-        'title': ' (1-prong)',
+        'title': ' (3-prong)',
         'distribution': distributions_file.tau_pt_trig_b1,
         'filter': triggered_tau25,
     },
@@ -164,7 +164,7 @@ efficiencies = OrderedDict({
     'tau25_noiso_3p': {
         'label': ['HLT_tau25_medium1_tracktwo_L1TAU12'],
         'region': three_prong,
-        'title': ' (1-prong)',
+        'title': ' (3-prong)',
         'distribution': distributions_file.tau_pt_trig_b1,
         'filter': triggered_tau25_noiso,
     },

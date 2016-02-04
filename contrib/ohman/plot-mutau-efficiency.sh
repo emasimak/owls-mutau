@@ -13,7 +13,7 @@ echo ">>> Plotting tau efficiency and scale factors"
 OUTPUT="results_mutau/plots_tau_efficiency"
 
 # Tau efficiency
-for REGION in mu_tau_gradient mu_tau_loose mu_tau_tight mu_tau_drcut mu_tau_mtcut mu_tau_ttbar_cr
+for REGION in mu_tau_gradient mu_tau_loose mu_tau_tight mu_tau_drcut mu_tau_mtcut mu_tau_ttbar_cr mu_tau_1b_cr mu_tau_loose_ttbar_cr
 do
   OUTPUT="results_mutau/plots_tau_efficiency/$REGION"
   "$OWLS/tools/plot-tau-efficiency.py" \
