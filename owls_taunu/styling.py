@@ -1,34 +1,39 @@
-"""Plot styles for the tau+jet analysis.
+"""Plot styles
 """
 
 from six import string_types
 
-from ROOT import TColor
+from ROOT import TColor, kBlack, kRed, kBlue
 
 # TODO: Pick one good series of divergent and sequential, and instead create
 # series of different lenghts. Make sure divergent series can offer different
 # lengths for left and right asymmetrically.
 
-# (Line color, fill color, marker style, option (optional))
+# Histogram styles
+# Tuple format is (line_color, fill_color, marker_style)
 default_style = (1, 1, 8)
-# Styles for plotting data (black) vs. MC (red)
+# Styles for plotting data (black) vs. MC (red) vs. any (blue)
 default_black = (1, 1, 20)
-default_red = (632, 1, 21)
-# Styles for plotting data (black), MC (red), any (blue) in single drawable
-# plots (same marker!)
-default_black_thin = (1, 1, 8, 1)
-default_blue_thin = (600, 1, 8, 1)
-default_red_thin = (632, 1, 8, 1)
-# Styles for plotting e.g. fit lines
+default_red = (kRed, 1, 21)
+default_blue = (kBlue, 1, 8)
+# Styles for plotting data (black), MC (red), any (blue) with thin line and
+# same marker
+default_black_thin = {'line_color': 1, 'fill_color': 1, 'marker_style': 8, 'line_size': 1}
+default_blue_thin = {'line_color': kBlue, 'fill_color': 1, 'marker_style': 8, 'line_size': 1}
+default_red_thin = {'line_color': kRed, 'fill_color': 1, 'marker_style': 8, 'line_size': 1}
+# Styles for plotting error bands
+band_red = {'line_color': 0, 'line_size': 0,
+            'marker_style': 0, 'marker_size': 0,
+            'fill_color': 807, 'fill_style': 3245}
+
+# Line styles
+# Tuple format is (line_color, line_style, line_size)
 line_black = (1, 1, 2)
 line_black_thin = (1, 1, 1)
-line_red = (632, 1, 2)
-line_red_thin = (632, 1, 1)
-line_dotted_red = (632, 3, 2)
+line_red = (kRed, 1, 2)
+line_red_thin = (kRed, 1, 1)
+line_dotted_red = (kRed, 3, 2)
 line_dashed_grey = (12, 2, 2)
-# Styles for plotting error bars only
-# TODO: This is a huge hack.
-bar_red = (632, 632, None, 2, 'E5')
 
 # Divergent series 1-6 with 10 entries from http://colorbrewer2.org. The two
 # lightest colours are disabled.
@@ -228,3 +233,18 @@ def create_sequential_style(series, line_width = None, count = None):
                   for col, style
                   in zip(color_sequential[series-1], marker_styles)]
     return pick_styles(styles, count)
+
+def standard_style(count = None, line_width = None):
+    colors = [kBlack, kRed+1, kBlue-2]
+    if line_width is not None:
+        styles = [(col, 1, line_width) for col in colors]
+    else:
+        styles = [(col, col, style)
+                  for col,style in zip(colors, marker_styles)]
+    if count is None:
+        return styles
+    else:
+        return styles[:count]
+
+
+

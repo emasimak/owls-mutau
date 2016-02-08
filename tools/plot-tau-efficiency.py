@@ -273,8 +273,8 @@ def plot_efficiencies(data_efficiency,
                       file_name_components,
                       label):
     efficiencies = [
-        (signal_efficiency, bar_red),
-        (data_efficiency, default_black)
+        (signal_efficiency, default_red, 'e5'),
+        (data_efficiency, default_black, 'ep')
     ]
 
     # Compute the plot output path
@@ -343,7 +343,7 @@ def plot_scale_factor(scale_factor,
     save_path = join(path,
             '_'.join(file_name_components + ['sf']))
 
-    plot([(scale_factor, default_black)],
+    plot([(scale_factor, default_black, 'ep')],
          save_path,
          x_label = distribution.x_label(),
          y_label = distribution.y_label(),
