@@ -25,7 +25,7 @@ from owls_hep.plotting import Plot, style_line
 
 # owls-taunu imports
 from owls_taunu.variations import Filtered, OneProng, ThreeProng
-from owls_taunu.styling import default_black, bar_red
+from owls_taunu.styling import default_black, default_red
 from owls_taunu.plotting import plot, plot2d
 
 # ROOT imports
@@ -273,7 +273,7 @@ def plot_efficiencies(data_efficiency,
                       file_name_components,
                       label):
     efficiencies = [
-        (signal_efficiency, default_red, 'e5'),
+        (signal_efficiency, default_red, 'e2'),
         (data_efficiency, default_black, 'ep')
     ]
 
