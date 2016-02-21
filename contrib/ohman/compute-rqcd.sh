@@ -6,9 +6,10 @@ OWLS="$CONTRIB/../.."
 
 REGIONS="\
   mu_tau_qcd_cr \
-  mu_tau_gradient_qcd_cr \
+  mu_tau_qcd_cr_1p \
+  mu_tau_qcd_cr_3p \
   "
-DATA_PREFIX="/disk/d1/ohman/tagprobe_2015-11-09_merged"
+DATA_PREFIX="/disk/d1/ohman/tagprobe_2016-01-21_merged"
 
 # Compute r_QCD
 "$OWLS/tools/compute-rqcd.py" \

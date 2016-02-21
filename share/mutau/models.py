@@ -35,7 +35,9 @@ sqrt_s = 13.0 * 1000 * 1000 # MeV
 
 
 r_qcd = {
-    'mu_tau_qcd_cr': (1.25, 0.017)
+    'mu_tau_qcd_cr_3p': (1.335, 0.038),
+    'mu_tau_qcd_cr_1p': (1.229, 0.02),
+    'mu_tau_qcd_cr': (1.254, 0.018)
 }
 
 MonteCarlo = partial(MonteCarlo, luminosity = luminosity)
