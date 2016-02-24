@@ -31,6 +31,8 @@ from owls_hep.utility import integral, get_bins_errors
 Plot.PLOT_HEADER_HEIGHT = 500
 Plot.PLOT_LEGEND_LEFT = 0.65
 
+ATLAS_LABEL = 'Work in Progress'
+
 # Parse command line arguments
 parser = argparse.ArgumentParser(
     description = 'Generate plots and a combined plotbook'
@@ -265,7 +267,7 @@ with caching_into(cache):
                         down_variations.append(1.0-overall_down)
                     if shape_down is not None:
                         down_variations.append(1.0-to_overall(shape_down, histogram))
-                    sample_uncertainty_sizes[uncertainty.name()] = (
+                    sample_uncertainty_sizes[uncertainty.name] = (
                         sum_quadrature(up_variations),
                         sum_quadrature(down_variations)
                     )
@@ -306,6 +308,7 @@ with caching_into(cache):
                 continue
 
             # Add text output if requested
+            # TODO: REFACTOR THIS
             if arguments.text_counts:
                 # Compute the text output path
                 text_output_path = join(arguments.output,
@@ -376,9 +379,6 @@ with caching_into(cache):
                         ratio = (data is not None))
 
             # Draw the histograms
-            #plot.draw((background_stack, None, 'hist'),
-                      #(signal_histogram, None, 'hist'),
-                      #(data_histogram, None, 'ep'))
             plot.draw(((background_stack, uncertainty), None, 'hist'),
                       (signal_histogram, None, 'hist'),
                       (data_histogram, None, 'ep'))
@@ -388,15 +388,7 @@ with caching_into(cache):
                 plot.draw_ratio_histogram(ratio, error_band = ratio_uncertainty)
 
             # Draw a legend
-            # TODO: We want the data histogram on top of the legend, and
-            # therefore we need to provide (drawable, style) to draw_legend.
-            # Because of the way that ROOT TColor works with hex colours, we
-            # can't simply style the histogram before plotting.
-            # As a workaround, we could use the drawable title to identify
-            # the drawable in the Plot object, but that's unreliable.
-            #plot.draw_legend(data_histogram,
-                             #signal_histogram,
-                             #background_stack)
+            # NOTE: We can set the plotting order explicitly now, if needed.
             plot.draw_legend()
 
             # Draw an ATLAS stamp
@@ -404,7 +396,7 @@ with caching_into(cache):
             plot.draw_atlas_label(luminosity,
                                   sqrt_s,
                                   custom_label = label,
-                                  atlas_label = None)
+                                  atlas_label = ATLAS_LABEL)
 
             # Compute the plot output path
             plot_output_path = join(arguments.output,

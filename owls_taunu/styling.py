@@ -11,16 +11,20 @@ from ROOT import TColor, kBlack, kRed, kBlue
 
 # Histogram styles
 # Tuple format is (line_color, fill_color, marker_style)
-default_style = (1, 1, 8)
+default_style = (kBlack, kBlack, 8)
 # Styles for plotting data (black) vs. MC (red) vs. any (blue)
-default_black = (1, 1, 20)
-default_red = (kRed, 1, 21)
-default_blue = (kBlue, 1, 8)
+default_black = (kBlack, kBlack, 20)
+default_red = (kRed, kRed, 21)
+default_blue = (kBlue, kBlue, 8)
 # Styles for plotting data (black), MC (red), any (blue) with thin line and
 # same marker
-default_black_thin = {'line_color': 1, 'fill_color': 1, 'marker_style': 8, 'line_size': 1}
-default_blue_thin = {'line_color': kBlue, 'fill_color': 1, 'marker_style': 8, 'line_size': 1}
-default_red_thin = {'line_color': kRed, 'fill_color': 1, 'marker_style': 8, 'line_size': 1}
+default_black_thin = {'line_color': kBlack, 'fill_color': 0, 'marker_style': 8, 'line_size': 1}
+default_red_thin = {'line_color': kRed, 'fill_color': 0, 'marker_style': 8, 'line_size': 1}
+default_blue_thin = {'line_color': kBlue, 'fill_color': 0, 'marker_style': 8, 'line_size': 1}
+# Styles for plotting black, red, and blue without marker
+default_black_line = {'line_color': kBlack, 'fill_color': 0, 'marker_style': 0, 'line_size': 1}
+default_red_line = {'line_color': kRed, 'fill_color': 0, 'marker_style': 0, 'line_size': 1}
+default_blue_line = {'line_color': kBlue, 'fill_color': 0, 'marker_style': 0, 'line_size': 1}
 # Styles for plotting error bands
 band_red = {'line_color': 0, 'line_size': 0,
             'marker_style': 0, 'marker_size': 0,
@@ -28,8 +32,8 @@ band_red = {'line_color': 0, 'line_size': 0,
 
 # Line styles
 # Tuple format is (line_color, line_style, line_size)
-line_black = (1, 1, 2)
-line_black_thin = (1, 1, 1)
+line_black = (kBlack, 1, 2)
+line_black_thin = (kBlack, 1, 1)
 line_red = (kRed, 1, 2)
 line_red_thin = (kRed, 1, 1)
 line_dotted_red = (kRed, 3, 2)

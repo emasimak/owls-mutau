@@ -21,11 +21,12 @@ class Filtered(Variation):
     """
 
     def __init__(self, selection, weight = None):
-        """Initializes a new instance of the Filtere class.
+        """Initializes a new instance of the Filtered class.
 
         Args:
                 selection:      The expression to incorporate into the region
                                 to filter out events
+                weight:         An optional weight to apply to the event
         """
         # Store the trigger_name
         self._selection = selection
@@ -62,3 +63,42 @@ class Filtered(Variation):
             return 'Filtered({0}, {1})'.format(self._selection, self._weight)
         else:
             return 'Filtered({0})'.format(self._selection)
+
+class ReplaceWeight(Variation):
+    """A region variation that replaces a weight (single event weight or
+    combination thereof) with a new weight (e.g. a systematic variation).
+    """
+
+    def __init__(self, weight, variation):
+        """Initializes a new instance of the ReplaceWeight class
+
+        Args:
+                weight:         Weight in the form of a regular expression
+                variation:      Variation to replace weight
+        """
+        # Store the trigger_name
+        self._weight = weight
+        self._variation = variation
+
+    def state(self):
+        """Returns a representation of the variation's internal state.
+        """
+        return (self._weight, self._variation)
+
+    def __call__(self, selection, weight):
+        """Add's an expression to a region's weight.
+
+        Args:
+            selection: The existing selection expression
+            weight: The existing weight expression
+
+        Returns:
+            A tuple of the form (varied_selection, varied_weight).
+        """
+        return (selection,
+                variable_substituted(weight, self._weight, self._variation))
+
+    def __str__(self):
+        """Return a string representation of the variation.
+        """
+        return 'ReplaceWeight({0})'.format(self._variation)
