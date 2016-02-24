@@ -50,7 +50,7 @@ tau_phi = Histogram(
 # Tau ID variables
 tau_bdt_score = Histogram(
         'tau_0_jet_bdt_score',
-        (20, 0.5, 1),
+        (20, 0.5, 1.5),
         '',
         '#tau BDT score',
         'Events'
@@ -58,7 +58,7 @@ tau_bdt_score = Histogram(
 
 tau_n_tracks = Histogram(
         'tau_0_n_tracks',
-        (5, 0, 5),
+        (11, -0.5, 10.5),
         '',
         '#tau N_{track}',
         'Events'
@@ -125,7 +125,7 @@ mu_phi = Histogram(
 # Lepton isolation variables
 mu_iso_trk = Histogram(
         'lep_0_iso_ptcone40/1000.0/lep_0_pt',
-        (20, 0.001, 0.2),
+        (20, 0.001, 0.4),
         '',
         '#mu p_{T}^{cone40}/p_{T}',
         'Events'
@@ -133,23 +133,23 @@ mu_iso_trk = Histogram(
 
 mu_iso_cal = Histogram(
         'lep_0_iso_etcone20/1000.0/lep_0_et',
-        (30, -0.1, 0.2),
+        (30, -0.1, 0.4),
         '',
         '#mu E_{T}^{cone20}/E_{T}',
         'Events'
         )
 
 mu_iso_var_trk = Histogram(
-        'lep_0_iso_ptvarcone40/1000.0/lep_0_pt',
-        (20, 0.001, 0.2),
+        'lep_0_iso_ptvarcone30/1000.0/lep_0_pt',
+        (20, 0.001, 0.4),
         '',
-        '#mu p_{T}^{varcone40}/p_{T}',
+        '#mu p_{T}^{varcone30}/p_{T}',
         'Events'
         )
 
 mu_iso_topo_cal = Histogram(
         'lep_0_iso_topoetcone20/1000.0/lep_0_et',
-        (30, -0.1, 0.2),
+        (30, -0.1, 0.4),
         '',
         '#mu E_{T}^{topocone20}/E_{T}',
         'Events'
