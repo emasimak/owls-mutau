@@ -4,36 +4,41 @@
 # System imports
 import argparse
 from math import sqrt
-
-# Six imports
-from six import itervalues, iteritems, iterkeys
+from collections import OrderedDict
+from os import makedirs
+from os.path import join, exists
 
 # owls-cache imports
 from owls_cache.persistent import caching_into
+
+# owls-parallel imports
+from owls_parallel import ParallelizedEnvironment
 
 # owls-hep imports
 from owls_hep.module import load as load_module
 from owls_hep.counting import Count
 from owls_hep.utility import integral
 from owls_hep.histogramming import Histogram
+from owls_hep.plotting import Plot, ratio_histogram
 
 # owls-taunu imports
 from owls_taunu.mutau.variations import OS, SS
+from owls_taunu.styling import default_black, default_red
 
 # Parse command line arguments
 parser = argparse.ArgumentParser(
     description = 'Compute r_QCD'
 )
+parser.add_argument('-o',
+                    '--output',
+                    default = 'plots',
+                    help = 'the plot output directory',
+                    metavar = '<output>')
 parser.add_argument('-M',
                     '--model-file',
                     required = True,
                     help = 'the path to the model definition module',
                     metavar = '<model-file>')
-#parser.add_argument('-m',
-                    #'--model',
-                    #required = True,
-                    #help = 'the model to plot',
-                    #metavar = '<model>')
 parser.add_argument('-R',
                     '--regions-file',
                     required = True,
@@ -49,11 +54,11 @@ parser.add_argument('-E',
                     required = True,
                     help = 'the path to the environment definition module',
                     metavar = '<environment-file>')
-parser.add_argument('-o',
-                    '--output',
-                    help = 'the path to the file where to store the output '
-                    'of the computation',
-                    metavar = '<environment-file>')
+parser.add_argument('-x',
+                    '--extensions',
+                    nargs = '+',
+                    default = ['pdf'],
+                    help = 'save these extensions (default: pdf)')
 parser.add_argument('definitions',
                     nargs = '*',
                     help = 'definitions to use within modules in the form x=y',
@@ -75,58 +80,130 @@ environment_file = load_module(arguments.environment_file, definitions)
 data = model_file.data
 
 # Extract regions
-regions = dict((
+regions = OrderedDict((
     (r, getattr(regions_file, r))
     for r
     in arguments.regions
 ))
 
-met_et = Histogram(
-        'met_et / 1000.0',
-        (15, 0, 300),
-        '',
-        'E_{T}^{miss} (GeV)',
-        'Events / 20 GeV'
-        )
+ptcone_syst = Histogram(
+    'lep_0_iso_ptvarcone30/lep_0_pt/1000.0',
+    (5, 0.12, 0.3),
+    '',
+    'ptvarcone30/p_{T}',
+    'Events'
+)
+
+etcone_syst = Histogram(
+    'lep_0_iso_topoetcone20/lep_0_et/1000.0',
+    (5, 0.1, 0.3),
+    '',
+    'topoetcone20/E_{T}',
+    'Events'
+)
 
 # Get computation environment
 cache = getattr(environment_file, 'persistent_cache', None)
-#cache = None
+backend = getattr(environment_file, 'parallelization_backend', None)
+
+# Create the parallelization environment
+parallel = ParallelizedEnvironment(backend)
+
+def compute_syst(region, distribution, nominal, file_name):
+    os = distribution(data, region.varied(OS()))
+    ss = distribution(data, region.varied(SS()))
+    ratio = ratio_histogram(os, ss)
+
+    os.SetTitle('Opposite sign ({:.0f})'.format(integral(os)))
+    ss.SetTitle('Same sign({:.0f})'.format(integral(ss)))
+
+    up = ratio.GetBinContent(ratio.GetMaximumBin())
+    down = ratio.GetBinContent(ratio.GetMinimumBin())
+    #syst = max(abs(up-nominal)/nominal, abs(nominal-down)/nominal)
+    syst = abs(up-down)/nominal/2
+
+    #if not parallel.capturing():
+        #print('Will return {:.3f} - {:.3f} / {:.3f} / 2 = {:.3f}'. \
+              #format(up, down, nominal, syst))
+
+    # Draw the plot
+    plot = Plot('',
+                x_title = distribution.x_label(),
+                y_title = 'Events',
+                ratio = True)
+
+    plot.draw(
+        (os, default_black, 'ep'),
+        (ss, default_red, 'ep'),
+    )
+    plot.draw_ratios(
+        [(ratio, default_black, 'ep')],
+        y_range = (1.05, 1.35),
+        y_title = 'r_{QCD}'
+    )
+
+    plot.draw_legend()
+    plot.draw_atlas_label(custom_label = [region.label()])
+    plot.save(join(base_path, file_name), arguments.extensions)
+
+    return syst
 
 r_qcd_dict = {}
 
+base_path = arguments.output
+if not exists(base_path):
+    makedirs(base_path)
+
 # Run in a cached environment
 with caching_into(cache):
-    # Loop over regions
-    for region_name in regions:
-        region = regions[region_name]
-        met_et_os = met_et(data, region.varied(OS()))
-        met_et_ss = met_et(data, region.varied(SS()))
-        #print('MET ET OS = {0:.2f}, SS = {1:.2f}'.format(
-            #integral(met_et_os, include_overflow=True),
-            #integral(met_et_ss, include_overflow=True)))
+    while parallel.run():
+        # Loop over regions
+        for region_name in regions:
+            region = regions[region_name]
 
-        ss_counts = Count()(data, region.varied(SS()))
-        ss_uncertainty = sqrt(ss_counts)
-        os_counts = Count()(data, region.varied(OS()))
-        os_uncertainty = sqrt(os_counts)
-        print('{0}: Counts OS = {1:.0f}±{2:.1f}, SS = {3:.0f}±{4:.1f}'. \
-              format(region.label(),
-                     os_counts,
-                     os_uncertainty,
-                     ss_counts,
-                     ss_uncertainty))
+            ss_counts = Count()(data, region.varied(SS()))
+            ss_stat = sqrt(ss_counts)
+            os_counts = Count()(data, region.varied(OS()))
+            os_stat = sqrt(os_counts)
+            if not parallel.capturing():
+                print('{0}: Counts OS = {1:.0f}±{2:.1f}, SS = {3:.0f}±{4:.1f}'. \
+                      format(region.label(),
+                             os_counts,
+                             os_stat,
+                             ss_counts,
+                             ss_stat))
 
-        r_qcd = os_counts / ss_counts
-        r_qcd_uncertainty = sqrt((os_uncertainty / os_counts)**2 +
-                                 (ss_uncertainty / ss_counts)**2) * r_qcd
-        # Round to 3 decimals
-        r_qcd, r_qcd_uncertainty = round(r_qcd, 3), round(r_qcd_uncertainty, 3)
-        r_qcd_dict[region_name] = (r_qcd, r_qcd_uncertainty)
-        print('{0}: r_QCD = {1:.2f} ± {2:.2f}'. \
-              format(region.label(), r_qcd, r_qcd_uncertainty))
+            r_qcd = os_counts / ss_counts
+            r_qcd_stat = sqrt((os_stat / os_counts)**2 +
+                                     (ss_stat / ss_counts)**2) * r_qcd
 
-if arguments.output is not None:
-    with open(arguments.output, 'w') as f:
-        f.write(str(r_qcd_dict))
-        f.write('\n')
+            r_qcd_syst_ptcone = \
+                    compute_syst(region,
+                                 ptcone_syst,
+                                 r_qcd,
+                                 '{}_ptvarcone30'.format(region_name))
+            r_qcd_syst_etcone = \
+                    compute_syst(region,
+                                 etcone_syst,
+                                 r_qcd,
+                                 '{}_topoetcone20'.format(region_name))
+            r_qcd_syst = sqrt(r_qcd_syst_ptcone**2 + r_qcd_syst_etcone**2)
+
+            # Round to 3 decimals
+            r_qcd = round(r_qcd, 3)
+            r_qcd_stat = round(r_qcd_stat, 3)
+            r_qcd_syst = round(r_qcd_syst, 3)
+            r_qcd_dict[region_name] = (r_qcd, r_qcd_stat, r_qcd_syst)
+
+            # Print the result
+            if not parallel.capturing():
+                print('{}: r_QCD = {:.2f} ± {:.2f}(stat) ± '
+                      '{:.2f}(pt) ± {:.2f}(et)'. \
+                      format(region.label(), r_qcd, r_qcd_stat,
+                             r_qcd_syst_ptcone, r_qcd_syst_etcone))
+                print('{}: r_QCD = {:.2f} ± {:.2f}(stat) ± {:.2f}(syst)'. \
+                      format(region.label(), r_qcd, r_qcd_stat, r_qcd_syst))
+
+with open(join(base_path, 'rqcd.txt'), 'w') as f:
+    for k,v in r_qcd_dict.iteritems():
+        f.write('\'{}\': {},\n'.format(k, v))
