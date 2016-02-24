@@ -16,13 +16,14 @@ definitions = {
     'weight_pileup': 'weight_pileup_hash',
 
     # Weight for events with b-jet or b-jet veto
-    'weight_b': 'bjet_sf_MVX_NOMINAL_sf*bjet_sf_MVX_NOMINAL_ineff_sf',
+    'weight_b': ('btag_NOMINAL_global_effSF_MVX * '
+                 'btag_NOMINAL_global_ineffSF_MVX'),
 
     # Weights for events with muons
     'weight_mu': (
         'lep_0_NOMINAL_effSF_RecoMedium * '
         'lep_0_NOMINAL_effSF_IsoGradient * '
-        'lep_0_NOMINAL_HLT_mu20_iloose_L1MU15_MU_TRIG_QUAL_MEDIUM_MU_TRIG_ISO_GRADIENT'
+        'lep_0_NOMINAL_HLT_mu20_iloose_L1MU15_MU_TRIG_QUAL_MEDIUM_MU_TRIG_ISO_NONE'
     ),
     'weight_mu_noiso': (
         'lep_0_NOMINAL_effSF_RecoMedium * '
@@ -46,6 +47,12 @@ definitions = {
         'tau_0_NOMINAL_TAU_EFF_RECO * '
         'tau_0_NOMINAL_TAU_EFF_SELECTION'
     ),
+
+    # Overrides
+    #'weight_pileup': 'weight_pileup',
+    #'weight_b': '1',
+    #'weight_mu': '1',
+    #'weight_tau': '1',
 
     # Muon trigger for 2015 data
     'mu_trigger': (
@@ -99,34 +106,11 @@ definitions = {
     # Jet requirement
     '2jets': 'n_jets >= 2',
 
-    # Transverse mass requirement
-    'mtcut': 'lephad_mt_lep0_met > 80',
-
-    # This is ridiculous :P
-    'dr0': ('sqrt((tau_0_eta - jet_0_eta)*(tau_0_eta-jet_0_eta)+'
-            '(tau_0_phi - jet_0_phi)*(tau_0_phi - jet_0_phi))'),
-    'dr1': ('sqrt((tau_0_eta - jet_1_eta)*(tau_0_eta-jet_1_eta)+'
-            '(tau_0_phi - jet_1_phi)*(tau_0_phi - jet_1_phi))'),
-    'dr2': ('sqrt((tau_0_eta - jet_2_eta)*(tau_0_eta-jet_2_eta)+'
-            '(tau_0_phi - jet_2_phi)*(tau_0_phi - jet_2_phi))'),
-    'dr3': ('sqrt((tau_0_eta - jet_3_eta)*(tau_0_eta-jet_3_eta)+'
-            '(tau_0_phi - jet_3_phi)*(tau_0_phi - jet_3_phi))'),
-
     # W CR
     'wcr': 'met_reco_et > 30 && lephad_mt_lep0_met > 60',
 }
 
 expr = partial(expression_substitute, definitions = definitions)
-
-definitions['drcut_lo'] = ' && '.join([
-    '{0} > 0.8'.format(dr)
-    for dr in [expr('[dr0]'), expr('[dr1]'), expr('[dr2]'), expr('[dr3]')]
-])
-
-definitions['drcut_up'] = ' || '.join([
-    '{0} < 2.0'.format(dr)
-    for dr in [expr('[dr0]'), expr('[dr1]'), expr('[dr2]'), expr('[dr3]')]
-])
 
 def _vary_me(name, selection, weight, label, patches, metadata, variations):
     if not name in globals():
@@ -149,7 +133,7 @@ _variations = [
     ('_tau25', '&& [tau25]', '', ' (tau25)', {}),
     ('_tau25_1p', '&& [tau25] && [1p]', '', ' (tau25, 1-prong)', {'rqcd': 'mu_tau_qcd_cr_1p'}),
     ('_tau25_3p', '&& [tau25] && [3p]', '', ' (tau25, 3-prong)', {'rqcd': 'mu_tau_qcd_cr_3p'}),
-    #('_tau25_os', '&& [tau25] && [os]', '', ' (tau25, OS)', {}),
+    ('_tau25_os', '&& [tau25] && [os]', '', ' (tau25, OS)', {}),
     #('_tau25_ss', '&& [tau25] && [ss]', '', ' (tau25, SS)', {}),
     ('_1p', '&& [1p]', '', ' (1-prong)', {'rqcd': 'mu_tau_qcd_cr_1p'}),
     ('_3p', '&& [3p]', '', ' (3-prong)', {'rqcd': 'mu_tau_qcd_cr_3p'}),
@@ -187,24 +171,6 @@ _vary_me('mu_tau_tight',
          '[weight]',
          '#mu+#tau (Tight)',
          {'mc': expr('[weight_pileup] * [weight_mu_tight] * [weight_b] * [weight_tau]')},
-         {'rqcd': 'mu_tau_qcd_cr'},
-         _variations)
-
-_vary_me('mu_tau_drcut',
-         '[mu_trigger] && [mu_tau] && [medium_tau] && [2jets] && [bjet] && '
-         '[iso_gradient] && [drcut_lo] && [drcut_up]',
-         '[weight]',
-         '#mu+#tau, 0.8 < dR(#tau, j) < 2.0',
-         {'mc': expr('[weight_pileup] * [weight_mu] * [weight_b] * [weight_tau]')},
-         {'rqcd': 'mu_tau_qcd_cr'},
-         _variations)
-
-_vary_me('mu_tau_mtcut',
-         '[mu_trigger] && [mu_tau] && [medium_tau] && [2jets] && [bjet] && '
-         '[iso_gradient] && [mtcut]',
-         '[weight]',
-         '#mu+#tau, m_{T} > 80 GeV',
-         {'mc': expr('[weight_pileup] * [weight_mu] * [weight_b] * [weight_tau]')},
          {'rqcd': 'mu_tau_qcd_cr'},
          _variations)
 

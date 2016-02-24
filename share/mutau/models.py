@@ -49,17 +49,20 @@ patch_definitions = {
     'is_electron': 'tau_0_truth_isEle',
     'is_muon': 'tau_0_truth_isMuon',
     'is_tau': 'tau_0_truth_isTau',
+    'is_hadtau': 'tau_0_truth_isHadTau',
     'is_jet': 'tau_0_truth_isJet',
+    'is_bjet': 'tau_0_truth_pdgId == 5',
 }
 
 expr = partial(expression_substitute, definitions = patch_definitions)
 
-tau_truth_matched = Patch(expr('[is_tau]'))
-tau_fake = Patch(expr('![is_tau]'))
+tau_truth_matched = Patch(expr('[is_hadtau]'))
 tau_electron_matched = Patch(expr('[is_electron]'))
 tau_muon_matched = Patch(expr('[is_muon]'))
-tau_lepton_matched = Patch(expr('[is_muon] || [is_electron]'))
-tau_jet_fake = Patch(expr('!([is_muon] || [is_electron] || [is_tau])'))
+tau_lepton_matched = Patch(expr('[is_muon] || [is_electron] || ([is_tau] && ![is_hadtau])'))
+tau_jet_fake = Patch(expr('[is_jet]'))
+tau_bjet_fake = Patch(expr('[is_jet] && [is_bjet]'))
+tau_lightjet_fake = Patch(expr('[is_jet] && ![is_bjet]'))
 
 # Create some utility functions
 file = lambda name: join(data_prefix, name)
@@ -225,6 +228,7 @@ ttbar = Process(
     friends = (prw_friend,),
     line_color = 1,
     fill_color = 0,
+    #metadata = {'print_me': True},
 )
 
 ttbar_true = ttbar.patched(
@@ -245,6 +249,20 @@ ttbar_lfake = ttbar.patched(
 ttbar_jetfake = ttbar.patched(
     tau_jet_fake,
     label = 't#bar{t} (j #rightarrow #tau)',
+    line_color = 1,
+    fill_color = 406
+)
+
+ttbar_bjetfake = ttbar.patched(
+    tau_bjet_fake,
+    label = 't#bar{t} (b #rightarrow #tau)',
+    line_color = 1,
+    fill_color = 803
+)
+
+ttbar_lightjetfake = ttbar.patched(
+    tau_lightjet_fake,
+    label = 't#bar{t} (c,l,g #rightarrow #tau)',
     line_color = 1,
     fill_color = 406
 )
