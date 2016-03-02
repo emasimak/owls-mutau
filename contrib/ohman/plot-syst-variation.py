@@ -5,6 +5,8 @@ from os import makedirs
 from os.path import join, exists
 from itertools import product
 
+from six import itervalues
+
 # owls-cache imports
 from owls_cache.persistent import caching_into
 
@@ -13,7 +15,7 @@ from owls_parallel import ParallelizedEnvironment
 
 # owls-hep imports
 from owls_hep.module import load as load_module
-from owls_hep.plotting import Plot, style_histogram
+from owls_hep.plotting import Plot, style_histogram, combined_histogram
 from owls_hep.utility import integral
 
 # owls-taunu imports
@@ -34,6 +36,7 @@ from owls_taunu.mutau.uncertainties import TestSystFlat, TestSystShape, \
         BJetExtrapolation
 
 Plot.PLOT_Y_AXIS_TITLE_OFFSET = 1.5
+Plot.PLOT_LEGEND_LEFT = 0.5
 
 usage_desc = '''\
 Draw true taus, lepton fakes, b-jet fakes, and light jet fakes.
@@ -50,6 +53,11 @@ parser.add_argument('-M',
                     required = True,
                     help = 'the path to the model definition module',
                     metavar = '<model-file>')
+parser.add_argument('-m',
+                    '--model',
+                    required = True,
+                    help = 'the model to plot',
+                    metavar = '<model>')
 parser.add_argument('-R',
                     '--regions-file',
                     required = True,
@@ -96,11 +104,18 @@ arguments = parser.parse_args()
 # Parse definitions
 definitions = dict((d.split('=') for d in arguments.definitions))
 
+# Ensure systematic uncertainties is turned on in the model
+definitions['enable_systematics'] = 'Full'
+
 
 model_file = load_module(arguments.model_file, definitions)
 regions_file = load_module(arguments.regions_file, definitions)
 distributions_file = load_module(arguments.distributions_file, definitions)
 environment_file = load_module(arguments.environment_file, definitions)
+
+# Extract model and background processes
+model = getattr(model_file, arguments.model)
+backgrounds = model['backgrounds']
 
 # Extract regions
 regions = dict((
@@ -126,8 +141,8 @@ parallel = ParallelizedEnvironment(backend)
 systematics = [
     #TestSystFlat,
     TestSystShape,
-    #RqcdStat, # no point in plotting overall systematics
-    #RqcdSyst, # no point in plotting overall systematics
+    RqcdStat,
+    RqcdSyst,
     MuonEffStat,
     MuonEffSys,
     MuonEffTrigStat,
@@ -169,6 +184,12 @@ base_path = arguments.output
 if not exists(base_path):
     makedirs(base_path)
 
+print('Script options')
+print('  Output directory: {}'.format(base_path))
+print('  Data prefix: {}'.format(definitions.get('data_prefix', 'UNDEFINED')))
+print('  Systematics enabled: {}'.format(model_file.systematics))
+
+
 # Run in a cached environment
 with caching_into(cache):
     while parallel.run():
@@ -180,28 +201,60 @@ with caching_into(cache):
                 print('Processing region {}, distribution {}'. \
                       format(region_name, distribution_name))
 
-            # Fetch the distributions
-            nominal = distribution(model_file.ttbar, region)
-            nominal += distribution(model_file.single_top, region)
+            nominal_histograms = []
+            for background in itervalues(backgrounds):
+                process = background['process']
+                estimation = background['estimation']
+                nominal_histograms.append(
+                    estimation(distribution)(process, region))
+
+            nominal = combined_histogram(nominal_histograms)
             nominal.SetTitle('NOMINAL')
 
             for s in systematics:
-                _,_,shape_up,shape_down = s(distribution)(model_file.ttbar, region)
-                _,_,shape_up_addon,shape_down_addon = s(distribution)(model_file.single_top, region)
+                process_count = 0
+
+                shape_up_histograms = []
+                shape_down_histograms = []
+                for background in itervalues(backgrounds):
+                    process = background['process']
+                    estimation = background['estimation']
+                    uncertainties = background['uncertainties']
+
+                    if s in uncertainties:
+                        process_count += 1
+                        _,_,shape_up,shape_down = \
+                                estimation(s(distribution))(process, region)
+                    else:
+                        shape_up = shape_down = \
+                                estimation(distribution)(process, region)
+                    shape_up_histograms.append(shape_up)
+                    shape_down_histograms.append(shape_down)
 
                 # If we're in capture mode, the histograms are bogus, so ignore
                 # them
                 if parallel.capturing():
                     continue
 
-                shape_up += shape_up_addon
-                shape_down += shape_down_addon
+                if not process_count:
+                    print('No variations for {}'.format(s.name))
+                    continue
+                else:
+                    print('Processing uncertainty {} with {} varied processes'. \
+                          format(s.name, process_count))
+
+                shape_up = combined_histogram(shape_up_histograms)
+                shape_down = combined_histogram(shape_down_histograms)
 
                 overall_up = integral(shape_up) / integral(nominal) - 1.0
                 overall_down = integral(shape_down) / integral(nominal) - 1.0
 
-                shape_up.SetTitle('{}_UP ({:.2f}%)'.format(s.name, overall_up*100.0))
-                shape_down.SetTitle('{}_DOWN ({:.2f}%)'.format(s.name, overall_down*100.0))
+                shape_up.SetTitle('{}_UP ({:.2f}%)'. \
+                                            format(s.name,
+                                                   overall_up*100.0))
+                shape_down.SetTitle('{}_DOWN ({:.2f}%)'. \
+                                              format(s.name,
+                                                     overall_down*100.0))
 
                 # Draw the plot
                 plot = Plot('',
@@ -215,7 +268,7 @@ with caching_into(cache):
                 )
 
                 plot.draw_legend()
-                label = [region.label(), 't#bar{t} + Single top']
+                label = [region.label()]
                 if arguments.label is not None:
                     label.append(arguments.label)
                 plot.draw_atlas_label(custom_label = label)
