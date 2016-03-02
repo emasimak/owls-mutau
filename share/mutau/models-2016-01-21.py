@@ -33,18 +33,16 @@ from owls_taunu.mutau.uncertainties import TestSystFlat, TestSystShape, \
 
 # Load configuration
 configuration = definitions()
-enable_systematics = configuration.get('enable_systematics', '')
-enable_systematics = True if enable_systematics == 'True' else False
+systematics = configuration.get('enable_systematics', '')
 data_prefix = configuration.get('data_prefix', '')
 luminosity = float(configuration.get('luminosity', 1000.0)) # 1/fb
 nominal_tree = 'NOMINAL'
 sqrt_s = 13.0 * 1000 * 1000 # MeV
 
-
 r_qcd = {
-    'mu_tau_qcd_cr_3p': (1.335, 0.038, 0.182),
-    'mu_tau_qcd_cr_1p': (1.229, 0.02, 0.087),
-    'mu_tau_qcd_cr': (1.254, 0.018, 0.082),
+    'mu_tau_qcd_cr': (1.235, 0.017, 0.045),
+    'mu_tau_qcd_cr_1p': (1.209, 0.02, 0.048),
+    'mu_tau_qcd_cr_3p': (1.317, 0.037, 0.088),
 }
 
 # Redefitions of estimations
@@ -106,6 +104,7 @@ ss_data = Process(
     sample_type = 'data',
     line_color = 1,
     fill_color = 424,
+    #metadata = {'print_me': True},
 )
 
 zll = Process(
@@ -303,59 +302,104 @@ other_jetfake = other.patched(
     fill_color = 408
 )
 
+if systematics in ['Pruned', 'True']:
+    mc_uncertainties = [
+        #TestSystFlat,
+        #TestSystShape,
+        MuonEffStat,
+        MuonEffSys,
+        MuonEffTrigStat,
+        MuonEffTrigSys,
+        MuonIsoStat,
+        MuonIsoSys,
+        # Candidate MuonIdSys,
+        # Candidate MuonMsSys,
+        # Candidate MuonScaleSys,
+        BJetEigenB0,
+        BJetEigenB1,
+        BJetEigenB2,
+        # Pruned BJetEigenB3,
+        # Pruned BJetEigenB4,
+        # Candidate BJetEigenC0,
+        # Pruned BJetEigenC1,
+        # Pruned BJetEigenC2,
+        # Pruned BJetEigenC3,
+        # Candidate BJetEigenLight0,
+        # Pruned BJetEigenLight1,
+        # Pruned BJetEigenLight2,
+        # Pruned BJetEigenLight3,
+        # Pruned BJetEigenLight4,
+        # Pruned BJetEigenLight5,
+        # Pruned BJetEigenLight6,
+        # Pruned BJetEigenLight7,
+        # Pruned BJetEigenLight8,
+        # Pruned BJetEigenLight9,
+        # Pruned BJetEigenLight10,
+        # Pruned BJetEigenLight11,
+        # Pruned BJetEigenLight12,
+        # Pruned BJetEigenLight13,
+        # Pruned BJetExtrapolation,
+        #BJetExtrapolationCharm, # Doesn't work
+    ]
+    ss_data_uncertainties = [
+        RqcdStat,
+        RqcdSyst,
+    ]
+    osss_uncertainties = mc_uncertainties + ss_data_uncertainties
 
-mc_uncertainties = [
-    #TestSystFlat,
-    #TestSystShape,
-    MuonEffStat,
-    MuonEffSys,
-    MuonEffTrigStat,
-    MuonEffTrigSys,
-    MuonIsoStat,
-    MuonIsoSys,
-    # Candidate MuonIdSys,
-    # Candidate MuonMsSys,
-    # Candidate MuonScaleSys,
-    BJetEigenB0,
-    BJetEigenB1,
-    # Candidate BJetEigenB2,
-    # Pruned BJetEigenB3,
-    # Pruned BJetEigenB4,
-    # Candidate BJetEigenC0,
-    # Pruned BJetEigenC1,
-    # Pruned BJetEigenC2,
-    # Pruned BJetEigenC3,
-    # Candidate BJetEigenLight0,
-    # Pruned BJetEigenLight1,
-    # Pruned BJetEigenLight2,
-    # Pruned BJetEigenLight3,
-    # Pruned BJetEigenLight4,
-    # Pruned BJetEigenLight5,
-    # Pruned BJetEigenLight6,
-    # Pruned BJetEigenLight7,
-    # Pruned BJetEigenLight8,
-    # Pruned BJetEigenLight9,
-    # Pruned BJetEigenLight10,
-    # Pruned BJetEigenLight11,
-    # Pruned BJetEigenLight12,
-    # Pruned BJetEigenLight13,
-    # Pruned BJetExtrapolation,
-    #BJetExtrapolationCharm, # Doesn't work
-]
-ss_data_uncertainties = [
-    RqcdStat,
-    RqcdSyst,
-]
+elif systematics == 'Full':
+    mc_uncertainties = [
+        #TestSystFlat,
+        #TestSystShape,
+        MuonEffStat,
+        MuonEffSys,
+        MuonEffTrigStat,
+        MuonEffTrigSys,
+        MuonIsoStat,
+        MuonIsoSys,
+        MuonIdSys,
+        MuonMsSys,
+        MuonScaleSys,
+        BJetEigenB0,
+        BJetEigenB1,
+        BJetEigenB2,
+        BJetEigenB3,
+        BJetEigenB4,
+        BJetEigenC0,
+        BJetEigenC1,
+        BJetEigenC2,
+        BJetEigenC3,
+        BJetEigenLight0,
+        BJetEigenLight1,
+        BJetEigenLight2,
+        BJetEigenLight3,
+        BJetEigenLight4,
+        BJetEigenLight5,
+        BJetEigenLight6,
+        BJetEigenLight7,
+        BJetEigenLight8,
+        BJetEigenLight9,
+        BJetEigenLight10,
+        BJetEigenLight11,
+        BJetEigenLight12,
+        BJetEigenLight13,
+        BJetExtrapolation,
+        #BJetExtrapolationCharm, # Doesn't work
+    ]
+    ss_data_uncertainties = [
+        RqcdStat,
+        RqcdSyst,
+    ]
+    osss_uncertainties = mc_uncertainties + ss_data_uncertainties
+else:
+    mc_uncertainties = []
+    ss_data_uncertainties = []
+    osss_uncertainties = []
 
 #mc_uncertainties = [
     #TestSystFlat,
     #TestSystShape,
 #]
-
-
-if not enable_systematics:
-    mc_uncertainties = []
-    ss_data_uncertainties = []
 
 # Create models
 mc = {
@@ -462,6 +506,64 @@ mc_fakes = {
     )),
 }
 
+mc_sub = {
+    'label': 'MC vs Data',
+    'luminosity': luminosity,
+    'sqrt_s': sqrt_s,
+    'data': {
+        'process': data,
+        'estimation': Plain,
+    },
+    'backgrounds': OrderedDict((
+        ('other_lfake', {
+            'process': other_lfake,
+            'estimation': MonteCarlo,
+            'uncertainties': mc_uncertainties,
+        }),
+        ('single_top_lepfake', {
+            'process': single_top_lfake,
+            'estimation': MonteCarlo,
+            'uncertainties': mc_uncertainties,
+        }),
+        ('ttbar_lepfake', {
+            'process': ttbar_lfake,
+            'estimation': MonteCarlo,
+            'uncertainties': mc_uncertainties,
+        }),
+        ('other_jetfake', {
+            'process': other_jetfake,
+            'estimation': MonteCarlo,
+            'uncertainties': mc_uncertainties,
+        }),
+        ('single_top_jetfake', {
+            'process': single_top_jetfake,
+            'estimation': MonteCarlo,
+            'uncertainties': mc_uncertainties,
+        }),
+        ('ttbar_jetfake', {
+            'process': ttbar_jetfake,
+            'estimation': MonteCarlo,
+            'uncertainties': mc_uncertainties,
+        }),
+    )),
+    'signals': OrderedDict((
+        ('other_true', {
+            'process': other_true,
+            'estimation': MonteCarlo,
+            'uncertainties': mc_uncertainties,
+        }),
+        ('single_top_true', {
+            'process': single_top_true,
+            'estimation': MonteCarlo,
+            'uncertainties': mc_uncertainties,
+        }),
+        ('ttbar_true', {
+            'process': ttbar_true,
+            'estimation': MonteCarlo,
+            'uncertainties': mc_uncertainties,
+        }),
+    )),
+}
 # Create OS-SS models
 osss = {
     'label': 'OS-SS',
@@ -532,49 +634,49 @@ osss_fakes = {
         ('other_lfake', {
             'process': other_lfake,
             'estimation': OSSS,
-            'uncertainties': mc_uncertainties,
+            'uncertainties': osss_uncertainties,
         }),
         ('single_top_lfake', {
             'process': single_top_lfake,
             'estimation': OSSS,
-            'uncertainties': mc_uncertainties,
+            'uncertainties': osss_uncertainties,
         }),
         ('ttbar_lfake', {
             'process': ttbar_lfake,
             'estimation': OSSS,
-            'uncertainties': mc_uncertainties,
+            'uncertainties': osss_uncertainties,
         }),
         ('other_jetfake', {
             'process': other_jetfake,
             'estimation': OSSS,
-            'uncertainties': mc_uncertainties,
+            'uncertainties': osss_uncertainties,
         }),
         ('single_top_jetfake', {
             'process': single_top_jetfake,
             'estimation': OSSS,
-            'uncertainties': mc_uncertainties,
+            'uncertainties': osss_uncertainties,
         }),
         ('ttbar_jetfake', {
             'process': ttbar_jetfake,
             'estimation': OSSS,
-            'uncertainties': mc_uncertainties,
+            'uncertainties': osss_uncertainties,
         }),
         ('other_true', {
             'process': other_true,
             'estimation': OSSS,
-            'uncertainties': mc_uncertainties,
+            'uncertainties': osss_uncertainties,
             'treat_as_signal': True,
         }),
         ('single_top_true', {
             'process': single_top_true,
             'estimation': OSSS,
-            'uncertainties': mc_uncertainties,
+            'uncertainties': osss_uncertainties,
             'treat_as_signal': True,
         }),
         ('ttbar_true', {
             'process': ttbar_true,
             'estimation': OSSS,
-            'uncertainties': mc_uncertainties,
+            'uncertainties': osss_uncertainties,
             'treat_as_signal': True,
         }),
     )),
@@ -584,6 +686,7 @@ osss_sub = {
     'label': 'OS-SS',
     'luminosity': luminosity,
     'sqrt_s': sqrt_s,
+    'subtract_background': True,
     'data': {
         'process': data,
         'estimation': OSData,
@@ -592,17 +695,17 @@ osss_sub = {
         ('other_true', {
             'process': other_true,
             'estimation': OSSS,
-            'uncertainties': mc_uncertainties,
+            'uncertainties': osss_uncertainties,
         }),
         ('single_top_true', {
             'process': single_top_true,
             'estimation': OSSS,
-            'uncertainties': mc_uncertainties,
+            'uncertainties': osss_uncertainties,
         }),
         ('ttbar_true', {
             'process': ttbar_true,
             'estimation': OSSS,
-            'uncertainties': mc_uncertainties,
+            'uncertainties': osss_uncertainties,
         }),
     )),
     'backgrounds': OrderedDict((
@@ -614,33 +717,32 @@ osss_sub = {
         ('other_lfake', {
             'process': other_lfake,
             'estimation': OSSS,
-            'uncertainties': mc_uncertainties,
+            'uncertainties': osss_uncertainties,
         }),
         ('single_top_lfake', {
             'process': single_top_lfake,
             'estimation': OSSS,
-            'uncertainties': mc_uncertainties,
+            'uncertainties': osss_uncertainties,
         }),
         ('ttbar_lfake', {
             'process': ttbar_lfake,
             'estimation': OSSS,
-            'uncertainties': mc_uncertainties,
+            'uncertainties': osss_uncertainties,
         }),
         ('other_jetfake', {
             'process': other_jetfake,
             'estimation': OSSS,
-            'uncertainties': mc_uncertainties,
+            'uncertainties': osss_uncertainties,
         }),
         ('single_top_jetfake', {
             'process': single_top_jetfake,
             'estimation': OSSS,
-            'uncertainties': mc_uncertainties,
+            'uncertainties': osss_uncertainties,
         }),
         ('ttbar_jetfake', {
             'process': ttbar_jetfake,
             'estimation': OSSS,
-            'uncertainties': mc_uncertainties,
+            'uncertainties': osss_uncertainties,
         }),
     )),
 }
-
