@@ -90,12 +90,6 @@ parser.add_argument('-e',
                     default = 'Stat. Unc.',
                     help = 'the label to use for error bands',
                     metavar = '<error-label>')
-parser.add_argument('-s',
-                    '--signal-scale',
-                    default = 1.0,
-                    type = float,
-                    help = 'A scale factor for rendering signal',
-                    metavar = '<signal-scale-factor>')
 parser.add_argument('-x',
                     '--extensions',
                     nargs = '+',
@@ -127,10 +121,11 @@ if model.has_key('data'):
     data = model['data']
 else:
     data = None
-if definitions.has_key('higgs_mass'):
-    signal = model['signal']
+
+if model.has_key('signals'):
+    signals = model['signals']
 else:
-    signal = None
+    signals = {}
 backgrounds = model['backgrounds']
 
 # Extract regions
@@ -198,27 +193,33 @@ with caching_into(cache):
             background_count = 0
 
             # Create the signal histogram
-            signal_histogram = None
-            if signal is not None:
+            signal_histograms = []
+            signal_uncertainty_bands = []
+            for signal in itervalues(signals):
                 # Extract parameters
                 process = signal['process']
                 estimation = signal['estimation']
 
                 # Compute the histogram
-                signal_histogram = estimation(distribution)(process, region)
+                histogram = estimation(distribution)(process, region)
+                signal_histograms.append(histogram)
 
-                # Set the signal count
-                signal_count = integral(signal_histogram, False)
+                # Add to the signal count
+                signal_count += integral(histogram, False)
 
-                # Scale histogram if necessary and set title
-                if arguments.signal_scale != 1.0:
-                    signal_histogram.Scale(arguments.signal_scale)
-                    signal_histogram.SetTitle(
-                        '{0} {1:.0f}x]'.format(
-                            signal_histogram.GetTitle(),
-                            arguments.signal_scale
-                        )
+                # NOTE: We use only statistical uncertainties only for the
+                # signal. This can be expanded to include systematic
+                # uncertainties when necessary.
+                # Compute statistical uncertainties
+                signal_uncertainty_bands.append(
+                    uncertainty_band(
+                        process,
+                        region,
+                        distribution,
+                        None,
+                        estimation
                     )
+                )
 
             # Loop over background samples and compute their histograms
             background_histograms = []
@@ -233,6 +234,8 @@ with caching_into(cache):
                 # Compute the nominal histogram
                 histogram = estimation(distribution)(process, region)
                 background_histograms.append(histogram)
+
+                # Add to the signal or background count
                 if background.get('treat_as_signal', False):
                     signal_count += integral(histogram, False)
                 else:
@@ -288,24 +291,19 @@ with caching_into(cache):
                     )
                 background_uncertainty_sizes.append(sample_uncertainty_sizes)
 
-            # Create a combined background histogram
-            background_histogram = combined_histogram(background_histograms)
-
-            # Compute combined uncertainties
-            uncertainty = combined_uncertainty_band(
-                background_uncertainty_bands,
-                background_histogram,
-                arguments.error_label
-            )
-            ratio_uncertainty = ratio_uncertainty_band(
-                background_histogram,
-                uncertainty
-            )
-
             # If we're in capture mode, the histograms are bogus, so ignore
             # them
             if parallel.capturing():
                 continue
+
+            # Create combined background and signal histograms
+            background_histogram = combined_histogram(background_histograms)
+            background_histogram.SetTitle('Total background')
+            if len(signal_histograms):
+                signal_histogram = combined_histogram(signal_histograms)
+                signal_histogram.SetTitle('Total signal')
+            else:
+                signal_histogram = None
 
             # Add text output if requested
             # TODO: REFACTOR THIS
@@ -340,7 +338,10 @@ with caching_into(cache):
                         f.write('\n')
 
                     # Print out histogram content
-                    for h in chain((data_histogram, signal_histogram),
+                    for h in chain((data_histogram,
+                                    signal_histogram,
+                                    background_histogram),
+                                   signal_histograms,
                                    background_histograms):
                         if h is None:
                             continue
@@ -349,7 +350,7 @@ with caching_into(cache):
                         f.write('Entries:  {:.1f}\n'.format(h.GetEntries()))
                         f.write('Integral: {:.1f}\n'.format(integral(h, False)))
                         f.write('Overflow: {:.1f}\n'.format(integral(h, True)))
-                        for i, (b,v,e) in zip(range(h.GetNbinsX()),
+                        for i, (b,v,e) in zip(range(h.GetNbinsX()+2),
                                                     get_bins_errors(h, True)):
                             f.write('{:4d} ({:5.1f}, {:6.1f}±{:.1f})\n'. \
                                     format(i, b, v, e))
@@ -357,7 +358,8 @@ with caching_into(cache):
 
             # Set all histogram titles to include their counts
             if not arguments.no_counts:
-                for h in chain((data_histogram, signal_histogram),
+                for h in chain((data_histogram,),
+                               signal_histograms,
                                background_histograms):
                     if h is None:
                         continue
@@ -365,27 +367,69 @@ with caching_into(cache):
                     h.SetTitle('{0} ({1:.1f})'. \
                                format(h.GetTitle(), integral(h, False)))
 
-            # Create a background stack
-            background_stack = histogram_stack(*background_histograms)
-
-            # Create a ratio plot
-            if data is not None:
-                ratio = ratio_histogram(data_histogram, background_stack)
-
             # Create a plot
             plot = Plot('',
                         distribution.x_label(),
                         distribution.y_label(),
                         ratio = (data is not None))
 
-            # Draw the histograms
-            plot.draw(((background_stack, uncertainty), None, 'hist'),
-                      (signal_histogram, None, 'hist'),
-                      (data_histogram, None, 'ep'))
+            # Plot data with background subtraction vs signal
+            if signal_histogram is not None \
+               and model.get('subtract_background', False):
+                # Create a signal stack
+                signal_stack = histogram_stack(*signal_histograms)
 
-            # Draw the ratio plot
-            if data is not None:
-                plot.draw_ratio_histogram(ratio, error_band = ratio_uncertainty)
+                # Compute combined uncertainties on the signal
+                uncertainty = combined_uncertainty_band(
+                    signal_uncertainty_bands,
+                    signal_histogram,
+                    arguments.error_label
+                )
+                ratio_uncertainty = ratio_uncertainty_band(
+                    signal_histogram,
+                    uncertainty
+                )
+
+                # Subtract background from data
+                data_histogram = data_histogram - background_histogram
+
+                # Draw the histograms
+                plot.draw(((signal_stack, uncertainty), None, 'hist'),
+                          (data_histogram, None, 'ep'))
+
+                # Draw the ratio plot
+                if data_histogram is not None:
+                    ratio = ratio_histogram(data_histogram, signal_stack)
+                    plot.draw_ratio_histogram(ratio,
+                                              error_band = ratio_uncertainty)
+
+            # Plot data vs background model with optional signal overlay
+            else:
+
+                # Create a background stack
+                background_stack = histogram_stack(*background_histograms)
+
+                # Compute combined uncertainties
+                uncertainty = combined_uncertainty_band(
+                    background_uncertainty_bands,
+                    background_histogram,
+                    arguments.error_label
+                )
+                ratio_uncertainty = ratio_uncertainty_band(
+                    background_histogram,
+                    uncertainty
+                )
+
+                # Draw the histograms
+                plot.draw(((background_stack, uncertainty), None, 'hist'),
+                          (signal_histogram, None, 'hist'),
+                          (data_histogram, None, 'ep'))
+
+                # Draw the ratio plot
+                if data_histogram is not None:
+                    ratio = ratio_histogram(data_histogram, background_stack)
+                    plot.draw_ratio_histogram(ratio,
+                                              error_band = ratio_uncertainty)
 
             # Draw a legend
             # NOTE: We can set the plotting order explicitly now, if needed.

@@ -23,22 +23,20 @@ OSSS_REGIONS=" \
   #mu_tau_ttbar_cr \
   #mu_tau_ttbar_cr_1p \
   #mu_tau_ttbar_cr_3p \
+  #mu_tau_ttbar_cr_tau25 \
+  #mu_tau_ttbar_cr_tau25_1p \
+  #mu_tau_ttbar_cr_tau25_3p \
   #"
 #OSSS_REGIONS="mu_tau"
 
 DISTRIBUTIONS=" \
   tau_pt \
-  tau_n_tracks \
+  tau_pt_trig \
+  tau_pt_trig_b1 \
+  tau_pt_trig_b2 \
+  tau_pt_trig_b3 \
   "
-  #tau_pt_trig_b1 \
-  #tau_pt_b2 \
-  #tau_bdt_score \
-  #mu_pt \
-  #jet_multiplicity \
-  #bjet_multiplicity \
-  #tau_n_trk_core_wide \
-  #"
-DISTRIBUTIONS="tau_pt"
+#DISTRIBUTIONS="tau_pt"
 
 #EXTENSIONS="pdf eps"
 EXTENSIONS="pdf"
@@ -96,6 +94,7 @@ OUTPUT="results_mutau/plots_osss_fakes"
   --distributions-file "$OWLS/share/mutau/distributions.py" \
   --distributions $DISTRIBUTIONS \
   --environment-file "$CONTRIB/environment.py" \
+  --text-count \
   --error-label "Stat. Unc." \
   data_prefix=$DATA_PREFIX \
   enable_systematics=False \
@@ -112,10 +111,10 @@ OUTPUT="results_mutau/plots_osss_fakes_syst"
   --regions-file "$OWLS/share/mutau/regions-2016-01-21.py" \
   --regions $OSSS_REGIONS \
   --distributions-file "$OWLS/share/mutau/distributions.py" \
-  --distributions $DISTRIBUTIONS \
+  --distributions tau_pt \
   --environment-file "$CONTRIB/environment.py" \
   --text-count \
-  --error-label "Stat. #otimes Sys. Unc." \
+  --error-label "Stat. #oplus Sys. Unc." \
   data_prefix=$DATA_PREFIX \
   enable_systematics=True \
   luminosity=$LUMINOSITY
