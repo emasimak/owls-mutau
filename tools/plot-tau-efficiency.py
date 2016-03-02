@@ -28,7 +28,6 @@ from owls_hep.uncertainty import to_shape, sum_quadrature
 # owls-taunu imports
 from owls_taunu.variations import Filtered, OneProng, ThreeProng
 from owls_taunu.styling import default_black, default_red
-from owls_taunu.plotting import plot, plot2d
 from owls_taunu.mutau.uncertainties import TestSystFlat, TestSystShape, \
         MuonEffStat, MuonEffSys, \
         MuonEffTrigStat, MuonEffTrigSys, \
@@ -44,7 +43,8 @@ from owls_taunu.mutau.uncertainties import TestSystFlat, TestSystShape, \
         BJetExtrapolation
 
 # ROOT imports
-from ROOT import TGraphAsymmErrors, TFile, SetOwnership
+from ROOT import TGraphAsymmErrors, TFile, SetOwnership, \
+        kCyan, kBlue, kBlack, kRed
 
 Plot.PLOT_LEGEND_LEFT = 0.55
 Plot.PLOT_LEGEND_RIGHT = 1.0
@@ -155,31 +155,31 @@ efficiencies = OrderedDict({
         'label': ['HLT_tau25_medium1_tracktwo'],
         'region': one_prong,
         'title': ' (1-prong)',
+        'distribution': distributions_file.tau_pt_trig_b2,
+        'filter': triggered_tau25,
+    },
+    'tau25_3p': {
+        'label': ['HLT_tau25_medium1_tracktwo'],
+        'region': three_prong,
+        'title': ' (3-prong)',
+        'distribution': distributions_file.tau_pt_trig_b2,
+        'filter': triggered_tau25,
+    },
+
+    'tau25_ztt_1p': {
+        'label': ['HLT_tau25_medium1_tracktwo'],
+        'region': one_prong,
+        'title': ' (1-prong)',
         'distribution': distributions_file.tau_pt_trig_b1,
         'filter': triggered_tau25,
     },
-    #'tau25_3p': {
-        #'label': ['HLT_tau25_medium1_tracktwo'],
-        #'region': three_prong,
-        #'title': ' (3-prong)',
-        #'distribution': distributions_file.tau_pt_trig_b1,
-        #'filter': triggered_tau25,
-    #},
-
-    #'tau25_noiso_1p': {
-        #'label': ['HLT_tau25_medium1_tracktwo_L1TAU12'],
-        #'region': one_prong,
-        #'title': ' (1-prong)',
-        #'distribution': distributions_file.tau_pt_trig_b1,
-        #'filter': triggered_tau25_noiso,
-    #},
-    #'tau25_noiso_3p': {
-        #'label': ['HLT_tau25_medium1_tracktwo_L1TAU12'],
-        #'region': three_prong,
-        #'title': ' (3-prong)',
-        #'distribution': distributions_file.tau_pt_trig_b1,
-        #'filter': triggered_tau25_noiso,
-    #},
+    'tau25_ztt_3p': {
+        'label': ['HLT_tau25_medium1_tracktwo'],
+        'region': three_prong,
+        'title': ' (3-prong)',
+        'distribution': distributions_file.tau_pt_trig_b1,
+        'filter': triggered_tau25,
+    },
 
     # TODO: Add tau35, tau80, tau125
 })
@@ -204,7 +204,7 @@ systematics = [
     #BJetEigenB2,
     #BJetEigenB3,
     #BJetEigenB4,
-    #BJetEigenC0,
+    BJetEigenC0,
     #BJetEigenC1,
     #BJetEigenC2,
     #BJetEigenC3,
@@ -249,14 +249,46 @@ if arguments.text_output:
 print('Script options')
 print('  Output directory: {}'.format(base_path))
 print('  Data prefix: {}'.format(definitions.get('data_prefix', 'UNDEFINED')))
+print('  Systematics treatment: {}'.format(model_file.systematics))
+
+def normalize_efficiencies(nominal, up, down):
+    if nominal.GetN() != up.GetN() or nominal.GetN() != down.GetN():
+        raise RuntimeError('point count mismatch; nominal, up, and down '
+                           'efficiencies have different number of points')
+    values_x = nominal.GetX()
+    values_y = nominal.GetY()
+    values_y_up = up.GetY()
+    values_y_down = down.GetY()
+    for i, x, y, y_up, y_down in zip(range(nominal.GetN()),
+                                     values_x, values_y,
+                                     values_y_up, values_y_down):
+        # Switch
+        if y_up < y_down:
+            #print('  Switching {:.2f} and {:.2f}'.format(y_up, y_down))
+            y_up, y_down = y_down, y_up
+
+        # If up variation is lower than nominal, reset
+        if y_up < y:
+            #print('  Resetting {} < {}'.format(y_up, y))
+            y_up = y
+
+        # If down variation is greater than nominal, reset
+        if y_down > y:
+            #print('  Resetting {} > {}'.format(y_down, y))
+            y_down = y
+
+        up.SetPoint(i, x, y_up)
+        down.SetPoint(i, x, y_down)
 
 def do_efficiencies(distribution, region, efficiency_filter):
     ##############################################################
     # COMPUTE (DATA-BACKGROUND) AND SIGNAL HISTOGRAMS
     ##############################################################
-    data_total = distribution(data['process'], region)
-    data_passed = distribution(data['process'],
-                               region.varied(efficiency_filter))
+    process = data['process']
+    estimation = data['estimation']
+    data_total = estimation(distribution)(process, region)
+    data_passed = estimation(distribution)(process,
+                                           region.varied(efficiency_filter))
 
     backgrounds_total = []
     backgrounds_passed = []
@@ -319,9 +351,7 @@ def do_efficiencies(distribution, region, efficiency_filter):
 
             if s in uncertainties:
                 # Get the up/down of the total
-                _, _, up, down = to_shape(
-                    s(estimation(distribution))(process, region),
-                    nominal_total)
+                _, _, up, down = estimation(s(distribution))(process, region)
                 if up is not None and down is not None:
                     systs_total_up[name].append(up)
                     systs_total_down[name].append(down)
@@ -330,10 +360,8 @@ def do_efficiencies(distribution, region, efficiency_filter):
                                        'systematic variation ' + s.name)
 
                 # Get the up/down of the passed
-                _, _, up, down = to_shape(
-                    s(estimation(distribution))(
-                        process, region.varied(efficiency_filter)),
-                    nominal_passed)
+                _, _, up, down = estimation(s(distribution))(
+                    process, region.varied(efficiency_filter))
                 if up is not None and down is not None:
                     systs_passed_up[name].append(up)
                     systs_passed_down[name].append(down)
@@ -341,28 +369,27 @@ def do_efficiencies(distribution, region, efficiency_filter):
                     raise RuntimeError('something went wrong when applying '
                                        'systematic variation ' + s.name)
             else:
-                #print('No systematic {} for {}. Using nominal.'. \
-                      #format(name, process.label()))
                 systs_total_up[name].append(nominal_total)
                 systs_total_down[name].append(nominal_total)
                 systs_passed_up[name].append(nominal_passed)
                 systs_passed_down[name].append(nominal_passed)
 
-            #print('{} up {} total/passed: {:.1f}/{:.1f}'. \
-                  #format('NOMINAL',
-                         #process.label(),
-                         #integral(nominal_total),
-                         #integral(nominal_passed)))
-            #print('{} up {} total/passed: {:.1f}/{:.1f}'. \
-                  #format(name,
-                         #process.label(),
-                         #integral(systs_total_up[name][-1]),
-                         #integral(systs_passed_up[name][-1])))
-            #print('{} down {} total/passed: {:.1f}/{:.1f}'. \
-                  #format(name,
-                         #process.label(),
-                         #integral(systs_total_down[name][-1]),
-                         #integral(systs_passed_down[name][-1])))
+            #if not parallel.capturing():
+                #print('{} up {} total/passed: {:.1f}/{:.1f}'. \
+                      #format('NOMINAL',
+                             #process.label(),
+                             #integral(nominal_total),
+                             #integral(nominal_passed)))
+                #print('{} up {} total/passed: {:.1f}/{:.1f}'. \
+                      #format(name,
+                             #process.label(),
+                             #integral(systs_total_up[name][-1]),
+                             #integral(systs_passed_up[name][-1])))
+                #print('{} down {} total/passed: {:.1f}/{:.1f}'. \
+                      #format(name,
+                             #process.label(),
+                             #integral(systs_total_down[name][-1]),
+                             #integral(systs_passed_down[name][-1])))
 
 
     # If capturing at pass 1, the result is bogus, continue
@@ -416,6 +443,25 @@ def do_efficiencies(distribution, region, efficiency_filter):
         data_subtracted_total_up = data_total - syst_total_down
         data_subtracted_passed_up = data_passed - syst_passed_down
 
+        data_subtracted_total_test = data_total - background_total
+        data_subtracted_passed_test = data_passed - background_passed
+
+        # Compute the efficiencies
+        data_efficiency_up.append(efficiency(data_subtracted_total_down,
+                                             data_subtracted_passed_up))
+        data_efficiency_down.append(efficiency(data_subtracted_total_up,
+                                               data_subtracted_passed_down))
+        normalize_efficiencies(data_efficiency,
+                               data_efficiency_up[-1],
+                               data_efficiency_down[-1])
+
+        data_efficiency_up[-1].SetTitle(name + '_UP')
+        data_efficiency_down[-1].SetTitle(name + '_DOWN')
+
+        # Compute the offsets in the total yields and write out the
+        # difference in yields *AFTER* having computed the efficiencies. (The
+        # efficiency calculation sanitizes the graphs so that there are no
+        # negative points, etc.)
         total_offset_up.append(integral(data_subtracted_total_up) -
                                integral(data_subtracted_total))
         total_offset_down.append(integral(data_subtracted_total) -
@@ -434,20 +480,11 @@ def do_efficiencies(distribution, region, efficiency_filter):
                                 data_subtracted_passed_up,
                                 data_subtracted_passed_down)
 
-        # Compute the efficiencies
-        data_efficiency_up.append(efficiency(data_subtracted_total_up,
-                                             data_subtracted_passed_up))
-        data_efficiency_down.append(efficiency(data_subtracted_total_down,
-                                               data_subtracted_passed_down))
-
-        data_efficiency_up[-1].SetTitle(name + '_UP')
-        data_efficiency_down[-1].SetTitle(name + '_DOWN')
-
     write_total_syst('total',
                      integral(data_subtracted_total),
                      sum_quadrature(total_offset_up),
                      sum_quadrature(total_offset_down))
-    write_total_syst('total',
+    write_total_syst('passed',
                      integral(data_subtracted_passed),
                      sum_quadrature(passed_offset_up),
                      sum_quadrature(passed_offset_down))
@@ -455,122 +492,285 @@ def do_efficiencies(distribution, region, efficiency_filter):
     return data_efficiency, signal_efficiency, \
             data_efficiency_up, data_efficiency_down
 
+def get_error(graph, zeroed = False):
+    errors = graph.Clone(uuid4().hex)
+    for i,x in zip(range(errors.GetN()), errors.GetX()):
+        errors.SetPoint(i, x, 0.0)
+    if zeroed:
+        for i in range(errors.GetN()):
+            errors.SetPointEYlow(i, 0.0)
+            errors.SetPointEYhigh(i, 0.0)
+    return errors
+
+def set_error(graph, errors):
+    if graph.GetN() != errors.GetN():
+        raise RuntimeError('point count mismatch; '
+                           'can\'t set errors from {} on {}'. \
+                           format(errors.GetTitle, graph.GetTitle()))
+    for i in range(graph.GetN()):
+        graph.SetPointEYlow(i, errors.GetErrorYlow(i))
+        graph.SetPointEYhigh(i, errors.GetErrorYhigh(i))
+
+def flip_error(errors):
+    flipped = errors.Clone(uuid4().hex)
+    for i in range(errors.GetN()):
+        flipped.SetPointEYlow(i, errors.GetErrorYhigh(i))
+        flipped.SetPointEYhigh(i, errors.GetErrorYlow(i))
+    return flipped
+
+def clear_error(graph, y_only = False):
+    for i in range(graph.GetN()):
+        if not y_only:
+            graph.SetPointEXlow(i, 0)
+            graph.SetPointEXhigh(i, 0)
+        graph.SetPointEYlow(i, 0)
+        graph.SetPointEYhigh(i, 0)
+
+def combine_errors(*errors):
+    for e in errors[1:]:
+        if errors[0].GetN() != e.GetN():
+            raise RuntimeError('point count mismatch; '
+                               'can\'t combine errors from {} with {}'. \
+                               format(errors[0].GetTitle, e.GetTitle()))
+    total = errors[0].Clone(uuid4().hex)
+    for i in range(total.GetN()):
+        total.SetPointEYlow(i, sum_quadrature([e.GetErrorYlow(i)
+                                               for e
+                                               in errors]))
+        total.SetPointEYhigh(i, sum_quadrature([e.GetErrorYhigh(i)
+                                                for e
+                                                in errors]))
+    return total
+
+def compute_syst_error(nominal, up_variations, down_variations):
+    if any([nominal.GetN() != v.GetN()
+            for v
+            in up_variations + down_variations]):
+        raise RuntimeError('point count mismatch; '
+                           'one or more of the variations don\'t agree '
+                           'with the nominal.')
+
+    y_nominal = nominal.GetY()
+    y_up_variations = [e.GetY() for e in up_variations]
+    y_down_variations = [e.GetY() for e in down_variations]
+
+    errors = get_error(nominal, zeroed = True)
+    for i in range(errors.GetN()):
+        up_error = sum_quadrature([y_nominal[i] - y_variation[i]
+                                   for y_variation
+                                   in y_up_variations])
+        down_error = sum_quadrature([y_nominal[i] - y_variation[i]
+                                     for y_variation
+                                     in y_down_variations])
+        errors.SetPointEYhigh(i, up_error)
+        errors.SetPointEYlow(i, down_error)
+    return errors
 
 def plot_efficiencies(data_efficiency,
+                      data_syst_uncertainty,
                       signal_efficiency,
+                      scale_factor,
+                      scale_factor_uncertainties,
                       distribution,
                       path,
                       file_name_components,
                       label):
-    efficiencies = [
-        (signal_efficiency, default_red, 'e2'),
-        (data_efficiency, default_black, 'ep')
-    ]
+    data_syst_uncertainty_style = (kBlue-3, kBlue-3, 0)
+    data_stat_uncertainty_style = (kCyan-7, kCyan-7, 0)
+    signal_stat_uncertainty_style = (kRed, kRed, 0)
 
-    # Compute the plot output path
-    save_path = join(path,
-            '_'.join(file_name_components))
+    data_stat_uncertainty = get_error(data_efficiency)
+    data_total_uncertainty = combine_errors(data_stat_uncertainty,
+                                            data_syst_uncertainty)
 
-    plot(efficiencies,
-         save_path,
-         x_label = distribution.x_label(),
-         y_label = distribution.y_label(),
-         custom_label = label,
-         atlas_label = ATLAS_LABEL,
-         extensions = arguments.extensions)
+    syst_uncertainty_band = data_efficiency.Clone(uuid4().hex)
+    syst_uncertainty_band.SetTitle('Data Syst.')
+    set_error(syst_uncertainty_band, data_syst_uncertainty)
 
-def do_scale_factor(data_efficiency, signal_efficiency):
+    #stat_uncertainty_band = data_efficiency.Clone(uuid4().hex)
+    #stat_uncertainty_band.SetTitle('Data Stat.')
+    #set_error(stat_uncertainty_band, data_stat_uncertainty)
+
+    total_uncertainty_band = data_efficiency.Clone(uuid4().hex)
+    total_uncertainty_band.SetTitle('Data Stat. #otimes Syst.')
+    set_error(total_uncertainty_band, data_total_uncertainty)
+
+    data_efficiency = data_efficiency.Clone(uuid4().hex)
+    data_efficiency.SetTitle('Data')
+    clear_error(data_efficiency)
+
+    # Create the plot
+    plot = Plot('', distribution.x_label(), 'Efficiency', ratio='True')
+
+    plot.draw(
+        #(stat_uncertainty_band, data_stat_uncertainty_style, 'e2'),
+        (total_uncertainty_band, data_stat_uncertainty_style, 'e2'),
+        (syst_uncertainty_band, data_syst_uncertainty_style, 'e2'),
+        (signal_efficiency, default_red, 'ep'),
+        (data_efficiency, default_black, 'p'),
+    )
+
+    sf_data_syst, sf_data_stat, sf_signal_stat = scale_factor_uncertainties
+
+    # TODO: Not sure this is the way to present the uncertainties
+    sf = scale_factor.Clone(uuid4().hex)
+    clear_error(sf)
+
+    sf_data_syst_band = scale_factor.Clone(uuid4().hex)
+    sf_data_syst_band .SetTitle('Data Syst.')
+    set_error(sf_data_syst_band, sf_data_syst)
+
+    sf_signal_stat_band = scale_factor.Clone(uuid4().hex)
+    sf_signal_stat_band .SetTitle('Data Syst. #otimes Data Stat. '
+                                  '#otimes Signal Stat.')
+    set_error(sf_signal_stat_band, combine_errors(sf_data_syst,
+                                                  sf_signal_stat))
+
+    sf_data_stat_band = scale_factor.Clone(uuid4().hex)
+    sf_data_stat_band .SetTitle('Data Syst. #otimes Data Stat.')
+    set_error(sf_data_stat_band, combine_errors(sf_data_syst,
+                                                  sf_signal_stat,
+                                                  sf_data_stat))
+
+    plot.draw_ratios(
+        (
+            (sf_data_stat_band, data_stat_uncertainty_style, 'e2'),
+            (sf_signal_stat_band, signal_stat_uncertainty_style, 'e2'),
+            (sf_data_syst_band, data_syst_uncertainty_style, 'e2'),
+            (sf, default_black, 'p')
+        ),
+        y_range = (0.8, 1.2),
+        y_title = 'Scale Factor'
+    )
+
+    # Draw a legend
+    plot.draw_legend(legend_entries = (signal_efficiency,
+                                      data_efficiency,
+                                      syst_uncertainty_band,
+                                      #stat_uncertainty_band,
+                                      total_uncertainty_band,
+                                      ))
+
+    # Draw an ATLAS stamp
+    plot.draw_atlas_label(custom_label = label,
+                          atlas_label = ATLAS_LABEL)
+
+    plot.save(join(path, '_'.join(file_name_components)),
+              arguments.extensions)
+
+def do_scale_factor(data_efficiency,
+                    data_efficiency_up,
+                    data_efficiency_down,
+                    signal_efficiency):
+    def compute_sf(data_efficiency, signal_efficiency):
+        sf = data_efficiency.Clone(uuid4().hex)
+        for i,x,nom,denom in zip(range(sf.GetN()),
+                                 sf.GetX(),
+                                 data_efficiency.GetY(),
+                                 signal_efficiency.GetY()):
+            sf.SetPoint(i, x, nom/denom)
+            sf.SetPointEYlow(i, 0.0)
+            sf.SetPointEYhigh(i, 0.0)
+        return sf
+
+    def normalize_stat_error(efficiency):
+        errors = get_error(efficiency)
+        for i,low,high,y in zip(range(errors.GetN()),
+                                errors.GetEYlow(),
+                                errors.GetEYhigh(),
+                                efficiency.GetY()):
+            try:
+                errors.SetPointEYlow(i, low/y)
+            except ZeroDivisionError:
+                errors.SetPointEYlow(i, 0.0)
+            try:
+                errors.SetPointEYhigh(i, high/y)
+            except ZeroDivisionError:
+                errors.SetPointEYhigh(i, 0.0)
+
+        return errors
+
     ##############################################################
     # COMPUTE SCALE FACTORS
     ##############################################################
-    points = data_efficiency.GetN()
-    x_data = data_efficiency.GetX()
-    error_x_data = data_efficiency.GetEXlow()
-    y_data = data_efficiency.GetY()
-    error_low_data = data_efficiency.GetEYlow()
-    error_high_data = data_efficiency.GetEYhigh()
-    y_background = signal_efficiency.GetY()
-    error_low_background = signal_efficiency.GetEYlow()
-    error_high_background = signal_efficiency.GetEYhigh()
-    sf_x, sf_y, error_x, error_low, error_high = [], [], [], [], []
-    for i in xrange(points):
-        try:
-            sf = y_data[i] / y_background[i]
-            sf_x.append(x_data[i])
-            sf_y.append(sf)
-            error_x.append(error_x_data[i])
-            error_low.append(sf * \
-                    sqrt((error_low_data[i] / y_data[i])**2 + \
-                         (error_high_background[i] / y_background[i])**2))
-            error_high.append(sf * \
-                    sqrt((error_high_data[i] / y_data[i])**2 + \
-                         (error_low_background[i] / y_background[i])**2))
-        except ZeroDivisionError:
-            pass
+    nominal = compute_sf(data_efficiency, signal_efficiency)
 
-    if not sf_x:
-        raise RuntimeError('failed to create scale factors; '
-                           'scale factor array is empty')
+    up_variations = [compute_sf(up, signal_efficiency)
+                     for up
+                     in data_efficiency_up]
+    down_variations = [compute_sf(down, signal_efficiency)
+                     for down
+                     in data_efficiency_down]
 
-    # Create the scale factor histogram (Data/MC) and fill it
-    scale_factor = TGraphAsymmErrors(len(sf_x),
-                                     array('d', sf_x),
-                                     array('d', sf_y),
-                                     array('d', error_x),
-                                     array('d', error_x),
-                                     array('d', error_low),
-                                     array('d', error_high)
-                                    )
-    try:
-        scale_factor.SetTitle('Data / {}'.format(
-                              definitions['background_model_label']))
-    except:
-        scale_factor.SetTitle('Data / MC')
-    return scale_factor
+    syst_uncertainty = compute_syst_error(nominal,
+                                          up_variations,
+                                          down_variations)
+    syst_uncertainty.SetTitle('SYST')
 
-def plot_scale_factor(scale_factor,
-                      distribution,
-                      path,
-                      file_name_components,
-                      label):
-    # Compute the plot output path
-    save_path = join(path,
-            '_'.join(file_name_components + ['sf']))
+    data_stat_uncertainty = normalize_stat_error(data_efficiency)
+    data_stat_uncertainty.SetTitle('DATA STAT')
 
-    plot([(scale_factor, default_black, 'ep')],
-         save_path,
-         x_label = distribution.x_label(),
-         y_label = distribution.y_label(),
-         custom_label = label,
-         atlas_label = ATLAS_LABEL,
-         extensions = arguments.extensions)
+    signal_stat_uncertainty = flip_error(normalize_stat_error(signal_efficiency))
+    signal_stat_uncertainty.SetTitle('SIGNAL STAT')
+
+    set_error(nominal, combine_errors(syst_uncertainty,
+                                      data_stat_uncertainty,
+                                      signal_stat_uncertainty))
+    nominal.SetTitle('Data / MC')
+
+    return nominal, (syst_uncertainty,
+                     data_stat_uncertainty,
+                     signal_stat_uncertainty)
+
+
+# NOTE: Keep this if we want to plot scale factors separately
+#def plot_scale_factor(scale_factor,
+                      #uncertainties,
+                      #distribution,
+                      #path,
+                      #file_name_components,
+                      #label):
+    ## Compute the plot output path
+    #save_path = join(path,
+            #'_'.join(file_name_components + ['sf']))
+
+    #plot([(scale_factor, default_black, 'ep')],
+         #save_path,
+         #x_label = distribution.x_label(),
+         #y_label = 'Scale Factor',
+         #custom_label = label,
+         #atlas_label = ATLAS_LABEL,
+         #extensions = arguments.extensions)
 
 def save_to_root(data_efficiency,
                  signal_efficiency,
                  variation_efficiencies,
-                 scale_factors,
-                 file_name_components):
+                 scale_factor,
+                 scale_factor_uncertainties,
+                 file_name):
     root_file.cd()
 
     clone = data_efficiency.Clone(uuid4().hex)
-    clone.SetName(
-        '_'.join(['eff'] + file_name_components + ['data']))
+    clone.SetName('_'.join(['eff', file_name, 'data']))
     clone.Write()
 
     clone = signal_efficiency.Clone(uuid4().hex)
-    clone.SetName(
-        '_'.join(['eff'] + file_name_components + ['mc']))
+    clone.SetName('_'.join(['eff', file_name, 'mc']))
     clone.Write()
 
     for eff in variation_efficiencies:
         clone = eff.Clone(uuid4().hex)
-        clone.SetName(
-            '_'.join(['eff'] + file_name_components + [clone.GetTitle()]))
+        clone.SetName('_'.join(['eff', file_name, clone.GetTitle()]))
         clone.Write()
 
-    if scale_factors is not None:
-        clone = scale_factors.Clone(uuid4().hex)
-        clone.SetName('_'.join(['sf'] + file_name_components))
+    clone = scale_factor.Clone(uuid4().hex)
+    clone.SetName('_'.join(['sf', file_name]))
+    clone.Write()
+
+    for uncertainty,name in zip(scale_factor_uncertainties,
+                                ['SYST', 'DATA_STAT', 'SIGNAL_STAT']):
+        clone = uncertainty.Clone(uuid4().hex)
+        clone.SetName('_'.join(['sf', file_name, name]))
         clone.Write()
 
 def write_counts_signal(total, passed):
@@ -590,6 +790,10 @@ def write_total_syst(what, nominal_count, up_offset, down_offset):
 
 def write_counts_background(syst, what, nominal, up, down):
     nominal, up, down = integral(nominal), integral(up), integral(down)
+    if syst == 'TEST_SYST_SHAPE':
+        print('nominal: {:.1f}'.format(nominal))
+        print('up: {:.1f}'.format(up))
+        print('down: {:.1f}'.format(down))
     def percentage(var):
         return (var/nominal - 1.0) * 100.0
     pc_up, pc_down = percentage(up), percentage(down)
@@ -632,23 +836,32 @@ with caching_into(cache):
             if parallel.capturing():
                 continue
 
-            plot_efficiencies(data_efficiency,
-                              signal_efficiency,
-                              distribution,
-                              base_path,
-                              [eff_name],
-                              label)
-
             # Compute and plot the scale factors
-            scale_factor = \
+            scale_factor, scale_factor_uncertainties = \
                 do_scale_factor(data_efficiency,
+                                data_efficiency_up,
+                                data_efficiency_down,
                                 signal_efficiency)
 
-            plot_scale_factor(scale_factor,
+            data_syst_uncertainty = compute_syst_error(data_efficiency,
+                                                       data_efficiency_up,
+                                                       data_efficiency_down)
+            plot_efficiencies(data_efficiency,
+                              data_syst_uncertainty,
+                              signal_efficiency,
+                              scale_factor,
+                              scale_factor_uncertainties,
                               distribution,
                               base_path,
                               [eff_name],
                               label)
+
+            #plot_scale_factor(scale_factor,
+                              #scale_factor_uncertainties,
+                              #distribution,
+                              #base_path,
+                              #[eff_name],
+                              #label)
 
 
             # Save efficiencies and scale factors to a root file
@@ -657,7 +870,8 @@ with caching_into(cache):
                              signal_efficiency,
                              data_efficiency_up + data_efficiency_down,
                              scale_factor,
-                             [eff_name])
+                             scale_factor_uncertainties,
+                             eff_name)
 
 if arguments.text_output:
     text_file.close()
