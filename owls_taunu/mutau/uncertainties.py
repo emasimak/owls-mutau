@@ -26,44 +26,30 @@ class TestSystShape(Uncertainty):
                 None,
                 self.calculation(
                     process,
-                    region.varied(Reweighted('tau_0_jet_bdt_score+0.3'))
+                    region.varied(Reweighted('tau_0_jet_bdt_score+1.0'))
                 ),
                 self.calculation(
                     process,
-                    region.varied(Reweighted('tau_0_jet_bdt_score+0.1'))
+                    region.varied(Reweighted('tau_0_jet_bdt_score-0.10'))
                 ))
 
 class RqcdStat(Uncertainty):
-    r_qcd = None
     name = 'RQCD_STAT'
 
     def __call__(self, process, region):
-        if self.r_qcd is None:
-            raise RuntimeError('r_qcd dict is not initialized')
-        # Extract the r_qcd value from the rqcd label
-        rqcd_label = region.metadata()['rqcd']
-        r_qcd_stat = self.r_qcd[rqcd_label][1]
-
-        return (1.0+r_qcd_stat,
-                1.0-r_qcd_stat,
+        return (None,
                 None,
-                None)
+                self.calculation(process, region),
+                self.calculation(process, region))
 
 class RqcdSyst(Uncertainty):
-    r_qcd = None
     name = 'RQCD_SYST'
 
     def __call__(self, process, region):
-        if self.r_qcd is None:
-            raise RuntimeError('r_qcd dict is not initialized')
-        # Extract the r_qcd value from the rqcd label
-        rqcd_label = region.metadata()['rqcd']
-        r_qcd_syst = self.r_qcd[rqcd_label][2]
-
-        return (1.0+r_qcd_syst,
-                1.0-r_qcd_syst,
+        return (None,
                 None,
-                None)
+                self.calculation(process, region),
+                self.calculation(process, region))
 
 class MuonEffStat(Uncertainty):
     name = 'MUON_EFF_STAT'

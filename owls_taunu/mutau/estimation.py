@@ -7,6 +7,7 @@ from owls_hep.uncertainty import Uncertainty
 
 # owls-taunu imports
 from owls_taunu.mutau.variations import SS, OS
+from owls_taunu.mutau.uncertainties import RqcdSyst, RqcdStat
 
 
 class OSSS(Estimation):
@@ -22,16 +23,26 @@ class OSSS(Estimation):
 
     def components(self, process, region):
         # Extract the r_qcd value from the rqcd label
-        rqcd_label = region.metadata()['rqcd']
-        r_qcd = self._r_qcd[rqcd_label][0]
+        r_qcd_label = region.metadata()['rqcd']
+        nominal, stat, syst = self._r_qcd[r_qcd_label]
+        if isinstance(self._calculation, RqcdStat):
+            r_qcd = (nominal, nominal+stat, nominal-stat)
+        elif isinstance(self._calculation, RqcdSyst):
+            r_qcd = (nominal, nominal+syst, nominal-syst)
+        else:
+            r_qcd = (nominal, nominal, nominal)
+
+        #if process.metadata().get('print_me', False):
+            #print('I\'m using r_qcd = {} for {} and {}'. \
+                  #format(r_qcd, type(self._calculation), process.label()))
 
         # Combine components
         return [
-            (1.0 * self._luminosity / 1e3,
+            (self._luminosity / 1e3,
              False,
              process,
              region.varied(OS())),
-            (-1.0 * r_qcd * self._luminosity / 1e3,
+            (tuple([-v*self._luminosity / 1e3 for v in r_qcd]),
              False,
              process,
              region.varied(SS()))
@@ -47,8 +58,18 @@ class SSData(Estimation):
 
     def components(self, process, region):
         # Extract the r_qcd value from the rqcd label
-        rqcd_label = region.metadata()['rqcd']
-        r_qcd = self._r_qcd[rqcd_label][0]
+        r_qcd_label = region.metadata()['rqcd']
+        nominal, stat, syst = self._r_qcd[r_qcd_label]
+        if isinstance(self._calculation, RqcdStat):
+            r_qcd = (nominal, nominal+stat, nominal-stat)
+        elif isinstance(self._calculation, RqcdSyst):
+            r_qcd = (nominal, nominal+syst, nominal-syst)
+        else:
+            r_qcd = nominal
+
+        #if process.metadata().get('print_me', False):
+            #print('I\'m using r_qcd = {} for {} and {}'. \
+                  #format(r_qcd, type(self._calculation), process.label()))
 
         # Combine components
         return [
