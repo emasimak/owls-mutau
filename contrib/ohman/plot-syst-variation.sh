@@ -31,15 +31,15 @@ ${CONTRIB}/plot-syst-variation.py \
   data_prefix="/disk/d1/ohman/tagprobe_2016-01-21_merged/"
 
 
-${CONTRIB}/plot-syst-variation.py \
-  --output results_mutau/systematics_mc \
-  --extensions $EXTENSIONS \
-  --model-file "$OWLS/share/mutau/models-2016-01-21.py" \
-  --model mc_sub \
-  --regions-file "$OWLS/share/mutau/regions-2016-01-21.py" \
-  --regions mu_tau_os \
-  --distributions-file "$OWLS/share/mutau/distributions.py" \
-  --distributions $DISTRIBUTIONS \
-  --environment-file "$CONTRIB/environment.py" \
-  --label "Bkg MC (OS)" \
-  data_prefix="/disk/d1/ohman/tagprobe_2016-01-21_merged/"
+#${CONTRIB}/plot-syst-variation.py \
+  #--output results_mutau/systematics_mc \
+  #--extensions $EXTENSIONS \
+  #--model-file "$OWLS/share/mutau/models-2016-01-21.py" \
+  #--model mc_sub \
+  #--regions-file "$OWLS/share/mutau/regions-2016-01-21.py" \
+  #--regions mu_tau_os \
+  #--distributions-file "$OWLS/share/mutau/distributions.py" \
+  #--distributions $DISTRIBUTIONS \
+  #--environment-file "$CONTRIB/environment.py" \
+  #--label "Bkg MC (OS)" \
+  #data_prefix="/disk/d1/ohman/tagprobe_2016-01-21_merged/"

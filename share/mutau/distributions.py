@@ -295,7 +295,7 @@ dr = Histogram(
         'abs(lephad_dr)',
         (16, 0, 3.2),
         '',
-        '#Delta#R(#mu,#tau)',
+        '#Delta R(#mu,#tau)',
         'Events'
         )
 
@@ -316,9 +316,16 @@ nvx = Histogram(
         'Events'
         )
 
-tau_pt_trig = Histogram(
+tau_pt_trig_1gev = Histogram(
         'tau_0_pt',
         (125,25,150),
+        '',
+        '#tau p_{T} (GeV)',
+        'Events'
+        )
+tau_pt_trig_5gev = Histogram(
+        'tau_0_pt',
+        (25,25,150),
         '',
         '#tau p_{T} (GeV)',
         'Events'
@@ -332,14 +339,21 @@ tau_pt_trig_b1 = Histogram(
         )
 tau_pt_trig_b2  = Histogram(
         'tau_0_pt',
-        (25, 28, 31, 34, 37, 40, 44, 53, 65, 100, 150, 300),
+        (25, 28, 30, 32, 34, 36, 39, 43, 48, 54, 62, 72, 85, 100, 125, 150, 300),
         '',
         '#tau p_{T} (GeV)',
         'Events'
         )
-tau_pt_trig_b3 = Histogram(
+tau_pt_trig_b3  = Histogram(
         'tau_0_pt',
-        (25,25,150),
+        (25, 28, 30, 32, 34, 36, 39, 43, 52, 64, 80, 100, 150, 300),
+        '',
+        '#tau p_{T} (GeV)',
+        'Events'
+        )
+tau_pt_trig_b4  = Histogram(
+        'tau_0_pt',
+        (25, 28, 31, 34, 37, 40, 44, 53, 65, 100, 150, 300),
         '',
         '#tau p_{T} (GeV)',
         'Events'
