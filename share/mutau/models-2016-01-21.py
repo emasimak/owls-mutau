@@ -40,9 +40,18 @@ nominal_tree = 'NOMINAL'
 sqrt_s = 13.0 * 1000 * 1000 # MeV
 
 r_qcd = {
-    'mu_tau_qcd_cr': (1.235, 0.017, 0.045),
+    'mu_tau_qcd_cr': (1.234, 0.017, 0.045),
     'mu_tau_qcd_cr_1p': (1.209, 0.02, 0.048),
     'mu_tau_qcd_cr_3p': (1.317, 0.037, 0.088),
+    'mu_tau_qcd_cr_loose_id': (1.182, 0.012, 0.025),
+    'mu_tau_qcd_cr_loose_id_1p': (1.158, 0.015, 0.029),
+    'mu_tau_qcd_cr_loose_id_3p': (1.228, 0.021, 0.043),
+    'mu_tau_qcd_cr_medium_id': (1.234, 0.017, 0.045),
+    'mu_tau_qcd_cr_medium_id_1p': (1.209, 0.02, 0.048),
+    'mu_tau_qcd_cr_medium_id_3p': (1.317, 0.037, 0.088),
+    'mu_tau_qcd_cr_tight_id': (1.264, 0.026, 0.054),
+    'mu_tau_qcd_cr_tight_id_1p': (1.218, 0.028, 0.053),
+    'mu_tau_qcd_cr_tight_id_3p': (1.48, 0.07, 0.14),
 }
 
 # Redefitions of estimations
@@ -683,7 +692,7 @@ osss_fakes = {
 }
 
 osss_sub = {
-    'label': 'OS-SS',
+    'label': 'Bkg. Sub.',
     'luminosity': luminosity,
     'sqrt_s': sqrt_s,
     'subtract_background': True,

@@ -182,7 +182,7 @@ def compute_syst(region, distribution, file_name):
 
     return syst
 
-r_qcd_dict = {}
+r_qcd_dict = OrderedDict({})
 
 base_path = arguments.output
 if not exists(base_path):
