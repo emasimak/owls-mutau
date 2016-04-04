@@ -9,6 +9,7 @@ from collections import OrderedDict
 from math import sqrt
 from array import array
 from uuid import uuid4
+from itertools import product
 
 # Six imports
 from six import itervalues, iteritems, iterkeys
@@ -87,6 +88,16 @@ parser.add_argument('-D',
                     required = True,
                     help = 'the path to the histograms definition module',
                     metavar = '<distributions-file>')
+parser.add_argument('-d',
+                    '--distribution',
+                    required = True,
+                    help = 'the distribution to use for the efficiencies',
+                    metavar = '<distribution>')
+parser.add_argument('-g',
+                    '--triggers',
+                    nargs = '+',
+                    help = 'the triggers to compute efficiencies for',
+                    metavar = '<trigger>')
 parser.add_argument('-E',
                     '--environment-file',
                     required = True,
@@ -123,66 +134,50 @@ regions_file = load_module(arguments.regions_file, definitions)
 distributions_file = load_module(arguments.distributions_file, definitions)
 environment_file = load_module(arguments.environment_file, definitions)
 
-
-# Extract model
+# Extract model, region, and distribution
 model = getattr(model_file, arguments.model)
 region = getattr(regions_file, arguments.region)
+distribution = getattr(distributions_file, arguments.distribution)
 luminosity = model['luminosity']
 sqrt_s = model['sqrt_s']
 data = model['data']
 signals = model['signals']
 backgrounds = model['backgrounds']
 
-
 one_prong = region.varied(OneProng())
 three_prong = region.varied(ThreeProng())
 
+available_triggers = {
+    'tau25': 'HLT_tau25_medium1_tracktwo',
+    'tau25_noiso': 'HLT_tau25_medium1_tracktwo_L1TAU12',
+    'tau35': 'HLT_tau35_medium1_tracktwo',
+    'tau80': 'HLT_tau80_medium1_tracktwo',
+    'tau125': 'HLT_tau125_medium1_tracktwo',
+    'tau160': 'HLT_tau160_medium1_tracktwo',
+}
 
-triggered_tau25 = Filtered('HLT_tau25_medium1_tracktwo && '
-                           'tau_0_trig_HLT_tau25_medium1_tracktwo')
-triggered_tau25_noiso = Filtered('HLT_tau25_medium1_tracktwo_L1TAU12 && '
-                                  'tau_0_trig_HLT_tau25_medium1_tracktwo_L1TAU12')
+efficiencies = OrderedDict()
 
-triggered_tau35 = Filtered('HLT_tau35_medium1_tracktwo && '
-                           'tau_0_trig_HLT_tau35_medium1_tracktwo')
-triggered_tau80 = Filtered('HLT_tau80_medium1_tracktwo && '
-                           'tau_0_trig_HLT_tau80_medium1_tracktwo')
-triggered_tau125 = Filtered('HLT_tau125_medium1_tracktwo && '
-                           'tau_0_trig_HLT_tau125_medium1_tracktwo')
+for name in arguments.triggers:
+    try:
+        trigger = available_triggers[name]
+    except:
+        raise KeyError('{} is not among the available triggers'.format(name))
 
-efficiencies = OrderedDict({
-    'tau25_1p': {
-        'label': ['HLT_tau25_medium1_tracktwo'],
+    efficiencies[name + '_1p'] = {
+        'label': [trigger],
         'region': one_prong,
-        'title': ' (1-prong)',
-        'distribution': distributions_file.tau_pt_trig_b2,
-        'filter': triggered_tau25,
-    },
-    'tau25_3p': {
-        'label': ['HLT_tau25_medium1_tracktwo'],
-        'region': three_prong,
-        'title': ' (3-prong)',
-        'distribution': distributions_file.tau_pt_trig_b2,
-        'filter': triggered_tau25,
-    },
+        'title': '1-prong',
+        'filter': Filtered('{0} && tau_0_trig_{0}'.format(trigger))
+    }
 
-    'tau25_ztt_1p': {
-        'label': ['HLT_tau25_medium1_tracktwo'],
-        'region': one_prong,
-        'title': ' (1-prong)',
-        'distribution': distributions_file.tau_pt_trig_b1,
-        'filter': triggered_tau25,
-    },
-    'tau25_ztt_3p': {
-        'label': ['HLT_tau25_medium1_tracktwo'],
+    efficiencies[name + '_3p'] = {
+        'label': [trigger],
         'region': three_prong,
-        'title': ' (3-prong)',
-        'distribution': distributions_file.tau_pt_trig_b1,
-        'filter': triggered_tau25,
-    },
+        'title': '3-prong',
+        'filter': Filtered('{0} && tau_0_trig_{0}'.format(trigger))
+    }
 
-    # TODO: Add tau35, tau80, tau125
-})
 
 # NOTE: See model file for comments about pruning
 systematics = [
@@ -250,6 +245,9 @@ print('Script options')
 print('  Output directory: {}'.format(base_path))
 print('  Data prefix: {}'.format(definitions.get('data_prefix', 'UNDEFINED')))
 print('  Systematics treatment: {}'.format(model_file.systematics))
+print('  Region: {}'.format(arguments.region))
+print('  Distribution: {}'.format(arguments.distribution))
+print('  Triggers: {}'.format(', '.join(arguments.triggers)))
 
 def normalize_efficiencies(nominal, up, down):
     if nominal.GetN() != up.GetN() or nominal.GetN() != down.GetN():
@@ -668,7 +666,10 @@ def do_scale_factor(data_efficiency,
                                  sf.GetX(),
                                  data_efficiency.GetY(),
                                  signal_efficiency.GetY()):
-            sf.SetPoint(i, x, nom/denom)
+            try:
+                sf.SetPoint(i, x, nom/denom)
+            except ZeroDivisionError:
+                sf.SetPoint(i, x, 0.0)
             sf.SetPointEYlow(i, 0.0)
             sf.SetPointEYhigh(i, 0.0)
         return sf
@@ -811,14 +812,14 @@ with caching_into(cache):
             print('Computing efficiencies...')
 
         for eff_name, eff in iteritems(efficiencies):
-            distribution = eff['distribution']
             efficiency_filter = eff['filter']
             region = eff['region']
 
             if arguments.text_output and not parallel.capturing():
                 text_file.write('Efficiencies for {}\n'.format(eff_name))
 
-            label = [region.label() + eff['title'], model['label']] + \
+            # label = [region.label() + eff['title'], model['label']] + \
+            label = [region.label(), eff['title']] + \
                     eff['label']
 
     ##############################################################
