@@ -17,6 +17,18 @@ REGIONS="\
   mu_tau_qcd_cr_tight_id \
   mu_tau_qcd_cr_tight_id_1p \
   mu_tau_qcd_cr_tight_id_3p \
+  mu_tau_qcd_cr_tau25 \
+  mu_tau_qcd_cr_tau25_1p \
+  mu_tau_qcd_cr_tau25_3p \
+  mu_tau_qcd_cr_loose_id_tau25 \
+  mu_tau_qcd_cr_loose_id_tau25_1p \
+  mu_tau_qcd_cr_loose_id_tau25_3p \
+  mu_tau_qcd_cr_medium_id_tau25 \
+  mu_tau_qcd_cr_medium_id_tau25_1p \
+  mu_tau_qcd_cr_medium_id_tau25_3p \
+  mu_tau_qcd_cr_tight_id_tau25 \
+  mu_tau_qcd_cr_tight_id_tau25_1p \
+  mu_tau_qcd_cr_tight_id_tau25_3p \
   "
 #REGIONS="mu_tau_qcd_cr"
 
@@ -29,5 +41,6 @@ DATA_PREFIX="/disk/d1/ohman/tagprobe_2016-01-21_merged"
   --model osss \
   --regions-file "$OWLS/share/mutau/regions-2016-01-21.py" \
   --regions $REGIONS \
+  --distributions-file "$OWLS/share/mutau/distributions.py" \
   --environment-file "$CONTRIB/environment.py" \
   data_prefix=$DATA_PREFIX
