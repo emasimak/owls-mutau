@@ -9,11 +9,12 @@ EXTENSIONS="pdf"
 LUMINOSITY=3209.0 # 1/pb
 REGIONS="\
   mu_tau \
+  mu_tau_1p \
+  mu_tau_3p \
   mu_tau_tau25 \
+  mu_tau_tau25_1p \
+  mu_tau_tau25_3p \
   "
-  #mu_tau_ttbar_cr \
-  #mu_tau_ttbar_cr_tau25 \
-  #"
 
 DISTRIBUTIONS="tau_pt"
 
