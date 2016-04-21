@@ -6,6 +6,7 @@ import argparse
 from os import makedirs
 from os.path import join, exists
 from collections import OrderedDict
+from copy import deepcopy
 from math import sqrt
 from array import array
 from uuid import uuid4
@@ -168,6 +169,7 @@ for name in arguments.triggers:
         'label': [trigger],
         'region': one_prong,
         'title': '1-prong',
+        'rqcd_addons': ('_1p', '_tau25_1p'),
         'filter': Filtered('{0} && tau_0_trig_{0}'.format(trigger))
     }
 
@@ -175,6 +177,7 @@ for name in arguments.triggers:
         'label': [trigger],
         'region': three_prong,
         'title': '3-prong',
+        'rqcd_addons': ('_3p', '_tau25_3p'),
         'filter': Filtered('{0} && tau_0_trig_{0}'.format(trigger))
     }
 
@@ -185,8 +188,8 @@ systematics = [
     #TestSystShape,
     RqcdStat,
     RqcdSyst,
-    MuonEffStat,
-    MuonEffSys,
+    #MuonEffStat,
+    #MuonEffSys,
     MuonEffTrigStat,
     MuonEffTrigSys,
     #MuonIsoStat,
@@ -203,7 +206,7 @@ systematics = [
     #BJetEigenC1,
     #BJetEigenC2,
     #BJetEigenC3,
-    #BJetEigenLight0,
+    BJetEigenLight0,
     #BJetEigenLight1,
     #BJetEigenLight2,
     #BJetEigenLight3,
@@ -262,31 +265,38 @@ def normalize_efficiencies(nominal, up, down):
                                      values_y_up, values_y_down):
         # Switch
         if y_up < y_down:
-            #print('  Switching {:.2f} and {:.2f}'.format(y_up, y_down))
+            print('  Switching {:.5f} and {:.5f}'.format(y_up, y_down))
             y_up, y_down = y_down, y_up
 
         # If up variation is lower than nominal, reset
         if y_up < y:
-            #print('  Resetting {} < {}'.format(y_up, y))
+            print('  Resetting {:.5f} < {:.5f}'.format(y_up, y))
             y_up = y
 
         # If down variation is greater than nominal, reset
         if y_down > y:
-            #print('  Resetting {} > {}'.format(y_down, y))
+            print('  Resetting {:.5f} > {:.5f}'.format(y_down, y))
             y_down = y
 
         up.SetPoint(i, x, y_up)
         down.SetPoint(i, x, y_down)
 
-def do_efficiencies(distribution, region, efficiency_filter):
+def do_efficiencies(distribution, region, rqcd_addons, efficiency_filter):
     ##############################################################
     # COMPUTE (DATA-BACKGROUND) AND SIGNAL HISTOGRAMS
     ##############################################################
     process = data['process']
     estimation = data['estimation']
-    data_total = estimation(distribution)(process, region)
-    data_passed = estimation(distribution)(process,
-                                           region.varied(efficiency_filter))
+
+    # Prepare the region
+    total_region = deepcopy(region)
+    passed_region = region.varied(efficiency_filter)
+    total_region.metadata()['rqcd'] += rqcd_addons[0]
+    passed_region.metadata()['rqcd'] += rqcd_addons[1]
+
+    # Compute the total and passed histograms
+    data_total = estimation(distribution)(process, total_region)
+    data_passed = estimation(distribution)(process, passed_region)
 
     backgrounds_total = []
     backgrounds_passed = []
@@ -297,12 +307,10 @@ def do_efficiencies(distribution, region, efficiency_filter):
 
         # Compute the total and passed histograms
         backgrounds_total.append(
-            estimation(distribution)(process, region)
+            estimation(distribution)(process, total_region)
         )
         backgrounds_passed.append(
-            estimation(distribution)(
-                process, region.varied(efficiency_filter)
-            )
+            estimation(distribution)(process, passed_region)
         )
         #print('{} total/passed: {:.1f}/{:.1f}'. \
               #format(process.label(),
@@ -319,12 +327,10 @@ def do_efficiencies(distribution, region, efficiency_filter):
 
         # Compute the total and passed histograms
         signals_total.append(
-            estimation(distribution)(process, region)
+            estimation(distribution)(process, total_region)
         )
         signals_passed.append(
-            estimation(distribution)(
-                process, region.varied(efficiency_filter)
-            )
+            estimation(distribution)(process, passed_region)
         )
 
     systs_total_up = {}
@@ -343,13 +349,13 @@ def do_efficiencies(distribution, region, efficiency_filter):
             estimation = background['estimation']
             uncertainties = background['uncertainties']
 
-            nominal_total = estimation(distribution)(process, region)
-            nominal_passed = estimation(distribution)(
-                process, region.varied(efficiency_filter))
+            nominal_total = estimation(distribution)(process, total_region)
+            nominal_passed = estimation(distribution)(process, passed_region)
 
             if s in uncertainties:
                 # Get the up/down of the total
-                _, _, up, down = estimation(s(distribution))(process, region)
+                _, _, up, down = estimation(s(distribution))(process,
+                                                             total_region)
                 if up is not None and down is not None:
                     systs_total_up[name].append(up)
                     systs_total_down[name].append(down)
@@ -358,8 +364,8 @@ def do_efficiencies(distribution, region, efficiency_filter):
                                        'systematic variation ' + s.name)
 
                 # Get the up/down of the passed
-                _, _, up, down = estimation(s(distribution))(
-                    process, region.varied(efficiency_filter))
+                _, _, up, down = estimation(s(distribution))(process,
+                                                             passed_region)
                 if up is not None and down is not None:
                     systs_passed_up[name].append(up)
                     systs_passed_down[name].append(down)
@@ -445,16 +451,40 @@ def do_efficiencies(distribution, region, efficiency_filter):
         data_subtracted_passed_test = data_passed - background_passed
 
         # Compute the efficiencies
-        data_efficiency_up.append(efficiency(data_subtracted_total_down,
-                                             data_subtracted_passed_up))
-        data_efficiency_down.append(efficiency(data_subtracted_total_up,
-                                               data_subtracted_passed_down))
-        normalize_efficiencies(data_efficiency,
-                               data_efficiency_up[-1],
-                               data_efficiency_down[-1])
+        if name in ['RQCD_STAT', 'RQCD_SYST']:
+            print('Using uncorrelated systematics for {}'.format(name))
+            up = efficiency(data_subtracted_total_down,
+                            data_subtracted_passed)
+            down = efficiency(data_subtracted_total_up,
+                              data_subtracted_passed)
+            normalize_efficiencies(data_efficiency, up, down)
+            up.SetTitle(name + '_UP_TOTAL')
+            down.SetTitle(name + '_DOWN_TOTAL')
+            data_efficiency_up.append(up)
+            data_efficiency_down.append(down)
 
-        data_efficiency_up[-1].SetTitle(name + '_UP')
-        data_efficiency_down[-1].SetTitle(name + '_DOWN')
+            up = efficiency(data_subtracted_total,
+                            data_subtracted_passed_up)
+            down = efficiency(data_subtracted_total,
+                              data_subtracted_passed_down)
+            normalize_efficiencies(data_efficiency, up, down)
+            up.SetTitle(name + '_UP_PASSED')
+            down.SetTitle(name + '_DOWN_PASSED')
+            data_efficiency_up.append(up)
+            data_efficiency_down.append(down)
+
+        else:
+            print('Using correlated systematics for {}.'.format(name))
+            # NOTE: Reversed up/down results in fewer switches
+            down = efficiency(data_subtracted_total_up,
+                            data_subtracted_passed_up)
+            up = efficiency(data_subtracted_total_down,
+                              data_subtracted_passed_down)
+            normalize_efficiencies(data_efficiency, up, down)
+            up.SetTitle(name + '_UP')
+            down.SetTitle(name + '_DOWN')
+            data_efficiency_up.append(up)
+            data_efficiency_down.append(down)
 
         # Compute the offsets in the total yields and write out the
         # difference in yields *AFTER* having computed the efficiencies. (The
@@ -814,6 +844,7 @@ with caching_into(cache):
         for eff_name, eff in iteritems(efficiencies):
             efficiency_filter = eff['filter']
             region = eff['region']
+            rqcd_addons = eff['rqcd_addons']
 
             if arguments.text_output and not parallel.capturing():
                 text_file.write('Efficiencies for {}\n'.format(eff_name))
@@ -831,6 +862,7 @@ with caching_into(cache):
                     data_efficiency_up, data_efficiency_down = \
                     do_efficiencies(distribution,
                                     region,
+                                    rqcd_addons,
                                     efficiency_filter)
 
             # If capturing at pass 1, the efficiencies are bogus, continue

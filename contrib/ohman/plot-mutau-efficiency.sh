@@ -4,19 +4,19 @@
 CONTRIB=$(dirname "$0")
 OWLS="$CONTRIB/../.."
 
-#EXTENSIONS="pdf eps"
-EXTENSIONS="pdf"
+EXTENSIONS="pdf eps"
+#EXTENSIONS="pdf"
 LUMINOSITY=3209.0 # 1/pb
 DATA_PREFIX="/disk/d1/ohman/tagprobe_2016-01-21_merged/"
 
 TRIGGERS="tau25 tau35 tau80 tau125 tau160"
+#TRIGGERS="tau25 tau35"
 #TRIGGERS="tau25"
 
 REGIONS=(mu_tau_loose_id mu_tau_medium_id mu_tau_tight_id)
-#REGIONS=(mu_tau)
+#REGIONS=(mu_tau_medium_id)
 
 DISTRIBUTIONS=(tau_pt_trig_b1 tau_pt_trig_b3)
-#DISTRIBUTIONS=(tau_pt_trig_b1)
 DISTRIBUTIONS=(tau_pt_trig_b3)
 
 echo ">>> Plotting tau efficiency and scale factors"
