@@ -24,10 +24,12 @@ from owls_hep.histogramming import Histogram
 from owls_hep.plotting import Plot, ratio_histogram
 
 # owls-taunu imports
+from owls_taunu.variations import Filtered
 from owls_taunu.mutau.variations import OS, SS
 from owls_taunu.styling import default_black, default_red
 
 Plot.PLOT_RATIO_Y_AXIS_TITLE_OFFSET = 0.50
+Plot.PLOT_LEGEND_LEFT = 0.70
 
 # Parse command line arguments
 parser = argparse.ArgumentParser(
@@ -121,6 +123,11 @@ etcone_syst = Histogram(
     'Events'
 )
 
+splits = [
+    ('low_pt', 'tau_0_pt <= 40'),
+    ('high_pt', 'tau_0_pt > 40'),
+]
+
 # Get computation environment
 cache = getattr(environment_file, 'persistent_cache', None)
 backend = getattr(environment_file, 'parallelization_backend', None)
@@ -136,7 +143,7 @@ def sum_cumulative(histogram):
         histogram.SetBinContent(i, cumulative_count)
         histogram.SetBinError(i, stat_error)
 
-def compute_syst(region, distribution, file_name):
+def compute_syst(region, distribution, label, file_name):
     os = distribution(data['process'], region.varied(OS()))
     ss = distribution(data['process'], region.varied(SS()))
     #if not parallel.capturing():
@@ -180,18 +187,18 @@ def compute_syst(region, distribution, file_name):
     mod = lambda v: round(v*20.0, 0) / 20.0
     plot.draw_ratios(
         [(ratio, default_black, 'ep')],
-        y_range = (mod(down*0.95), mod(down*0.9) + 0.4),
+        # y_range = (mod(down*0.95), mod(down*0.9) + 0.4),
+        y_range = (0.8, 2.0),
         y_title = 'r_{QCD}'
     )
 
     plot.draw_legend()
-    plot.draw_atlas_label(custom_label = [region.label()])
+    plot.draw_atlas_label(custom_label = [label, region.label()])
     plot.save(join(base_path, file_name), arguments.extensions)
 
     return syst
 
 r_qcd_dict = OrderedDict({})
-bin_r_qcd_dict = OrderedDict({})
 
 base_path = arguments.output
 if not exists(base_path):
@@ -203,109 +210,83 @@ with caching_into(cache):
         # Loop over regions
         for region_name in regions:
             region = regions[region_name]
+            r_qcd_dict[region_name] = []
 
-            # Get counts from data
-            ss_counts = Count()(data['process'], region.varied(SS()))
-            os_counts = Count()(data['process'], region.varied(OS()))
+            for label,split in splits:
+                # Create a filter of the splitting parameter and vary the
+                # region according to the split
+                f = Filtered(split)
+                r = region.varied(f)
 
-            ss_hist = tau_pt(data['process'], region.varied(SS()))
-            os_hist = tau_pt(data['process'], region.varied(OS()))
+                # Get counts from data
+                ss_counts = Count()(data['process'], r.varied(SS()))
+                os_counts = Count()(data['process'], r.varied(OS()))
 
-            # Subtract MC backgrounds
-            for name,background in iteritems(backgrounds):
-                if name == 'ss_data':
+                # Subtract MC backgrounds
+                for name,background in iteritems(backgrounds):
+                    if name == 'ss_data':
+                        continue
+                    process = background['process']
+                    ss_counts -= Count()(process, r.varied(SS()))
+                    os_counts -= Count()(process, r.varied(OS()))
+
+                r_qcd_raw_syst_ptcone = \
+                        compute_syst(r,
+                                     ptcone_syst,
+                                     split,
+                                     '{}_{}_ptvarcone30'. \
+                                     format(region_name, label))
+                r_qcd_raw_syst_etcone = \
+                        compute_syst(r,
+                                     etcone_syst,
+                                     split,
+                                     '{}_{}_topoetcone20'. \
+                                     format(region_name, label))
+
+                if parallel.capturing():
                     continue
-                process = background['process']
-                ss_counts -= Count()(process, region.varied(SS()))
-                os_counts -= Count()(process, region.varied(OS()))
 
-                ss_hist.Add(tau_pt(process, region.varied(SS())), -1)
-                os_hist.Add(tau_pt(process, region.varied(OS())), -1)
+                ss_stat = sqrt(ss_counts)
+                os_stat = sqrt(os_counts)
 
+                # print('{0}: Counts OS = {1:.0f}±{2:.1f}, SS = {3:.0f}±{4:.1f}'. \
+                      # format(r.label(),
+                             # os_counts,
+                             # os_stat,
+                             # ss_counts,
+                             # ss_stat))
 
-            r_qcd_raw_syst_ptcone = \
-                    compute_syst(region,
-                                 ptcone_syst,
-                                 '{}_ptvarcone30'.format(region_name))
-            r_qcd_raw_syst_etcone = \
-                    compute_syst(region,
-                                 etcone_syst,
-                                 '{}_topoetcone20'.format(region_name))
+                # Compute rQCD and errors
+                r_qcd = os_counts / ss_counts
+                r_qcd_stat = sqrt((os_stat / os_counts)**2 +
+                                  (ss_stat / ss_counts)**2) * r_qcd
+                r_qcd_syst_ptcone = r_qcd_raw_syst_ptcone / r_qcd
+                r_qcd_syst_etcone = r_qcd_raw_syst_etcone / r_qcd
+                r_qcd_syst = sqrt(r_qcd_syst_ptcone**2 + r_qcd_syst_etcone**2)
+
+                # Round to 3 decimals
+                r_qcd = round(r_qcd, 3)
+                r_qcd_stat = round(r_qcd_stat, 3)
+                r_qcd_syst = round(r_qcd_syst, 3)
+                r_qcd_dict[region_name].append(
+                    (split, r_qcd, r_qcd_stat, r_qcd_syst)
+                )
+
+                # print('{}: r_QCD = {:.2f} ± {:.2f}(stat) ± '
+                      # '{:.2f}(pt) ± {:.2f}(et)'. \
+                      # format(region.label(), r_qcd, r_qcd_stat,
+                             # r_qcd_syst_ptcone, r_qcd_syst_etcone))
 
             if parallel.capturing():
                 continue
 
-            ss_stat = sqrt(ss_counts)
-            os_stat = sqrt(os_counts)
-
-            print('{0}: Counts OS = {1:.0f}±{2:.1f}, SS = {3:.0f}±{4:.1f}'. \
-                  format(region.label(),
-                         os_counts,
-                         os_stat,
-                         ss_counts,
-                         ss_stat))
-
-            # Compute rQCD and errors
-            r_qcd = os_counts / ss_counts
-            r_qcd_stat = sqrt((os_stat / os_counts)**2 +
-                              (ss_stat / ss_counts)**2) * r_qcd
-            r_qcd_syst_ptcone = r_qcd_raw_syst_ptcone / r_qcd
-            r_qcd_syst_etcone = r_qcd_raw_syst_etcone / r_qcd
-            r_qcd_syst = sqrt(r_qcd_syst_ptcone**2 + r_qcd_syst_etcone**2)
-
-            # Round to 3 decimals
-            r_qcd = round(r_qcd, 3)
-            r_qcd_stat = round(r_qcd_stat, 3)
-            r_qcd_syst = round(r_qcd_syst, 3)
-            r_qcd_dict[region_name] = (r_qcd, r_qcd_stat, r_qcd_syst)
-
             # Print the result
-            print('{}: r_QCD = {:.2f} ± {:.2f}(stat) ± '
-                  '{:.2f}(pt) ± {:.2f}(et)'. \
-                  format(region.label(), r_qcd, r_qcd_stat,
-                         r_qcd_syst_ptcone, r_qcd_syst_etcone))
-            print('{}: r_QCD = {:.2f} ± {:.2f}(stat) ± {:.2f}(syst)'. \
-                  format(region.label(), r_qcd, r_qcd_stat, r_qcd_syst))
-
-            # Compute rQCD binned in tau pT
-            bin_edges = [ss_hist.GetBinLowEdge(i) for i in [3, 5]]
-            ss_bin_counts = [integral(ss_hist, bin_range = (3, 4))]
-            ss_bin_counts.append(
-                integral(ss_hist,
-                         bin_range = (5, ss_hist.GetNbinsX()+1)))
-            os_bin_counts = [integral(os_hist, bin_range = (3, 4))]
-            os_bin_counts.append(
-                integral(os_hist,
-                         bin_range = (5, os_hist.GetNbinsX()+1)))
-
-            ss_bin_stats = [sqrt(c) for c in ss_bin_counts]
-            os_bin_stats = [sqrt(c) for c in os_bin_counts]
-            bin_r_qcd = [os/ss for os,ss in zip(os_bin_counts, ss_bin_counts)]
-            bin_r_qcd_stat = [sqrt((os_st/os)**2 + (ss_st/ss)**2) * r
-                              for (r, os, ss, os_st, ss_st)
-                              in zip(bin_r_qcd,
-                                     os_bin_counts,
-                                     ss_bin_counts,
-                                     os_bin_stats,
-                                     ss_bin_stats)]
-            r_qcd_dict[region_name] = \
-                    [(edge, r, stat)
-                     for edge, r, stat
-                     in zip(bin_edges, bin_r_qcd, bin_r_qcd_stat)]
-
-            print('{}: r_QCD (binned) = {}'. \
-                  format(region.label(),
-                         ', '.join(['({:.0f}, {:.2f}±{:.2f})'. \
-                                    format(edge, r, stat)
-                                    for edge, r, stat
-                                    in zip(bin_edges,
-                                           bin_r_qcd,
-                                           bin_r_qcd_stat)])))
+            print('{}:'.format(region.label()))
+            for e in r_qcd_dict[region_name]:
+                print('    {0:20s}: {1:.2f} ± {2:.2f} ± {3:.2f}'.format(*e))
 
 
 with open(join(base_path, 'rqcd.txt'), 'w') as f:
     for k,v in r_qcd_dict.iteritems():
         f.write('\'{}\': {},\n'.format(k, v))
     f.write('\n')
-    for k,v in bin_r_qcd_dict.iteritems():
-        f.write('\'{}\': {},\n'.format(k, v))
