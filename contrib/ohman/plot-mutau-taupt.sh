@@ -21,6 +21,12 @@ MC_REGIONS=" \
   mu_tau_qcd_cr_1p_ss \
   mu_tau_qcd_cr_3p_os \
   mu_tau_qcd_cr_3p_ss \
+  mu_tau_qcd_cr_tau25_os \
+  mu_tau_qcd_cr_tau25_ss \
+  mu_tau_qcd_cr_tau25_1p_os \
+  mu_tau_qcd_cr_tau25_1p_ss \
+  mu_tau_qcd_cr_tau25_3p_os \
+  mu_tau_qcd_cr_tau25_3p_ss \
   "
 OSSS_REGIONS=" \
   mu_tau \
@@ -54,6 +60,8 @@ OSSS_REGIONS=" \
   mu_tau_ttbar_cr_tau25_1p \
   mu_tau_ttbar_cr_tau25_3p \
   "
+#OSSS_REGIONS="mu_tau"
+
 OSSS_REGIONS_SYST=" \
   mu_tau \
   mu_tau_1p \
@@ -62,18 +70,18 @@ OSSS_REGIONS_SYST=" \
   mu_tau_tau25_1p \
   mu_tau_tau25_3p \
   "
-#OSSS_REGIONS="mu_tau"
+#OSSS_REGIONS_SYST="mu_tau"
 
 DISTRIBUTIONS="tau_pt"
 
-#EXTENSIONS="pdf eps"
-EXTENSIONS="pdf"
+EXTENSIONS="pdf eps"
+#EXTENSIONS="pdf"
 LUMINOSITY=3209.0 # 1/pb
 DATA_PREFIX="/disk/d1/ohman/tagprobe_2016-01-21_merged/"
 
 
 
-## Plots with only MC backgrounds, and split into MC processes
+# Plots with only MC backgrounds, and split into MC processes
 OUTPUT="results_mutau/plots_mc"
 "$OWLS/tools/plot.py" \
   --output $OUTPUT \

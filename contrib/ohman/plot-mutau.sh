@@ -39,8 +39,9 @@ DISTRIBUTIONS="\
   met_et met_phi mt \
   mu nvx \
   "
-#EXTENSIONS="pdf eps"
-EXTENSIONS="pdf"
+
+EXTENSIONS="pdf eps"
+#EXTENSIONS="pdf"
 LUMINOSITY=3209.0 # 1/pb
 DATA_PREFIX="/disk/d1/ohman/tagprobe_2016-01-21_merged"
 

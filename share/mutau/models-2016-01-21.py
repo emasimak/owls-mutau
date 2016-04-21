@@ -40,18 +40,30 @@ nominal_tree = 'NOMINAL'
 sqrt_s = 13.0 * 1000 * 1000 # MeV
 
 r_qcd = {
-    'mu_tau_qcd_cr': (1.234, 0.017, 0.045),
-    'mu_tau_qcd_cr_1p': (1.209, 0.02, 0.048),
-    'mu_tau_qcd_cr_3p': (1.317, 0.037, 0.088),
-    'mu_tau_qcd_cr_loose_id': (1.182, 0.012, 0.025),
-    'mu_tau_qcd_cr_loose_id_1p': (1.158, 0.015, 0.029),
-    'mu_tau_qcd_cr_loose_id_3p': (1.228, 0.021, 0.043),
-    'mu_tau_qcd_cr_medium_id': (1.234, 0.017, 0.045),
-    'mu_tau_qcd_cr_medium_id_1p': (1.209, 0.02, 0.048),
-    'mu_tau_qcd_cr_medium_id_3p': (1.317, 0.037, 0.088),
-    'mu_tau_qcd_cr_tight_id': (1.264, 0.026, 0.054),
-    'mu_tau_qcd_cr_tight_id_1p': (1.218, 0.028, 0.053),
-    'mu_tau_qcd_cr_tight_id_3p': (1.48, 0.07, 0.14),
+    'mu_tau_qcd_cr': [('tau_0_pt <= 40', 1.196, 0.019, 0.05), ('tau_0_pt > 40', 1.376, 0.041, 0.076)],
+    'mu_tau_qcd_cr_1p': [('tau_0_pt <= 40', 1.185, 0.022, 0.055), ('tau_0_pt > 40', 1.284, 0.042, 0.081)],
+    'mu_tau_qcd_cr_3p': [('tau_0_pt <= 40', 1.227, 0.038, 0.093), ('tau_0_pt > 40', 1.879, 0.134, 0.15)],
+    'mu_tau_qcd_cr_loose_id': [('tau_0_pt <= 40', 1.15, 0.014, 0.026), ('tau_0_pt > 40', 1.303, 0.029, 0.049)],
+    'mu_tau_qcd_cr_loose_id_1p': [('tau_0_pt <= 40', 1.133, 0.017, 0.037), ('tau_0_pt > 40', 1.236, 0.032, 0.052)],
+    'mu_tau_qcd_cr_loose_id_3p': [('tau_0_pt <= 40', 1.177, 0.023, 0.046), ('tau_0_pt > 40', 1.491, 0.062, 0.081)],
+    'mu_tau_qcd_cr_medium_id': [('tau_0_pt <= 40', 1.196, 0.019, 0.05), ('tau_0_pt > 40', 1.376, 0.041, 0.076)],
+    'mu_tau_qcd_cr_medium_id_1p': [('tau_0_pt <= 40', 1.185, 0.022, 0.055), ('tau_0_pt > 40', 1.284, 0.042, 0.081)],
+    'mu_tau_qcd_cr_medium_id_3p': [('tau_0_pt <= 40', 1.227, 0.038, 0.093), ('tau_0_pt > 40', 1.879, 0.134, 0.15)],
+    'mu_tau_qcd_cr_tight_id': [('tau_0_pt <= 40', 1.238, 0.029, 0.076), ('tau_0_pt > 40', 1.355, 0.058, 0.079)],
+    'mu_tau_qcd_cr_tight_id_1p': [('tau_0_pt <= 40', 1.198, 0.031, 0.08), ('tau_0_pt > 40', 1.28, 0.059, 0.097)],
+    'mu_tau_qcd_cr_tight_id_3p': [('tau_0_pt <= 40', 1.401, 0.072, 0.139), ('tau_0_pt > 40', 2.017, 0.252, 0.23)],
+    'mu_tau_qcd_cr_tau25': [('tau_0_pt <= 40', 1.222, 0.03, 0.099), ('tau_0_pt > 40', 1.429, 0.05, 0.098)],
+    'mu_tau_qcd_cr_tau25_1p': [('tau_0_pt <= 40', 1.213, 0.031, 0.099), ('tau_0_pt > 40', 1.346, 0.052, 0.089)],
+    'mu_tau_qcd_cr_tau25_3p': [('tau_0_pt <= 40', 1.285, 0.089, 0.148), ('tau_0_pt > 40', 1.945, 0.174, 0.205)],
+    'mu_tau_qcd_cr_loose_id_tau25': [('tau_0_pt <= 40', 1.194, 0.023, 0.065), ('tau_0_pt > 40', 1.342, 0.036, 0.073)],
+    'mu_tau_qcd_cr_loose_id_tau25_1p': [('tau_0_pt <= 40', 1.181, 0.025, 0.067), ('tau_0_pt > 40', 1.273, 0.039, 0.068)],
+    'mu_tau_qcd_cr_loose_id_tau25_3p': [('tau_0_pt <= 40', 1.258, 0.06, 0.091), ('tau_0_pt > 40', 1.593, 0.09, 0.136)],
+    'mu_tau_qcd_cr_medium_id_tau25': [('tau_0_pt <= 40', 1.222, 0.03, 0.099), ('tau_0_pt > 40', 1.429, 0.05, 0.098)],
+    'mu_tau_qcd_cr_medium_id_tau25_1p': [('tau_0_pt <= 40', 1.213, 0.031, 0.099), ('tau_0_pt > 40', 1.346, 0.052, 0.089)],
+    'mu_tau_qcd_cr_medium_id_tau25_3p': [('tau_0_pt <= 40', 1.285, 0.089, 0.148), ('tau_0_pt > 40', 1.945, 0.174, 0.205)],
+    'mu_tau_qcd_cr_tight_id_tau25': [('tau_0_pt <= 40', 1.261, 0.042, 0.117), ('tau_0_pt > 40', 1.394, 0.069, 0.11)],
+    'mu_tau_qcd_cr_tight_id_tau25_1p': [('tau_0_pt <= 40', 1.25, 0.044, 0.11), ('tau_0_pt > 40', 1.326, 0.07, 0.112)],
+    'mu_tau_qcd_cr_tight_id_tau25_3p': [('tau_0_pt <= 40', 1.373, 0.145, 0.334), ('tau_0_pt > 40', 2.069, 0.315, 0.31)],
 }
 
 # Redefitions of estimations
@@ -113,7 +125,7 @@ ss_data = Process(
     sample_type = 'data',
     line_color = 1,
     fill_color = 424,
-    #metadata = {'print_me': True},
+    # metadata = {'print_me': ['estimation']},
 )
 
 zll = Process(
@@ -249,7 +261,6 @@ ttbar = Process(
     friends = (prw_friend,),
     line_color = 1,
     fill_color = 0,
-    #metadata = {'print_me': True},
 )
 
 ttbar_true = ttbar.patched(
@@ -257,7 +268,6 @@ ttbar_true = ttbar.patched(
     label = 't#bar{t} (true #tau)',
     line_color = 1,
     fill_color = 0,
-    #metadata = {'print_me': True},
 )
 
 ttbar_lfake = ttbar.patched(
@@ -272,7 +282,8 @@ ttbar_jetfake = ttbar.patched(
     label = 't#bar{t} (j #rightarrow #tau)',
     line_color = 1,
     fill_color = 406,
-    #metadata = {'print_me': True},
+    # metadata = {'print_me': ['selection', 'expressions']},
+    # metadata = {'print_me': ['estimation']},
 )
 
 # Other process for mu+tau
@@ -315,25 +326,25 @@ if systematics in ['Pruned', 'True']:
     mc_uncertainties = [
         #TestSystFlat,
         #TestSystShape,
-        MuonEffStat,
-        MuonEffSys,
+        # Pruned MuonEffStat,
+        # Pruned MuonEffSys,
         MuonEffTrigStat,
         MuonEffTrigSys,
-        MuonIsoStat,
-        MuonIsoSys,
+        # Pruned MuonIsoStat,
+        # Pruned MuonIsoSys,
         # Candidate MuonIdSys,
         # Candidate MuonMsSys,
         # Candidate MuonScaleSys,
         BJetEigenB0,
         BJetEigenB1,
-        BJetEigenB2,
+        # Pruned BJetEigenB2,
         # Pruned BJetEigenB3,
         # Pruned BJetEigenB4,
-        # Candidate BJetEigenC0,
+        BJetEigenC0,
         # Pruned BJetEigenC1,
         # Pruned BJetEigenC2,
         # Pruned BJetEigenC3,
-        # Candidate BJetEigenLight0,
+        BJetEigenLight0,
         # Pruned BJetEigenLight1,
         # Pruned BJetEigenLight2,
         # Pruned BJetEigenLight3,
@@ -412,7 +423,7 @@ else:
 
 # Create models
 mc = {
-    'label': 'MC vs data',
+    'label': 'Data vs MC',
     'luminosity': luminosity,
     'sqrt_s': sqrt_s,
     'data': {
@@ -459,7 +470,7 @@ mc = {
 }
 
 mc_fakes = {
-    'label': 'MC vs Data',
+    'label': 'Data vs MC',
     'luminosity': luminosity,
     'sqrt_s': sqrt_s,
     'data': {
@@ -516,7 +527,7 @@ mc_fakes = {
 }
 
 mc_sub = {
-    'label': 'MC vs Data',
+    'label': 'Data vs MC',
     'luminosity': luminosity,
     'sqrt_s': sqrt_s,
     'data': {
