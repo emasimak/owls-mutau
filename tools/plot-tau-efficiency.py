@@ -620,7 +620,7 @@ def plot_efficiencies(data_efficiency,
     #set_error(stat_uncertainty_band, data_stat_uncertainty)
 
     total_uncertainty_band = data_efficiency.Clone(uuid4().hex)
-    total_uncertainty_band.SetTitle('Data Stat. #otimes Syst.')
+    total_uncertainty_band.SetTitle('Data Stat. #oplus Syst.')
     set_error(total_uncertainty_band, data_total_uncertainty)
 
     data_efficiency = data_efficiency.Clone(uuid4().hex)
@@ -649,16 +649,16 @@ def plot_efficiencies(data_efficiency,
     set_error(sf_data_syst_band, sf_data_syst)
 
     sf_signal_stat_band = scale_factor.Clone(uuid4().hex)
-    sf_signal_stat_band .SetTitle('Data Syst. #otimes Data Stat. '
-                                  '#otimes Signal Stat.')
+    sf_signal_stat_band.SetTitle('Data Syst. #oplus Signal Stat.')
     set_error(sf_signal_stat_band, combine_errors(sf_data_syst,
                                                   sf_signal_stat))
 
     sf_data_stat_band = scale_factor.Clone(uuid4().hex)
-    sf_data_stat_band .SetTitle('Data Syst. #otimes Data Stat.')
+    sf_signal_stat_band.SetTitle('Data Syst. #oplus Data Stat. '
+                                 '#oplus Signal Stat.')
     set_error(sf_data_stat_band, combine_errors(sf_data_syst,
-                                                  sf_signal_stat,
-                                                  sf_data_stat))
+                                                sf_signal_stat,
+                                                sf_data_stat))
 
     plot.draw_ratios(
         (
@@ -738,6 +738,10 @@ def do_scale_factor(data_efficiency,
                                           down_variations)
     syst_uncertainty.SetTitle('SYST')
 
+    # TODO: The statistical errors are normalized to 1, but perhaps they
+    # should be normalized to the SF instead? I.e. that we should supply
+    # nominal to normalize_stat_error and do low = eff_low/eff_y * sf_y. I'm
+    # not sure that is correct.
     data_stat_uncertainty = normalize_stat_error(data_efficiency)
     data_stat_uncertainty.SetTitle('DATA STAT')
 
@@ -775,12 +779,15 @@ def do_scale_factor(data_efficiency,
 
 def save_to_root(data_efficiency,
                  signal_efficiency,
+                 data_syst_uncertainty,
                  variation_efficiencies,
                  scale_factor,
                  scale_factor_uncertainties,
                  file_name):
     root_file.cd()
 
+    # NOTE: The statistical uncertainties on the efficiencies are attached to
+    # the graphs
     clone = data_efficiency.Clone(uuid4().hex)
     clone.SetName('_'.join(['eff', file_name, 'data']))
     clone.Write()
@@ -789,10 +796,16 @@ def save_to_root(data_efficiency,
     clone.SetName('_'.join(['eff', file_name, 'mc']))
     clone.Write()
 
-    for eff in variation_efficiencies:
-        clone = eff.Clone(uuid4().hex)
-        clone.SetName('_'.join(['eff', file_name, clone.GetTitle()]))
-        clone.Write()
+    clone = data_syst_uncertainty.Clone(uuid4().hex)
+    clone.SetName('_'.join(['eff', file_name, 'SYST']))
+    clone.SetTitle(clone.GetTitle() + ' SYST')
+    clone.Write()
+
+    # NOTE: The individual syst uncertainties are not that useful.
+    # for eff in variation_efficiencies:
+        # clone = eff.Clone(uuid4().hex)
+        # clone.SetName('_'.join(['eff', file_name, clone.GetTitle()]))
+        # clone.Write()
 
     clone = scale_factor.Clone(uuid4().hex)
     clone.SetName('_'.join(['sf', file_name]))
@@ -803,6 +816,11 @@ def save_to_root(data_efficiency,
         clone = uncertainty.Clone(uuid4().hex)
         clone.SetName('_'.join(['sf', file_name, name]))
         clone.Write()
+    clone = combine_errors(scale_factor_uncertainties[1],
+                           scale_factor_uncertainties[2])
+    clone.SetName('_'.join(['sf', file_name, 'STAT']))
+    clone.SetTitle('_'.join(['sf', file_name, 'STAT']))
+    clone.Write()
 
 def write_counts_signal(total, passed):
     text_file.write('Signal total/passed: {:.1f}/{:.1f}\n'. \
@@ -901,6 +919,7 @@ with caching_into(cache):
             if arguments.root_output:
                 save_to_root(data_efficiency,
                              signal_efficiency,
+                             data_syst_uncertainty,
                              data_efficiency_up + data_efficiency_down,
                              scale_factor,
                              scale_factor_uncertainties,
