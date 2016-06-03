@@ -123,10 +123,18 @@ etcone_syst = Histogram(
     'Events'
 )
 
-splits = [
-    ('low_pt', 'tau_0_pt <= 40'),
-    ('high_pt', 'tau_0_pt > 40'),
-]
+all_splits = {
+    'default': [
+        ('low_pt', 'tau_0_pt <= 40'),
+        ('high_pt', 'tau_0_pt > 40'),
+    ],
+    '3p': [
+        ('low_pt', 'tau_0_pt <= 35'),
+        ('med_pt', 'tau_0_pt > 35 && tau_0_pt <= 50'),
+        ('high_pt', 'tau_0_pt > 50'),
+    ],
+
+}
 
 # Get computation environment
 cache = getattr(environment_file, 'persistent_cache', None)
@@ -211,6 +219,11 @@ with caching_into(cache):
         for region_name in regions:
             region = regions[region_name]
             r_qcd_dict[region_name] = []
+
+            if '3p' in region_name:
+                splits = all_splits['3p']
+            else:
+                splits = all_splits['default']
 
             for label,split in splits:
                 # Create a filter of the splitting parameter and vary the
