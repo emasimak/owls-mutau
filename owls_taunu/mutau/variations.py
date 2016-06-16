@@ -3,9 +3,8 @@
 
 
 # owls-hep imports
-from owls_hep.region import Variation
-from owls_hep.expression import variable_substituted, \
-        multiplied, divided, anded, ored
+from owls_hep.variations import Variation
+from owls_hep.expression import anded
 
 class SS(Variation):
     def __call__(self, selection, weight):

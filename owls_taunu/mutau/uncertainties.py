@@ -4,10 +4,7 @@
 
 # owls-hep imports
 from owls_hep.uncertainty import Uncertainty, sum_quadrature, to_overall
-from owls_hep.region import Reweighted
-
-# owls-taunu imports
-from owls_taunu.variations import ReplaceWeight
+from owls_hep.variations import Reweighted, ReplaceWeight
 
 class TestSystFlat(Uncertainty):
     name = 'TEST_SYST_FLAT'

@@ -4,9 +4,9 @@
 # owls-hep imports
 from owls_hep.estimation import Estimation
 from owls_hep.uncertainty import Uncertainty
+from owls_hep.variations import Filtered
 
 # owls-taunu imports
-from owls_taunu.variations import Filtered
 from owls_taunu.mutau.variations import SS, OS
 from owls_taunu.mutau.uncertainties import RqcdSyst, RqcdStat
 

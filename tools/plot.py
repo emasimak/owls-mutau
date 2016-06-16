@@ -21,7 +21,6 @@ from owls_parallel import ParallelizedEnvironment
 
 # owls-hep imports
 from owls_hep.module import load as load_module
-from owls_hep.region import Reweighted
 from owls_hep.uncertainty import uncertainty_band, combined_uncertainty_band, \
     ratio_uncertainty_band, to_overall, sum_quadrature
 from owls_hep.plotting import Plot, histogram_stack, combined_histogram, \
