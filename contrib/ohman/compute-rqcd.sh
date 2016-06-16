@@ -31,15 +31,20 @@ REGIONS="\
   mu_tau_qcd_cr_tight_id_tau25_3p \
   "
 #REGIONS="mu_tau_qcd_cr"
+#REGIONS="\
+  #mu_tau_qcd_cr \
+  #mu_tau_qcd_cr_1p \
+  #mu_tau_qcd_cr_3p \
+  #"
 
-DATA_PREFIX="/disk/d1/ohman/tagprobe_2016-01-21_merged"
+DATA_PREFIX="/disk/d1/ohman/tagprobe_2016-05-31_v03_merged/"
 
 # Compute r_QCD
 "$OWLS/tools/compute-rqcd.py" \
   --output results_mutau/rqcd \
-  --model-file "$OWLS/share/mutau/models-2016-01-21.py" \
+  --model-file "$OWLS/share/mutau/models-2016-05-31.py" \
   --model osss \
-  --regions-file "$OWLS/share/mutau/regions-2016-01-21.py" \
+  --regions-file "$OWLS/share/mutau/regions-2016-05-31.py" \
   --regions $REGIONS \
   --distributions-file "$OWLS/share/mutau/distributions.py" \
   --environment-file "$CONTRIB/environment.py" \
