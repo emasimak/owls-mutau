@@ -11,7 +11,7 @@ tau_pt = Histogram(
         'tau_0_pt',
         (20, 0, 200),
         '',
-        '#tau p_{T} (GeV)',
+        '#tau p_{T} [GeV]',
         'Events / 10 GeV'
         )
 
@@ -19,7 +19,7 @@ tau_pt_b1 = Histogram(
         'tau_0_pt',
         (15, 0, 300),
         '',
-        '#tau p_{T} (GeV)',
+        '#tau p_{T} [GeV]',
         'Events / 20 GeV'
         )
 
@@ -27,7 +27,7 @@ tau_pt_b2 = Histogram(
         'tau_0_pt',
         (10, 50, 150),
         '',
-        '#tau p_{T} (GeV)',
+        '#tau p_{T} [GeV]',
         'Events / 10 GeV'
         )
 
@@ -78,7 +78,7 @@ tau_hlt_pt = Histogram(
         'tau_0_HLT_pt',
         (15, 0, 300),
         '',
-        'HLT #tau p_{T} (GeV)',
+        'HLT #tau p_{T} [GeV]',
         'Events / 20 GeV'
         )
 
@@ -102,7 +102,7 @@ mu_pt = Histogram(
         'lep_0_pt',
         (20, 0, 200),
         '',
-        '#mu p_{T} (GeV)',
+        '#mu p_{T} [GeV]',
         'Events / 10 GeV'
         )
 
@@ -159,7 +159,7 @@ met_et = Histogram(
         'met_reco_et',
         (15, 0, 300),
         '',
-        'E_{T}^{miss} (GeV)',
+        'E_{T}^{miss} [GeV]',
         'Events / 20 GeV'
         )
 
@@ -199,7 +199,7 @@ jet_0_pt = Histogram(
         'jet_0_pt',
         (15, 0, 300),
         '',
-        'Leading jet p_{T} (GeV)',
+        'Leading jet p_{T} [GeV]',
         'Events / 20 GeV'
         )
 
@@ -223,7 +223,7 @@ jet_1_pt = Histogram(
         'jet_1_pt',
         (15, 0, 300),
         '',
-        'Subleading jet p_{T} (GeV)',
+        'Subleading jet p_{T} [GeV]',
         'Events / 20 GeV'
         )
 
@@ -247,7 +247,7 @@ jet_2_pt = Histogram(
         'jet_2_pt',
         (15, 0, 300),
         '',
-        'Third jet p_{T} (GeV)',
+        'Third jet p_{T} [GeV]',
         'Events / 20 GeV'
         )
 
@@ -316,45 +316,63 @@ nvx = Histogram(
         'Events'
         )
 
+# Quantities for trigger analyses
 tau_pt_trig_1gev = Histogram(
         'tau_0_pt',
         (125,25,150),
         '',
-        '#tau p_{T} (GeV)',
+        'Offline #tau p_{T} [GeV]',
         'Events'
         )
 tau_pt_trig_5gev = Histogram(
         'tau_0_pt',
         (25,25,150),
         '',
-        '#tau p_{T} (GeV)',
+        'Offline #tau p_{T} [GeV]',
         'Events'
         )
 tau_pt_trig_b1 = Histogram(
         'tau_0_pt',
         (25, 28, 30, 32, 34, 36, 39, 43, 53, 100, 150, 300),
         '',
-        '#tau p_{T} (GeV)',
+        'Offline #tau p_{T} [GeV]',
         'Events'
         )
 tau_pt_trig_b2  = Histogram(
         'tau_0_pt',
         (25, 28, 30, 32, 34, 36, 39, 43, 48, 54, 62, 72, 85, 100, 125, 150, 300),
         '',
-        '#tau p_{T} (GeV)',
+        'Offline #tau p_{T} [GeV]',
         'Events'
         )
 tau_pt_trig_b3  = Histogram(
         'tau_0_pt',
         (25, 28, 30, 32, 34, 36, 39, 43, 52, 64, 80, 100, 150, 300),
         '',
-        '#tau p_{T} (GeV)',
+        'Offline #tau p_{T} [GeV]',
         'Events'
         )
 tau_pt_trig_b4  = Histogram(
         'tau_0_pt',
         (25, 28, 31, 34, 37, 40, 44, 53, 65, 100, 150, 300),
         '',
-        '#tau p_{T} (GeV)',
+        'Offline #tau p_{T} [GeV]',
         'Events'
         )
+
+tau_pt_trig_b5 = Histogram(
+        'tau_0_pt',
+        (20, 0, 200),
+        '',
+        'Offline #tau p_{T} [GeV]',
+        'Events / 10 GeV'
+        )
+
+tau_bdt_score_trig = Histogram(
+        'tau_0_trig1_HLT_jet_bdt_score',
+        (25, 0.5, 1.0),
+        '',
+        'HLT BDT #tau ID score',
+        'Events'
+        )
+

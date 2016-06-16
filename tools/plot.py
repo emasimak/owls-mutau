@@ -29,9 +29,7 @@ from owls_hep.plotting import Plot, histogram_stack, combined_histogram, \
 from owls_hep.utility import integral, get_bins_errors
 
 Plot.PLOT_HEADER_HEIGHT = 500
-Plot.PLOT_LEGEND_LEFT = 0.65
-
-ATLAS_LABEL = 'Work in Progress'
+Plot.PLOT_LEGEND_LEFT = 0.60
 
 # Parse command line arguments
 parser = argparse.ArgumentParser(
@@ -90,6 +88,20 @@ parser.add_argument('-e',
                     default = 'Stat. Unc.',
                     help = 'the label to use for error bands',
                     metavar = '<error-label>')
+parser.add_argument('--ratio-title',
+                    default = 'Data / Background',
+                    help = 'Y-axis title to use for the ratio histogram',
+                    metavar = '<ratio-title>')
+parser.add_argument('-l',
+                    '--label',
+                    nargs = '*',
+                    help = 'items to add to the custom label',
+                    metavar = '<items>')
+parser.add_argument('-a',
+                    '--atlas-label',
+                    default = 'Work in Progress',
+                    help = 'the label to use for the ATLAS stamp',
+                    metavar = '<atlas-label>')
 parser.add_argument('-x',
                     '--extensions',
                     nargs = '+',
@@ -399,9 +411,15 @@ with caching_into(cache):
 
                 # Draw the ratio plot
                 if data_histogram is not None:
-                    ratio = ratio_histogram(data_histogram, signal_stack)
+                    ratio = ratio_histogram(data_histogram,
+                                            signal_stack,
+                                            arguments.ratio_title)
                     plot.draw_ratio_histogram(ratio,
                                               error_band = ratio_uncertainty)
+
+                legend_entries = (data_histogram,
+                                  signal_stack,
+                                  uncertainty)
 
             # Plot data vs background model with optional signal overlay
             else:
@@ -427,20 +445,28 @@ with caching_into(cache):
 
                 # Draw the ratio plot
                 if data_histogram is not None:
-                    ratio = ratio_histogram(data_histogram, background_stack)
+                    ratio = ratio_histogram(data_histogram,
+                                            background_stack,
+                                            arguments.ratio_title)
                     plot.draw_ratio_histogram(ratio,
                                               error_band = ratio_uncertainty)
 
+                legend_entries = (data_histogram,
+                                  signal_histogram,
+                                  background_stack,
+                                  uncertainty)
+
             # Draw a legend
-            # NOTE: We can set the plotting order explicitly now, if needed.
-            plot.draw_legend()
+            plot.draw_legend(legend_entries = legend_entries)
 
             # Draw an ATLAS stamp
-            label = [region.label(), model['label']]
+            label = region.label()
+            if arguments.label:
+                label += arguments.label
             plot.draw_atlas_label(luminosity,
                                   sqrt_s,
                                   custom_label = label,
-                                  atlas_label = ATLAS_LABEL)
+                                  atlas_label = arguments.atlas_label)
 
             # Compute the plot output path
             plot_output_path = join(arguments.output,

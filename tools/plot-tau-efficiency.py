@@ -51,9 +51,7 @@ from ROOT import TGraphAsymmErrors, TFile, SetOwnership, \
 Plot.PLOT_LEGEND_LEFT = 0.55
 Plot.PLOT_LEGEND_RIGHT = 1.0
 Plot.PLOT_LEGEND_TOP = 0.88
-Plot.PLOT_HEADER_HEIGHT = 300
-
-ATLAS_LABEL = 'Internal'
+Plot.PLOT_HEADER_HEIGHT = 400
 
 # Parse command line arguments
 parser = argparse.ArgumentParser(
@@ -118,6 +116,26 @@ parser.add_argument('-x',
                     nargs = '+',
                     default = ['pdf'],
                     help = 'save these extensions (default: pdf)')
+parser.add_argument('-l',
+                    '--label',
+                    nargs = '*',
+                    help = 'items to add to the custom label',
+                    metavar = '<items>')
+parser.add_argument('-a',
+                    '--atlas-label',
+                    default = 'Work in Progress',
+                    help = 'the label to use for the ATLAS stamp',
+                    metavar = '<atlas-label>')
+parser.add_argument('--no-prong-separated',
+                    action = 'store_false',
+                    dest = 'prong_separated',
+                    default = True,
+                    help = 'don\'t do 1p/3p efficiencies')
+parser.add_argument('--no-inclusive',
+                    action = 'store_false',
+                    dest = 'inclusive',
+                    default = True,
+                    help = 'don\'t do inclusive efficiency')
 parser.add_argument('definitions',
                     nargs = '*',
                     help = 'definitions to use within modules in the form x=y',
@@ -165,21 +183,31 @@ for name in arguments.triggers:
     except:
         raise KeyError('{} is not among the available triggers'.format(name))
 
-    efficiencies[name + '_1p'] = {
-        'label': [trigger],
-        'region': one_prong,
-        'title': '1-prong',
-        'rqcd_addons': ('_1p', '_tau25_1p'),
-        'filter': Filtered('{0} && tau_0_trig_{0}'.format(trigger))
-    }
+    if arguments.inclusive:
+        efficiencies[name] = {
+            'label': [trigger],
+            'region': region,
+            'title': '1+3-prong',
+            'rqcd_addons': ('', '_tau25'),
+            'filter': Filtered('{0} && tau_0_trig_{0}'.format(trigger))
+        }
 
-    efficiencies[name + '_3p'] = {
-        'label': [trigger],
-        'region': three_prong,
-        'title': '3-prong',
-        'rqcd_addons': ('_3p', '_tau25_3p'),
-        'filter': Filtered('{0} && tau_0_trig_{0}'.format(trigger))
-    }
+    if arguments.prong_separated:
+        efficiencies[name + '_1p'] = {
+            'label': [trigger],
+            'region': one_prong,
+            'title': '1-prong',
+            'rqcd_addons': ('_1p', '_tau25_1p'),
+            'filter': Filtered('{0} && tau_0_trig_{0}'.format(trigger))
+        }
+
+        efficiencies[name + '_3p'] = {
+            'label': [trigger],
+            'region': three_prong,
+            'title': '3-prong',
+            'rqcd_addons': ('_3p', '_tau25_3p'),
+            'filter': Filtered('{0} && tau_0_trig_{0}'.format(trigger))
+        }
 
 
 # NOTE: See model file for comments about pruning
@@ -667,8 +695,9 @@ def plot_efficiencies(data_efficiency,
             (sf_data_syst_band, data_syst_uncertainty_style, 'e2'),
             (sf, default_black, 'p')
         ),
-        y_range = (0.8, 1.2),
-        y_title = 'Scale Factor'
+        y_range = (0.5, 1.5),
+        # y_title = 'Scale Factor'
+        y_title = 'Data / exp.'
     )
 
     # Draw a legend
@@ -680,8 +709,13 @@ def plot_efficiencies(data_efficiency,
                                       ))
 
     # Draw an ATLAS stamp
-    plot.draw_atlas_label(custom_label = label,
-                          atlas_label = ATLAS_LABEL)
+    label = region.label()
+    if arguments.label:
+        label += arguments.label
+    plot.draw_atlas_label(luminosity,
+                          sqrt_s,
+                          custom_label = label,
+                          atlas_label = arguments.atlas_label)
 
     plot.save(join(path, '_'.join(file_name_components)),
               arguments.extensions)
@@ -774,7 +808,7 @@ def do_scale_factor(data_efficiency,
          #x_label = distribution.x_label(),
          #y_label = 'Scale Factor',
          #custom_label = label,
-         #atlas_label = ATLAS_LABEL,
+         #atlas_label = arguments.atlas_label,
          #extensions = arguments.extensions)
 
 def save_to_root(data_efficiency,

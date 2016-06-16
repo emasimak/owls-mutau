@@ -270,7 +270,13 @@ with caching_into(cache):
                              # ss_stat))
 
                 # Compute rQCD and errors
-                r_qcd = os_counts / ss_counts
+                try:
+                    r_qcd = os_counts / ss_counts
+                except ZeroDivisionError,e:
+                    print('Error: No SS counts for region {} and split {}'. \
+                          format(region.label(), split))
+                    raise e
+
                 r_qcd_stat = sqrt((os_stat / os_counts)**2 +
                                   (ss_stat / ss_counts)**2) * r_qcd
                 r_qcd_syst_ptcone = r_qcd_raw_syst_ptcone / r_qcd
