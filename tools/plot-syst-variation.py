@@ -18,10 +18,10 @@ from owls_hep.module import load as load_module
 from owls_hep.plotting import Plot, style_histogram, combined_histogram
 from owls_hep.utility import integral
 
-# owls-taunu imports
-from owls_taunu.styling import default_black_line, default_red_line, \
+# owls-mutau imports
+from owls_mutau.styling import default_black_line, default_red_line, \
         default_blue_line
-from owls_taunu.mutau.uncertainties import TestSystFlat, TestSystShape, \
+from owls_mutau.uncertainties import TestSystFlat, TestSystShape, \
         MuonEffStat, MuonEffSys, \
         MuonEffTrigStat, MuonEffTrigSys, \
         MuonIsoStat, MuonIsoSys, \

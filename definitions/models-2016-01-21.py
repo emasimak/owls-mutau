@@ -15,54 +15,86 @@ from owls_hep.module import definitions
 from owls_hep.estimation import Plain, MonteCarlo
 from owls_hep.expression import expression_substitute
 
-# owls-taunu imports
-from owls_taunu.mutau.estimation import OSData, SSData, OSSS
-from owls_taunu.mutau.uncertainties import TestSystFlat, TestSystShape, \
+# owls-mutau imports
+from owls_mutau.estimation import OSData, SSData, OSSS
+from owls_mutau.uncertainties import TestSystFlat, TestSystShape, \
         MuonEffStat, MuonEffSys, \
         MuonEffTrigStat, MuonEffTrigSys, \
         MuonIsoStat, MuonIsoSys, \
         MuonIdSys, MuonMsSys, MuonScaleSys, \
-        RqcdStat
+        RqcdStat, RqcdSyst, \
+        BJetEigenB0, BJetEigenB1, BJetEigenB2, BJetEigenB3, BJetEigenB4, \
+        BJetEigenC0, BJetEigenC1, BJetEigenC2, BJetEigenC3, \
+        BJetEigenLight0, BJetEigenLight1, BJetEigenLight2, BJetEigenLight3, \
+        BJetEigenLight4, BJetEigenLight5, BJetEigenLight6, BJetEigenLight7, \
+        BJetEigenLight8, BJetEigenLight9, BJetEigenLight10, BJetEigenLight11, \
+        BJetEigenLight12, BJetEigenLight13, \
+        BJetExtrapolation
 
 # Load configuration
 configuration = definitions()
-enable_systematics = configuration.get('enable_systematics', '')
-enable_systematics = True if enable_systematics == 'True' else False
+systematics = configuration.get('enable_systematics', '')
 data_prefix = configuration.get('data_prefix', '')
 luminosity = float(configuration.get('luminosity', 1000.0)) # 1/fb
 nominal_tree = 'NOMINAL'
 sqrt_s = 13.0 * 1000 * 1000 # MeV
 
-
 r_qcd = {
-    'mu_tau_qcd_cr_3p': (1.335, 0.038),
-    'mu_tau_qcd_cr_1p': (1.229, 0.02),
-    'mu_tau_qcd_cr': (1.254, 0.018)
+    'mu_tau_qcd_cr': [('tau_0_pt <= 40', 1.196, 0.019, 0.05), ('tau_0_pt > 40', 1.376, 0.041, 0.076)],
+    'mu_tau_qcd_cr_1p': [('tau_0_pt <= 40', 1.185, 0.022, 0.055), ('tau_0_pt > 40', 1.284, 0.042, 0.081)],
+    'mu_tau_qcd_cr_3p': [('tau_0_pt <= 35', 1.219, 0.041, 0.09), ('tau_0_pt > 35 && tau_0_pt <= 50', 1.487, 0.088, 0.111), ('tau_0_pt > 50', 1.953, 0.223, 0.219)],
+    'mu_tau_qcd_cr_loose_id': [('tau_0_pt <= 40', 1.15, 0.014, 0.026), ('tau_0_pt > 40', 1.303, 0.029, 0.049)],
+    'mu_tau_qcd_cr_loose_id_1p': [('tau_0_pt <= 40', 1.133, 0.017, 0.037), ('tau_0_pt > 40', 1.236, 0.032, 0.052)],
+    'mu_tau_qcd_cr_loose_id_3p': [('tau_0_pt <= 35', 1.167, 0.024, 0.049), ('tau_0_pt > 35 && tau_0_pt <= 50', 1.324, 0.05, 0.098), ('tau_0_pt > 50', 1.578, 0.101, 0.078)],
+    'mu_tau_qcd_cr_medium_id': [('tau_0_pt <= 40', 1.196, 0.019, 0.05), ('tau_0_pt > 40', 1.376, 0.041, 0.076)],
+    'mu_tau_qcd_cr_medium_id_1p': [('tau_0_pt <= 40', 1.185, 0.022, 0.055), ('tau_0_pt > 40', 1.284, 0.042, 0.081)],
+    'mu_tau_qcd_cr_medium_id_3p': [('tau_0_pt <= 35', 1.219, 0.041, 0.09), ('tau_0_pt > 35 && tau_0_pt <= 50', 1.487, 0.088, 0.111), ('tau_0_pt > 50', 1.953, 0.223, 0.219)],
+    'mu_tau_qcd_cr_tight_id': [('tau_0_pt <= 40', 1.238, 0.029, 0.076), ('tau_0_pt > 40', 1.355, 0.058, 0.079)],
+    'mu_tau_qcd_cr_tight_id_1p': [('tau_0_pt <= 40', 1.198, 0.031, 0.08), ('tau_0_pt > 40', 1.28, 0.059, 0.097)],
+    'mu_tau_qcd_cr_tight_id_3p': [('tau_0_pt <= 35', 1.389, 0.078, 0.197), ('tau_0_pt > 35 && tau_0_pt <= 50', 1.702, 0.168, 0.191), ('tau_0_pt > 50', 1.828, 0.366, 0.423)],
+    'mu_tau_qcd_cr_tau25': [('tau_0_pt <= 40', 1.222, 0.03, 0.099), ('tau_0_pt > 40', 1.429, 0.05, 0.098)],
+    'mu_tau_qcd_cr_tau25_1p': [('tau_0_pt <= 40', 1.213, 0.031, 0.099), ('tau_0_pt > 40', 1.346, 0.052, 0.089)],
+    'mu_tau_qcd_cr_tau25_3p': [('tau_0_pt <= 35', 1.222, 0.112, 0.186), ('tau_0_pt > 35 && tau_0_pt <= 50', 1.578, 0.123, 0.17), ('tau_0_pt > 50', 2.06, 0.286, 0.329)],
+    'mu_tau_qcd_cr_loose_id_tau25': [('tau_0_pt <= 40', 1.194, 0.023, 0.065), ('tau_0_pt > 40', 1.342, 0.036, 0.073)],
+    'mu_tau_qcd_cr_loose_id_tau25_1p': [('tau_0_pt <= 40', 1.181, 0.025, 0.067), ('tau_0_pt > 40', 1.273, 0.039, 0.068)],
+    'mu_tau_qcd_cr_loose_id_tau25_3p': [('tau_0_pt <= 35', 1.21, 0.076, 0.134), ('tau_0_pt > 35 && tau_0_pt <= 50', 1.383, 0.073, 0.133), ('tau_0_pt > 50', 1.8, 0.154, 0.13)],
+    'mu_tau_qcd_cr_medium_id_tau25': [('tau_0_pt <= 40', 1.222, 0.03, 0.099), ('tau_0_pt > 40', 1.429, 0.05, 0.098)],
+    'mu_tau_qcd_cr_medium_id_tau25_1p': [('tau_0_pt <= 40', 1.213, 0.031, 0.099), ('tau_0_pt > 40', 1.346, 0.052, 0.089)],
+    'mu_tau_qcd_cr_medium_id_tau25_3p': [('tau_0_pt <= 35', 1.222, 0.112, 0.186), ('tau_0_pt > 35 && tau_0_pt <= 50', 1.578, 0.123, 0.17), ('tau_0_pt > 50', 2.06, 0.286, 0.329)],
+    'mu_tau_qcd_cr_tight_id_tau25': [('tau_0_pt <= 40', 1.261, 0.042, 0.117), ('tau_0_pt > 40', 1.394, 0.069, 0.11)],
+    'mu_tau_qcd_cr_tight_id_tau25_1p': [('tau_0_pt <= 40', 1.25, 0.044, 0.11), ('tau_0_pt > 40', 1.326, 0.07, 0.112)],
+    'mu_tau_qcd_cr_tight_id_tau25_3p': [('tau_0_pt <= 35', 1.347, 0.187, 0.417), ('tau_0_pt > 35 && tau_0_pt <= 50', 1.663, 0.209, 0.219), ('tau_0_pt > 50', 2.033, 0.48, 0.681)],
 }
 
+# Redefitions of estimations
 MonteCarlo = partial(MonteCarlo, luminosity = luminosity)
 OSSS = partial(OSSS, r_qcd = r_qcd, luminosity = luminosity)
 SSData = partial(SSData, r_qcd = r_qcd)
+
+# Redefitions of uncertainties
+# NOTE: This is a cleaner way to initialize the class with an rQCD value than
+# invoking partial. When invoking partial, the type of the class is exchanged
+# with the partial type. This prevents class comparison, which can be important
+# in some cases.
+RqcdStat.r_qcd = r_qcd
+RqcdSyst.r_qcd = r_qcd
 
 # Set up patches
 patch_definitions = {
     'is_electron': 'tau_0_truth_isEle',
     'is_muon': 'tau_0_truth_isMuon',
     'is_tau': 'tau_0_truth_isTau',
-    'is_hadtau': 'tau_0_truth_isHadTau',
     'is_jet': 'tau_0_truth_isJet',
-    'is_bjet': 'tau_0_truth_pdgId == 5',
 }
 
 expr = partial(expression_substitute, definitions = patch_definitions)
 
-tau_truth_matched = Patch(expr('[is_hadtau]'))
+tau_truth_matched = Patch(expr('[is_tau]'))
+tau_fake = Patch(expr('![is_tau]'))
 tau_electron_matched = Patch(expr('[is_electron]'))
 tau_muon_matched = Patch(expr('[is_muon]'))
-tau_lepton_matched = Patch(expr('[is_muon] || [is_electron] || ([is_tau] && ![is_hadtau])'))
-tau_jet_fake = Patch(expr('[is_jet]'))
-tau_bjet_fake = Patch(expr('[is_jet] && [is_bjet]'))
-tau_lightjet_fake = Patch(expr('[is_jet] && ![is_bjet]'))
+tau_lepton_matched = Patch(expr('[is_muon] || [is_electron]'))
+tau_jet_fake = Patch(expr('!([is_muon] || [is_electron] || [is_tau])'))
 
 # Create some utility functions
 file = lambda name: join(data_prefix, name)
@@ -93,6 +125,7 @@ ss_data = Process(
     sample_type = 'data',
     line_color = 1,
     fill_color = 424,
+    # metadata = {'print_me': ['estimation']},
 )
 
 zll = Process(
@@ -228,7 +261,6 @@ ttbar = Process(
     friends = (prw_friend,),
     line_color = 1,
     fill_color = 0,
-    #metadata = {'print_me': True},
 )
 
 ttbar_true = ttbar.patched(
@@ -236,35 +268,22 @@ ttbar_true = ttbar.patched(
     label = 't#bar{t} (true #tau)',
     line_color = 1,
     fill_color = 0,
-    #metadata = {'print_me': True},
 )
 
 ttbar_lfake = ttbar.patched(
     tau_lepton_matched,
     label = 't#bar{t} (l #rightarrow #tau)',
     line_color = 1,
-    fill_color = 867
+    fill_color = 867,
 )
 
 ttbar_jetfake = ttbar.patched(
     tau_jet_fake,
     label = 't#bar{t} (j #rightarrow #tau)',
     line_color = 1,
-    fill_color = 406
-)
-
-ttbar_bjetfake = ttbar.patched(
-    tau_bjet_fake,
-    label = 't#bar{t} (b #rightarrow #tau)',
-    line_color = 1,
-    fill_color = 803
-)
-
-ttbar_lightjetfake = ttbar.patched(
-    tau_lightjet_fake,
-    label = 't#bar{t} (c,l,g #rightarrow #tau)',
-    line_color = 1,
-    fill_color = 406
+    fill_color = 406,
+    # metadata = {'print_me': ['selection', 'expressions']},
+    # metadata = {'print_me': ['estimation']},
 )
 
 # Other process for mu+tau
@@ -303,35 +322,108 @@ other_jetfake = other.patched(
     fill_color = 408
 )
 
+if systematics in ['Pruned', 'True']:
+    mc_uncertainties = [
+        #TestSystFlat,
+        #TestSystShape,
+        # Pruned MuonEffStat,
+        # Pruned MuonEffSys,
+        MuonEffTrigStat,
+        MuonEffTrigSys,
+        # Pruned MuonIsoStat,
+        # Pruned MuonIsoSys,
+        # Candidate MuonIdSys,
+        # Candidate MuonMsSys,
+        # Candidate MuonScaleSys,
+        BJetEigenB0,
+        BJetEigenB1,
+        # Pruned BJetEigenB2,
+        # Pruned BJetEigenB3,
+        # Pruned BJetEigenB4,
+        BJetEigenC0,
+        # Pruned BJetEigenC1,
+        # Pruned BJetEigenC2,
+        # Pruned BJetEigenC3,
+        BJetEigenLight0,
+        # Pruned BJetEigenLight1,
+        # Pruned BJetEigenLight2,
+        # Pruned BJetEigenLight3,
+        # Pruned BJetEigenLight4,
+        # Pruned BJetEigenLight5,
+        # Pruned BJetEigenLight6,
+        # Pruned BJetEigenLight7,
+        # Pruned BJetEigenLight8,
+        # Pruned BJetEigenLight9,
+        # Pruned BJetEigenLight10,
+        # Pruned BJetEigenLight11,
+        # Pruned BJetEigenLight12,
+        # Pruned BJetEigenLight13,
+        # Pruned BJetExtrapolation,
+        #BJetExtrapolationCharm, # Doesn't work
+    ]
+    ss_data_uncertainties = [
+        RqcdStat,
+        RqcdSyst,
+    ]
+    osss_uncertainties = mc_uncertainties + ss_data_uncertainties
+
+elif systematics == 'Full':
+    mc_uncertainties = [
+        #TestSystFlat,
+        #TestSystShape,
+        MuonEffStat,
+        MuonEffSys,
+        MuonEffTrigStat,
+        MuonEffTrigSys,
+        MuonIsoStat,
+        MuonIsoSys,
+        MuonIdSys,
+        MuonMsSys,
+        MuonScaleSys,
+        BJetEigenB0,
+        BJetEigenB1,
+        BJetEigenB2,
+        BJetEigenB3,
+        BJetEigenB4,
+        BJetEigenC0,
+        BJetEigenC1,
+        BJetEigenC2,
+        BJetEigenC3,
+        BJetEigenLight0,
+        BJetEigenLight1,
+        BJetEigenLight2,
+        BJetEigenLight3,
+        BJetEigenLight4,
+        BJetEigenLight5,
+        BJetEigenLight6,
+        BJetEigenLight7,
+        BJetEigenLight8,
+        BJetEigenLight9,
+        BJetEigenLight10,
+        BJetEigenLight11,
+        BJetEigenLight12,
+        BJetEigenLight13,
+        BJetExtrapolation,
+        #BJetExtrapolationCharm, # Doesn't work
+    ]
+    ss_data_uncertainties = [
+        RqcdStat,
+        RqcdSyst,
+    ]
+    osss_uncertainties = mc_uncertainties + ss_data_uncertainties
+else:
+    mc_uncertainties = []
+    ss_data_uncertainties = []
+    osss_uncertainties = []
 
 #mc_uncertainties = [
     #TestSystFlat,
     #TestSystShape,
 #]
 
-mc_uncertainties = [
-    MuonEffStat,
-    MuonEffSys,
-    MuonEffTrigStat,
-    MuonEffTrigSys,
-    MuonIsoStat,
-    MuonIsoSys,
-    MuonIdSys,
-    MuonMsSys,
-    MuonScaleSys,
-]
-ss_data_uncertainties = [
-    RqcdStat,
-]
-
-
-if not enable_systematics:
-    mc_uncertainties = []
-    ss_data_uncertainties = []
-
 # Create models
 mc = {
-    'label': 'MC vs data',
+    'label': 'Data vs MC',
     'luminosity': luminosity,
     'sqrt_s': sqrt_s,
     'data': {
@@ -378,7 +470,7 @@ mc = {
 }
 
 mc_fakes = {
-    'label': 'MC vs Data',
+    'label': 'Data vs MC',
     'luminosity': luminosity,
     'sqrt_s': sqrt_s,
     'data': {
@@ -434,6 +526,64 @@ mc_fakes = {
     )),
 }
 
+mc_sub = {
+    'label': 'Data vs MC',
+    'luminosity': luminosity,
+    'sqrt_s': sqrt_s,
+    'data': {
+        'process': data,
+        'estimation': Plain,
+    },
+    'backgrounds': OrderedDict((
+        ('other_lfake', {
+            'process': other_lfake,
+            'estimation': MonteCarlo,
+            'uncertainties': mc_uncertainties,
+        }),
+        ('single_top_lepfake', {
+            'process': single_top_lfake,
+            'estimation': MonteCarlo,
+            'uncertainties': mc_uncertainties,
+        }),
+        ('ttbar_lepfake', {
+            'process': ttbar_lfake,
+            'estimation': MonteCarlo,
+            'uncertainties': mc_uncertainties,
+        }),
+        ('other_jetfake', {
+            'process': other_jetfake,
+            'estimation': MonteCarlo,
+            'uncertainties': mc_uncertainties,
+        }),
+        ('single_top_jetfake', {
+            'process': single_top_jetfake,
+            'estimation': MonteCarlo,
+            'uncertainties': mc_uncertainties,
+        }),
+        ('ttbar_jetfake', {
+            'process': ttbar_jetfake,
+            'estimation': MonteCarlo,
+            'uncertainties': mc_uncertainties,
+        }),
+    )),
+    'signals': OrderedDict((
+        ('other_true', {
+            'process': other_true,
+            'estimation': MonteCarlo,
+            'uncertainties': mc_uncertainties,
+        }),
+        ('single_top_true', {
+            'process': single_top_true,
+            'estimation': MonteCarlo,
+            'uncertainties': mc_uncertainties,
+        }),
+        ('ttbar_true', {
+            'process': ttbar_true,
+            'estimation': MonteCarlo,
+            'uncertainties': mc_uncertainties,
+        }),
+    )),
+}
 # Create OS-SS models
 osss = {
     'label': 'OS-SS',
@@ -504,58 +654,59 @@ osss_fakes = {
         ('other_lfake', {
             'process': other_lfake,
             'estimation': OSSS,
-            'uncertainties': mc_uncertainties,
+            'uncertainties': osss_uncertainties,
         }),
         ('single_top_lfake', {
             'process': single_top_lfake,
             'estimation': OSSS,
-            'uncertainties': mc_uncertainties,
+            'uncertainties': osss_uncertainties,
         }),
         ('ttbar_lfake', {
             'process': ttbar_lfake,
             'estimation': OSSS,
-            'uncertainties': mc_uncertainties,
+            'uncertainties': osss_uncertainties,
         }),
         ('other_jetfake', {
             'process': other_jetfake,
             'estimation': OSSS,
-            'uncertainties': mc_uncertainties,
+            'uncertainties': osss_uncertainties,
         }),
         ('single_top_jetfake', {
             'process': single_top_jetfake,
             'estimation': OSSS,
-            'uncertainties': mc_uncertainties,
+            'uncertainties': osss_uncertainties,
         }),
         ('ttbar_jetfake', {
             'process': ttbar_jetfake,
             'estimation': OSSS,
-            'uncertainties': mc_uncertainties,
+            'uncertainties': osss_uncertainties,
         }),
         ('other_true', {
             'process': other_true,
             'estimation': OSSS,
-            'uncertainties': mc_uncertainties,
+            'uncertainties': osss_uncertainties,
             'treat_as_signal': True,
         }),
         ('single_top_true', {
             'process': single_top_true,
             'estimation': OSSS,
-            'uncertainties': mc_uncertainties,
+            'uncertainties': osss_uncertainties,
             'treat_as_signal': True,
         }),
         ('ttbar_true', {
             'process': ttbar_true,
             'estimation': OSSS,
-            'uncertainties': mc_uncertainties,
+            'uncertainties': osss_uncertainties,
             'treat_as_signal': True,
         }),
     )),
 }
 
 osss_sub = {
-    'label': 'OS-SS',
+    'label': 'Bkg. Sub.',
     'luminosity': luminosity,
     'sqrt_s': sqrt_s,
+    'subtract_background': True,
     'data': {
         'process': data,
         'estimation': OSData,
@@ -564,17 +715,17 @@ osss_sub = {
         ('other_true', {
             'process': other_true,
             'estimation': OSSS,
-            'uncertainties': mc_uncertainties,
+            'uncertainties': osss_uncertainties,
         }),
         ('single_top_true', {
             'process': single_top_true,
             'estimation': OSSS,
-            'uncertainties': mc_uncertainties,
+            'uncertainties': osss_uncertainties,
         }),
         ('ttbar_true', {
             'process': ttbar_true,
             'estimation': OSSS,
-            'uncertainties': mc_uncertainties,
+            'uncertainties': osss_uncertainties,
         }),
     )),
     'backgrounds': OrderedDict((
@@ -586,33 +737,32 @@ osss_sub = {
         ('other_lfake', {
             'process': other_lfake,
             'estimation': OSSS,
-            'uncertainties': mc_uncertainties,
+            'uncertainties': osss_uncertainties,
         }),
         ('single_top_lfake', {
             'process': single_top_lfake,
             'estimation': OSSS,
-            'uncertainties': mc_uncertainties,
+            'uncertainties': osss_uncertainties,
         }),
         ('ttbar_lfake', {
             'process': ttbar_lfake,
             'estimation': OSSS,
-            'uncertainties': mc_uncertainties,
+            'uncertainties': osss_uncertainties,
         }),
         ('other_jetfake', {
             'process': other_jetfake,
             'estimation': OSSS,
-            'uncertainties': mc_uncertainties,
+            'uncertainties': osss_uncertainties,
         }),
         ('single_top_jetfake', {
             'process': single_top_jetfake,
             'estimation': OSSS,
-            'uncertainties': mc_uncertainties,
+            'uncertainties': osss_uncertainties,
         }),
         ('ttbar_jetfake', {
             'process': ttbar_jetfake,
             'estimation': OSSS,
-            'uncertainties': mc_uncertainties,
+            'uncertainties': osss_uncertainties,
         }),
     )),
 }
-

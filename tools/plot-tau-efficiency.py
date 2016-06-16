@@ -28,10 +28,10 @@ from owls_hep.plotting import Plot, style_line
 from owls_hep.variations import Filtered
 from owls_hep.uncertainty import to_shape, sum_quadrature
 
-# owls-taunu imports
-from owls_taunu.variations import OneProng, ThreeProng
-from owls_taunu.styling import default_black, default_red
-from owls_taunu.mutau.uncertainties import TestSystFlat, TestSystShape, \
+# owls-mutau imports
+from owls_mutau.variations import OneProng, ThreeProng
+from owls_mutau.styling import default_black, default_red
+from owls_mutau.uncertainties import TestSystFlat, TestSystShape, \
         MuonEffStat, MuonEffSys, \
         MuonEffTrigStat, MuonEffTrigSys, \
         MuonIsoStat, MuonIsoSys, \

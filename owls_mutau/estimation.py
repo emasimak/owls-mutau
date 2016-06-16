@@ -6,9 +6,9 @@ from owls_hep.estimation import Estimation
 from owls_hep.uncertainty import Uncertainty
 from owls_hep.variations import Filtered
 
-# owls-taunu imports
-from owls_taunu.mutau.variations import SS, OS
-from owls_taunu.mutau.uncertainties import RqcdSyst, RqcdStat
+# owls-mutau imports
+from owls_mutau.variations import SS, OS
+from owls_mutau.uncertainties import RqcdSyst, RqcdStat
 
 
 class OSSS(Estimation):

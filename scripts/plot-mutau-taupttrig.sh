@@ -4,9 +4,9 @@
 # Plot tau pT in the trigger efficiency binning
 
 
-# Compute the path to the owls-taunu directory
-CONTRIB=$(dirname "$0")
-OWLS="$CONTRIB/../.."
+# Compute the path to the owls-mutau directory
+SCRIPTS=$(dirname "$0")
+OWLS="$SCRIPTS/.."
 
 OSSS_REGIONS=" \
   mu_tau_1p \
@@ -40,17 +40,17 @@ DATA_PREFIX="/disk/d1/ohman/tagprobe_2016-01-21_merged/"
 
 
 # Plots with OS-SS backgrounds
-OUTPUT="results_mutau/plots_osss_fakes"
+OUTPUT="results/plots_osss_fakes"
 "$OWLS/tools/plot.py" \
   --output $OUTPUT \
   --extensions $EXTENSIONS \
-  --model-file "$OWLS/share/mutau/models-2016-01-21.py" \
+  --model-file "$OWLS/definitions/models-2016-01-21.py" \
   --model osss_fakes \
-  --regions-file "$OWLS/share/mutau/regions-2016-01-21.py" \
+  --regions-file "$OWLS/definitions/regions-2016-01-21.py" \
   --regions $OSSS_REGIONS \
-  --distributions-file "$OWLS/share/mutau/distributions.py" \
+  --distributions-file "$OWLS/definitions/distributions.py" \
   --distributions $DISTRIBUTIONS \
-  --environment-file "$CONTRIB/environment.py" \
+  --environment-file "$SCRIPTS/environment.py" \
   --text-count \
   --error-label "Stat. Unc." \
   data_prefix=$DATA_PREFIX \
@@ -58,17 +58,17 @@ OUTPUT="results_mutau/plots_osss_fakes"
   luminosity=$LUMINOSITY
 
 # Plots with background subtraction
-OUTPUT="results_mutau/plots_osss_sub"
+OUTPUT="results/plots_osss_sub"
 "$OWLS/tools/plot.py" \
   --output $OUTPUT \
   --extensions $EXTENSIONS \
-  --model-file "$OWLS/share/mutau/models-2016-01-21.py" \
+  --model-file "$OWLS/definitions/models-2016-01-21.py" \
   --model osss_sub \
-  --regions-file "$OWLS/share/mutau/regions-2016-01-21.py" \
+  --regions-file "$OWLS/definitions/regions-2016-01-21.py" \
   --regions $OSSS_REGIONS \
-  --distributions-file "$OWLS/share/mutau/distributions.py" \
+  --distributions-file "$OWLS/definitions/distributions.py" \
   --distributions $DISTRIBUTIONS \
-  --environment-file "$CONTRIB/environment.py" \
+  --environment-file "$SCRIPTS/environment.py" \
   --text-count \
   --error-label "Stat. Unc." \
   data_prefix=$DATA_PREFIX \

@@ -22,11 +22,11 @@ from owls_hep.counting import Count
 from owls_hep.utility import integral
 from owls_hep.histogramming import Histogram
 from owls_hep.plotting import Plot, ratio_histogram
+from owls_hep.variations import Filtered
 
-# owls-taunu imports
-from owls_taunu.variations import Filtered
-from owls_taunu.mutau.variations import OS, SS
-from owls_taunu.styling import default_black, default_red
+# owls-mutau imports
+from owls_mutau.variations import OS, SS
+from owls_mutau.styling import default_black, default_red
 
 Plot.PLOT_RATIO_Y_AXIS_TITLE_OFFSET = 0.50
 Plot.PLOT_LEGEND_LEFT = 0.70
@@ -201,7 +201,7 @@ def compute_syst(region, distribution, label, file_name):
     )
 
     plot.draw_legend()
-    plot.draw_atlas_label(custom_label = [label, region.label()])
+    plot.draw_atlas_label(custom_label = [label] + region.label())
     plot.save(join(base_path, file_name), arguments.extensions)
 
     return syst

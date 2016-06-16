@@ -15,9 +15,9 @@ from owls_hep.module import definitions
 from owls_hep.estimation import Plain, MonteCarlo
 from owls_hep.expression import expression_substitute
 
-# owls-taunu imports
-from owls_taunu.mutau.estimation import OSData, SSData, OSSS
-from owls_taunu.mutau.uncertainties import TestSystFlat, TestSystShape, \
+# owls-mutau imports
+from owls_mutau.estimation import OSData, SSData, OSSS
+from owls_mutau.uncertainties import TestSystFlat, TestSystShape, \
         MuonEffStat, MuonEffSys, \
         MuonEffTrigStat, MuonEffTrigSys, \
         MuonIsoStat, MuonIsoSys, \

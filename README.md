@@ -1,4 +1,4 @@
-owls-taunu
+owls-mutau
 ==========
 
 OWLS implementations of the charged Higgs to tau+nu analyses
@@ -29,10 +29,11 @@ Clone components from GitHub
 1. `git@github.com:spiiph/owls-cache.git`
 2. `git@github.com:spiiph/owls-parallel.git`
 3. `git@github.com:spiiph/owls-hep.git`
-4. `git@github.com:spiiph/owls-taunu.git`
+4. `git@github.com:spiiph/owls-mutau.git`
 
 Create a `virtualenv`
 ---------------------
+
 1. `virtualenv env --system-site-packages`
 2. `source env/bin/activate`
 
@@ -46,22 +47,23 @@ Install the OWLS python modules
 1. `cd owls-cache && pip install -e .`
 2. `cd ../owls-parallel && pip install -e .`
 3. `cd ../owls-hep && pip install -e .`
-4. `cd ../owls-taunu && pip install -e .`
-5. `cd ..`
+4. `cd ../owls-mutau && pip install -e .`
 
 Try the installation
 --------------------
 
-1. Create your contrib directory
-    `mkdir owls-taunu/contrib/<user>`
-2. Copy the environment file
-    `cp owls-taunu/contrib/ohman/environment.py owls-taunu/contrib/<user>`
-3. Edit the environment file to your liking
-4. Copy a plotting script
-    `cp owls-taunu/contrib/ohman/plot-trigger-sf.sh owls-taunu/contrib/<user>`
-5. Edit the plotting script to your liking
+1. Edit the environment file to your liking
+    `scripts/environment.py`
+2. Inspect a plotting script and edit it to your liking
+    `scripts/plot-mutau-taupt.sh`
+   (It might be necessary to reduce the number of regions selected for
+   plotting, and also to turn off — by commenting out — plotting with
+   systematic uncertainties.)
+5. Inspect the model and region files in `definitions`, e.g.
+    `definitions/models-2016-05-31.py`
+    `definitions/regions-2016-05-31.py`
 6. Run the script
-    `./owls-taunu/contrib/<user>/plot-trigger-sf.sh`
+    `./scripts/plot-mutau-taupt.sh`
 
 Starting the `virtualenv` in a new shell
 ----------------------------------------

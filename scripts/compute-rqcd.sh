@@ -1,8 +1,8 @@
 #!/bin/bash
 
-# Compute the path to the owls-taunu directory
-CONTRIB=$(dirname "$0")
-OWLS="$CONTRIB/../.."
+# Compute the path to the owls-mutau directory
+SCRIPTS=$(dirname "$0")
+OWLS="$SCRIPTS/.."
 
 REGIONS="\
   mu_tau_qcd_cr \
@@ -41,11 +41,11 @@ DATA_PREFIX="/disk/d1/ohman/tagprobe_2016-05-31_v03_merged/"
 
 # Compute r_QCD
 "$OWLS/tools/compute-rqcd.py" \
-  --output results_mutau/rqcd \
-  --model-file "$OWLS/share/mutau/models-2016-05-31.py" \
+  --output results/rqcd \
+  --model-file "$OWLS/definitions/models-2016-05-31.py" \
   --model osss \
-  --regions-file "$OWLS/share/mutau/regions-2016-05-31.py" \
+  --regions-file "$OWLS/definitions/regions-2016-05-31.py" \
   --regions $REGIONS \
-  --distributions-file "$OWLS/share/mutau/distributions.py" \
-  --environment-file "$CONTRIB/environment.py" \
+  --distributions-file "$OWLS/definitions/distributions.py" \
+  --environment-file "$SCRIPTS/environment.py" \
   data_prefix=$DATA_PREFIX

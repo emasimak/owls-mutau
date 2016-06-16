@@ -9,15 +9,13 @@ from owls_parallel.backends.multiprocessing import \
 
 
 # Make it clear that we're in this environment
-print('Using Ohman\'s environment...')
+print('Using mu+tau T&P environment...')
 
 # Enable cache debugging
 #set_persistent_cache_debug(True)
 
 # Set the persistent cache
-persistent_cache = RedisPersistentCache(
-    #unix_socket_path='/home/ohman/src/owls/cache.sock',
-)
+persistent_cache = RedisPersistentCache() 
 
 # Disable the persistent cache
 #persistent_cache = None
