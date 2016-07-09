@@ -302,7 +302,7 @@ with caching_into(cache):
             # Print the result
             print('{}:'.format(region.label()))
             for e in r_qcd_dict[region_name]:
-                print('    {0:20s}: {1:.2f} ± {2:.2f} ± {3:.2f}'.format(*e))
+                print('    {0:35s}: {1:.2f} ± {2:.2f} ± {3:.2f}'.format(*e))
 
 
 with open(join(base_path, 'rqcd.txt'), 'w') as f:

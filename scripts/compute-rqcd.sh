@@ -37,15 +37,29 @@ REGIONS="\
   #mu_tau_qcd_cr_3p \
   #"
 
-DATA_PREFIX="/disk/d1/ohman/tagprobe_2016-05-31_v03_merged/"
+DATA_PREFIX="/disk/d2/ohman/lhtnp_v12_merged/"
 
 # Compute r_QCD
+YEAR=2015
 "$OWLS/tools/compute-rqcd.py" \
-  --output results/rqcd \
-  --model-file "$OWLS/definitions/models-2016-05-31.py" \
+  --output results/rqcd/$YEAR \
+  --model-file "$OWLS/definitions/models-v12.py" \
   --model osss \
-  --regions-file "$OWLS/definitions/regions-2016-05-31.py" \
+  --regions-file "$OWLS/definitions/regions-v12.py" \
   --regions $REGIONS \
   --distributions-file "$OWLS/definitions/distributions.py" \
   --environment-file "$SCRIPTS/environment.py" \
-  data_prefix=$DATA_PREFIX
+  data_prefix=$DATA_PREFIX \
+  year=$YEAR
+
+YEAR=2016
+"$OWLS/tools/compute-rqcd.py" \
+  --output results/rqcd/$YEAR \
+  --model-file "$OWLS/definitions/models-v12.py" \
+  --model osss \
+  --regions-file "$OWLS/definitions/regions-v12.py" \
+  --regions $REGIONS \
+  --distributions-file "$OWLS/definitions/distributions.py" \
+  --environment-file "$SCRIPTS/environment.py" \
+  data_prefix=$DATA_PREFIX \
+  year=$YEAR
