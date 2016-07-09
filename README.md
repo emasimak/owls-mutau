@@ -60,10 +60,10 @@ Try the installation
    (It might be necessary to reduce the number of regions selected for
    plotting, and also to turn off — by commenting out — plotting with
    systematic uncertainties.)
-5. Inspect the model and region files in `definitions`, e.g.
+3. Inspect the model and region files in `definitions`, e.g.
     `definitions/models-2016-05-31.py`
     `definitions/regions-2016-05-31.py`
-6. Run the script
+4. Run the script
     `./scripts/plot-mutau-taupt.sh`
 
 Starting the `virtualenv` in a new shell

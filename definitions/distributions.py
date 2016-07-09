@@ -1,4 +1,4 @@
-"""Plots for the tau+jets analysis.
+"""Plots for the mu+tau analysis.
 """
 
 # TODO: Split this file into several
