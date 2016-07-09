@@ -1,4 +1,4 @@
-"""Regions for the tau+jets analysis.
+"""Regions for the mu+tau analysis.
 """
 
 # System imports
@@ -163,6 +163,16 @@ _vary_me('mu_tau',
          '[weight]',
          '#mu+#tau',
          {'mc': expr('[weight_pileup] * [weight_mu] * [weight_b] * [weight_tau_medium]')},
+         # {'mc': expr('[weight_mu] * [weight_b] * [weight_tau_medium]')},
+         {'rqcd': 'mu_tau_qcd_cr'},
+         _variations)
+
+_vary_me('mu_tau_no_bweight',
+         '[mu_trigger] && [mu_tau] && [medium_tau] && [2jets] && [bjet] && [iso_gradient]',
+         '[weight]',
+         '#mu+#tau (no b weight)',
+         # {'mc': expr('[weight_pileup] * [weight_mu] * [weight_b] * [weight_tau_medium]')},
+         {'mc': expr('[weight_mu] * [weight_b] * [weight_tau_medium]')},
          {'rqcd': 'mu_tau_qcd_cr'},
          _variations)
 

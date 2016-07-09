@@ -27,11 +27,6 @@ parser.add_argument('-o',
                     default = 'plots',
                     help = 'the plot output directory',
                     metavar = '<output>')
-parser.add_argument('-M',
-                    '--model-file',
-                    required = True,
-                    help = 'the path to the model definition module',
-                    metavar = '<model-file>')
 parser.add_argument('-R',
                     '--regions-file',
                     required = True,
@@ -57,8 +52,11 @@ parser.add_argument('-E',
                     required = True,
                     help = 'the path to the environment definition module',
                     metavar = '<environment-file>')
-parser.add_argument('--label', default=None,
-                    help='Label for the plot')
+parser.add_argument('-l',
+                    '--label',
+                    nargs = '*',
+                    help = 'items to add to the custom label',
+                    metavar = '<items>')
 parser.add_argument('-t',
                     '--text-counts',
                     action = 'store_true',
@@ -177,7 +175,7 @@ with caching_into(cache):
 
             plot.draw((stack, None, 'hist'))
             plot.draw_legend()
-            label = [region.label()]
+            label = region.label()
             if arguments.label is not None:
                 label.append(arguments.label)
             plot.draw_atlas_label(custom_label = label)

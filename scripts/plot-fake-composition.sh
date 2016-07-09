@@ -19,8 +19,8 @@ DISTRIBUTIONS="tau_pt tau_n_tracks"
 "$OWLS/tools/plot-fake-composition.py" \
   --output results/composition/nominal \
   --extensions $EXTENSIONS \
-  --model-file "$OWLS/definitions/models.py" \
-  --regions-file "$OWLS/definitions/regions.py" \
+  --model-file "$OWLS/definitions/models-2016-01-21.py" \
+  --regions-file "$OWLS/definitions/regions-2016-01-21.py" \
   --regions $REGIONS \
   --distributions-file "$OWLS/definitions/distributions.py" \
   --distributions $DISTRIBUTIONS \
@@ -31,8 +31,8 @@ DISTRIBUTIONS="tau_pt tau_n_tracks"
 "$OWLS/tools/plot-fake-composition.py" \
   --output results/composition/no_btag  \
   --extensions $EXTENSIONS \
-  --model-file "$OWLS/definitions/models.py" \
-  --regions-file "$OWLS/definitions/regions.py" \
+  --model-file "$OWLS/definitions/models-2016-01-21.py" \
+  --regions-file "$OWLS/definitions/regions-2016-01-21.py" \
   --regions $REGIONS \
   --distributions-file "$OWLS/definitions/distributions.py" \
   --distributions $DISTRIBUTIONS \
@@ -43,8 +43,8 @@ DISTRIBUTIONS="tau_pt tau_n_tracks"
 "$OWLS/tools/plot-fake-composition.py" \
   --output results/composition/tight \
   --extensions $EXTENSIONS \
-  --model-file "$OWLS/definitions/models.py" \
-  --regions-file "$OWLS/definitions/regions.py" \
+  --model-file "$OWLS/definitions/models-2016-01-21.py" \
+  --regions-file "$OWLS/definitions/regions-2016-01-21.py" \
   --regions $REGIONS \
   --distributions-file "$OWLS/definitions/distributions.py" \
   --distributions $DISTRIBUTIONS \
@@ -55,8 +55,8 @@ DISTRIBUTIONS="tau_pt tau_n_tracks"
 "$OWLS/tools/plot-fake-composition.py" \
   --output results/composition/loose \
   --extensions $EXTENSIONS \
-  --model-file "$OWLS/definitions/models.py" \
-  --regions-file "$OWLS/definitions/regions.py" \
+  --model-file "$OWLS/definitions/models-2016-01-21.py" \
+  --regions-file "$OWLS/definitions/regions-2016-01-21.py" \
   --regions $REGIONS \
   --distributions-file "$OWLS/definitions/distributions.py" \
   --distributions $DISTRIBUTIONS \
