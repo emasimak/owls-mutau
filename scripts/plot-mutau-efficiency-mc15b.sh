@@ -11,7 +11,7 @@ DATA_PREFIX="/disk/d1/ohman/tagprobe_2016-01-21_merged/"
 
 TRIGGERS="tau25 tau35 tau80 tau125 tau160"
 #TRIGGERS="tau25 tau35"
-#TRIGGERS="tau25"
+TRIGGERS="tau25"
 
 REGIONS=(mu_tau_loose_id mu_tau_medium_id mu_tau_tight_id)
 #REGIONS=(mu_tau_medium_id)
@@ -41,6 +41,7 @@ do
       --environment-file "$SCRIPTS/environment.py" \
       --root-output \
       --text-output \
+      --label "MC15B, 20.1" \
       -- \
       data_prefix=$DATA_PREFIX \
       enable_systematics=True

@@ -37,6 +37,7 @@ from owls_mutau.uncertainties import TestSystFlat, TestSystShape, \
         MuonIsoStat, MuonIsoSys, \
         MuonIdSys, MuonMsSys, MuonScaleSys, \
         RqcdStat, RqcdSyst, \
+        PileupSys, \
         BJetEigenB0, BJetEigenB1, BJetEigenB2, BJetEigenB3, BJetEigenB4, \
         BJetEigenC0, BJetEigenC1, BJetEigenC2, BJetEigenC3, \
         BJetEigenLight0, BJetEigenLight1, BJetEigenLight2, BJetEigenLight3, \
@@ -52,7 +53,7 @@ from ROOT import TGraphAsymmErrors, TFile, SetOwnership, \
 Plot.PLOT_LEGEND_LEFT = 0.55
 Plot.PLOT_LEGEND_RIGHT = 1.0
 Plot.PLOT_LEGEND_TOP = 0.88
-Plot.PLOT_HEADER_HEIGHT = 400
+Plot.PLOT_HEADER_HEIGHT = 500
 
 # Parse command line arguments
 parser = argparse.ArgumentParser(
@@ -124,7 +125,7 @@ parser.add_argument('-l',
                     metavar = '<items>')
 parser.add_argument('-a',
                     '--atlas-label',
-                    default = 'Work in Progress',
+                    default = 'Internal',
                     help = 'the label to use for the ATLAS stamp',
                     metavar = '<atlas-label>')
 parser.add_argument('--no-prong-separated',
@@ -167,13 +168,32 @@ backgrounds = model['backgrounds']
 one_prong = region.varied(OneProng())
 three_prong = region.varied(ThreeProng())
 
+# TODO: This configuration is also model/region dependent, because different
+# productions may have different variable names. Perhaps we should have a
+# variable available_efficiency_triggers in the regions file? Yep, good idea.
+# Beacuse it's nice to be able to produce MC15B results parallel to
+# 2016/MC15C results.
 available_triggers = {
-    'tau25': 'HLT_tau25_medium1_tracktwo',
-    'tau25_noiso': 'HLT_tau25_medium1_tracktwo_L1TAU12',
-    'tau35': 'HLT_tau35_medium1_tracktwo',
-    'tau80': 'HLT_tau80_medium1_tracktwo',
-    'tau125': 'HLT_tau125_medium1_tracktwo',
-    'tau160': 'HLT_tau160_medium1_tracktwo',
+    'tau25':  (
+        'HLT_tau25_medium1_tracktwo_resurrected',
+        'tau_0_trig_HLT_tau25_medium1_tracktwo'
+    ),
+    'tau35':  (
+        'HLT_tau35_medium1_tracktwo_resurrected',
+        'tau_0_trig_HLT_tau35_medium1_tracktwo'
+    ),
+    'tau80':  (
+        'HLT_tau80_medium1_tracktwo_resurrected',
+        'tau_0_trig_HLT_tau80_medium1_tracktwo'
+    ),
+    'tau125': (
+        'HLT_tau125_medium1_tracktwo_resurrected',
+        'tau_0_trig_HLT_tau125_medium1_tracktwo'
+    ),
+    'tau160': (
+        'HLT_tau160_medium1_tracktwo_resurrected',
+        'tau_0_trig_HLT_tau160_medium1_tracktwo'
+    ),
 }
 
 efficiencies = OrderedDict()
@@ -186,70 +206,76 @@ for name in arguments.triggers:
 
     if arguments.inclusive:
         efficiencies[name] = {
-            'label': [trigger],
+            'label': trigger[0],
             'region': region,
             'title': '1+3-prong',
             'rqcd_addons': ('', '_tau25'),
-            'filter': Filtered('{0} && tau_0_trig_{0}'.format(trigger))
+            'filter': Filtered('{} && {}'.format(*trigger))
         }
 
     if arguments.prong_separated:
         efficiencies[name + '_1p'] = {
-            'label': [trigger],
+            'label': trigger[0],
             'region': one_prong,
             'title': '1-prong',
             'rqcd_addons': ('_1p', '_tau25_1p'),
-            'filter': Filtered('{0} && tau_0_trig_{0}'.format(trigger))
+            'filter': Filtered('{} && {}'.format(*trigger))
         }
 
         efficiencies[name + '_3p'] = {
-            'label': [trigger],
+            'label': trigger[0],
             'region': three_prong,
             'title': '3-prong',
             'rqcd_addons': ('_3p', '_tau25_3p'),
-            'filter': Filtered('{0} && tau_0_trig_{0}'.format(trigger))
+            'filter': Filtered('{} && {}'.format(*trigger))
         }
 
 
 # NOTE: See model file for comments about pruning
+# TODO: Maybe we need this to be configurable by year/campaign? Perhaps it
+# can be defined in the model as e.g. model.systematics, where this list in
+# turn can be defined as a set of systematic uncertainties like 'full',
+# 'pruned', 'efficiency', etc?
 systematics = [
-    #TestSystFlat,
-    #TestSystShape,
+    # TestSystFlat,
+    # TestSystShape,
     RqcdStat,
     RqcdSyst,
-    #MuonEffStat,
-    #MuonEffSys,
-    MuonEffTrigStat,
-    MuonEffTrigSys,
-    #MuonIsoStat,
-    #MuonIsoSys,
-    #MuonIdSys,
-    #MuonMsSys,
-    #MuonScaleSys,
-    BJetEigenB0,
-    BJetEigenB1,
-    #BJetEigenB2,
-    #BJetEigenB3,
-    #BJetEigenB4,
-    BJetEigenC0,
-    #BJetEigenC1,
-    #BJetEigenC2,
-    #BJetEigenC3,
-    BJetEigenLight0,
-    #BJetEigenLight1,
-    #BJetEigenLight2,
-    #BJetEigenLight3,
-    #BJetEigenLight4,
-    #BJetEigenLight5,
-    #BJetEigenLight6,
-    #BJetEigenLight7,
-    #BJetEigenLight8,
-    #BJetEigenLight9,
-    #BJetEigenLight10,
-    #BJetEigenLight11,
-    #BJetEigenLight12,
-    #BJetEigenLight13,
-    #BJetExtrapolation,
+    PileupSys,
+    # NOTE: Temporarily disabled.
+    # #MuonEffStat,
+    # #MuonEffSys,
+    # MuonEffTrigStat,
+    # MuonEffTrigSys,
+    # #MuonIsoStat,
+    # #MuonIsoSys,
+    # #MuonIdSys,
+    # #MuonMsSys,
+    # #MuonScaleSys,
+    # BJetEigenB0,
+    # BJetEigenB1,
+    # #BJetEigenB2,
+    # #BJetEigenB3,
+    # #BJetEigenB4,
+    # BJetEigenC0,
+    # #BJetEigenC1,
+    # #BJetEigenC2,
+    # #BJetEigenC3,
+    # BJetEigenLight0,
+    # #BJetEigenLight1,
+    # #BJetEigenLight2,
+    # #BJetEigenLight3,
+    # #BJetEigenLight4,
+    # #BJetEigenLight5,
+    # #BJetEigenLight6,
+    # #BJetEigenLight7,
+    # #BJetEigenLight8,
+    # #BJetEigenLight9,
+    # #BJetEigenLight10,
+    # #BJetEigenLight11,
+    # #BJetEigenLight12,
+    # #BJetEigenLight13,
+    # #BJetExtrapolation,
 ]
 
 # Get computation environment
@@ -449,7 +475,7 @@ def do_efficiencies(distribution, region, rqcd_addons, efficiency_filter):
     data_subtracted_total = data_total - background_total
     data_subtracted_passed = data_passed - background_passed
     data_efficiency = efficiency(data_subtracted_total, data_subtracted_passed)
-    data_efficiency.SetTitle('Data')
+    data_efficiency.SetTitle(data['process'].label())
 
     ##############################################################
     # COMPUTE EFFICIENCIES FOR SYSTEMATIC VARIATIONS
@@ -653,7 +679,7 @@ def plot_efficiencies(data_efficiency,
     set_error(total_uncertainty_band, data_total_uncertainty)
 
     data_efficiency = data_efficiency.Clone(uuid4().hex)
-    data_efficiency.SetTitle('Data')
+    # data_efficiency.SetTitle('Data')
     clear_error(data_efficiency)
 
     # Create the plot
@@ -674,7 +700,7 @@ def plot_efficiencies(data_efficiency,
     clear_error(sf)
 
     sf_data_syst_band = scale_factor.Clone(uuid4().hex)
-    sf_data_syst_band .SetTitle('Data Syst.')
+    sf_data_syst_band.SetTitle('Data Syst.')
     set_error(sf_data_syst_band, sf_data_syst)
 
     sf_signal_stat_band = scale_factor.Clone(uuid4().hex)
@@ -710,9 +736,6 @@ def plot_efficiencies(data_efficiency,
                                       ))
 
     # Draw an ATLAS stamp
-    label = region.label()
-    if arguments.label:
-        label += arguments.label
     plot.draw_atlas_label(luminosity,
                           sqrt_s,
                           custom_label = label,
@@ -786,7 +809,7 @@ def do_scale_factor(data_efficiency,
     set_error(nominal, combine_errors(syst_uncertainty,
                                       data_stat_uncertainty,
                                       signal_stat_uncertainty))
-    nominal.SetTitle('Data / MC')
+    nominal.SetTitle('Data / exp.')
 
     return nominal, (syst_uncertainty,
                      data_stat_uncertainty,
@@ -902,9 +925,7 @@ with caching_into(cache):
             if arguments.text_output and not parallel.capturing():
                 text_file.write('Efficiencies for {}\n'.format(eff_name))
 
-            # label = [region.label() + eff['title'], model['label']] + \
-            label = [region.label(), eff['title']] + \
-                    eff['label']
+            label = region.label() + [eff['title'], eff['label']]
 
     ##############################################################
     # CREATE AND PLOT NOMINAL EFFICIENCIES AND SCALE FACTORS
