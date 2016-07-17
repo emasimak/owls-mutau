@@ -15,6 +15,9 @@ MC_REGIONS="\
   mu_tau_1p mu_tau_3p \
   mu_tau_tau25_1p mu_tau_tau25_3p \
   "
+MC_REGIONS="\
+  mu_tau_os mu_tau_ss \
+  "
 
 OSSS_REGIONS="\
   mu_tau \
@@ -39,35 +42,36 @@ DISTRIBUTIONS="\
   met_et met_phi mt \
   mu nvx \
   "
+DISTRIBUTIONS="mu"
 
 EXTENSIONS="pdf eps"
-#EXTENSIONS="pdf"
+EXTENSIONS="pdf"
 LUMINOSITY=3209.0 # 1/pb
 DATA_PREFIX="/disk/d1/ohman/tagprobe_2016-01-21_merged"
 
 
 # Plots with only MC backgrounds, and split into MC processes
-#OUTPUT="results/plots_mc"
-#"$OWLS/tools/plot.py" \
-  #--output $OUTPUT \
-  #--extensions $EXTENSIONS \
-  #--model-file "$OWLS/definitions/models-2016-01-21.py" \
-  #--model mc \
-  #--regions-file "$OWLS/definitions/regions-2016-01-21.py" \
-  #--regions $MC_REGIONS \
-  #--distributions-file "$OWLS/definitions/distributions.py" \
-  #--distributions $DISTRIBUTIONS \
-  #--environment-file "$SCRIPTS/environment.py" \
-  #--text-count \
-  #--error-label "Stat. Unc." \
-  #data_prefix=$DATA_PREFIX \
-  #enable_systematics=False \
-  #luminosity=$LUMINOSITY
+OUTPUT="results/plots_mc/mc15b"
+"$OWLS/tools/plot.py" \
+  --output $OUTPUT \
+  --extensions $EXTENSIONS \
+  --model-file "$OWLS/definitions/models-2016-01-21.py" \
+  --model mc \
+  --regions-file "$OWLS/definitions/regions-2016-01-21.py" \
+  --regions $MC_REGIONS \
+  --distributions-file "$OWLS/definitions/distributions.py" \
+  --distributions $DISTRIBUTIONS \
+  --environment-file "$SCRIPTS/environment.py" \
+  --text-count \
+  --error-label "Stat. Unc." \
+  data_prefix=$DATA_PREFIX \
+  enable_systematics=False \
+  luminosity=$LUMINOSITY
 
 
-# Plots with only MC backgrounds, and split into truth and fakes for ttbar
-# and single top
-#OUTPUT="results/plots_mc_fakes"
+## Plots with only MC backgrounds, and split into truth and fakes for ttbar
+## and single top
+#OUTPUT="results/plots_mc_fakes/mc15b"
 #"$OWLS/tools/plot.py" \
   #--output $OUTPUT \
   #--extensions $EXTENSIONS \
@@ -86,12 +90,12 @@ DATA_PREFIX="/disk/d1/ohman/tagprobe_2016-01-21_merged"
 
 # Plots with OS-SS backgrounds, and split into truth and fakes for ttbar and
 # single top
-OUTPUT="results/plots_osss_fakes"
+OUTPUT="results/plots_osss_fakes2/mc15b"
 "$OWLS/tools/plot.py" \
   --output $OUTPUT \
   --extensions $EXTENSIONS \
   --model-file "$OWLS/definitions/models-2016-01-21.py" \
-  --model osss_fakes \
+  --model osss_fakes2 \
   --regions-file "$OWLS/definitions/regions-2016-01-21.py" \
   --regions $OSSS_REGIONS \
   --distributions-file "$OWLS/definitions/distributions.py" \
@@ -105,7 +109,7 @@ OUTPUT="results/plots_osss_fakes"
 
 ## Plots with OS-SS backgrounds, and split into truth and fakes for ttbar and
 ## single top
-#OUTPUT="results/plots_osss_fakes_syst"
+#OUTPUT="results/plots_osss_fakes_syst/mc15b"
 #"$OWLS/tools/plot.py" \
   #--output $OUTPUT \
   #--extensions $EXTENSIONS \

@@ -121,14 +121,13 @@ data = Process(
 
 ss_data = Process(
     (
-        file('data.root'),
+        data.files()
     ),
     tree = nominal_tree,
-    label = 'SS Data',
+    label = 'MisID #tau (SS data)',
     sample_type = 'data',
     line_color = 1,
-    fill_color = 424,
-    # metadata = {'print_me': ['estimation']},
+    fill_color = 410,
 )
 
 zll = Process(
@@ -264,7 +263,7 @@ ttbar = Process(
     friends = (prw_friend,),
     line_color = 1,
     fill_color = 0,
-    metadata = {'print_me': ['selection', 'expressions', 'counts']},
+    # metadata = {'print_me': ['selection', 'expressions', 'counts']},
 )
 
 ttbar_true = ttbar.patched(
@@ -338,6 +337,35 @@ other_jetfake = other.patched(
     label = 'Other (j #rightarrow #tau)',
     line_color = 1,
     fill_color = 408
+)
+
+all_mc = Process(
+    ttbar.files() + \
+        single_top.files() + \
+        zll.files() + \
+        ztautau.files() + \
+        wlnu.files() + \
+        wtaunu.files(),
+    tree = nominal_tree,
+    label = 'All MC',
+    sample_type = 'mc',
+    # friends = (prw_friend,),
+    line_color = 1,
+    fill_color = 92,
+)
+
+all_mc_true = all_mc.patched(
+    tau_truth_matched,
+    label = 'True #tau',
+    line_color = 1,
+    fill_color = 861
+)
+
+all_mc_fake = all_mc.patched(
+    tau_fake,
+    label = 'MisID #tau (MC)',
+    line_color = 1,
+    fill_color = 401
 )
 
 if systematics in ['Pruned', 'True']:
@@ -656,6 +684,34 @@ osss = {
 }
 
 osss_fakes = {
+    'label': 'OS-SS',
+    'luminosity': luminosity,
+    'sqrt_s': sqrt_s,
+    'data': {
+        'process': data,
+        'estimation': OSData,
+    },
+    'backgrounds': OrderedDict((
+        ('ss_data', {
+            'process': ss_data,
+            'estimation': SSData,
+            'uncertainties': ss_data_uncertainties,
+        }),
+        ('all_mc_fake', {
+            'process': all_mc_fake,
+            'estimation': OSSS,
+            'uncertainties': osss_uncertainties,
+        }),
+        ('all_mc_true', {
+            'process': all_mc_true,
+            'estimation': OSSS,
+            'uncertainties': osss_uncertainties,
+            'treat_as_signal': True,
+        }),
+    )),
+}
+
+osss_fakes2 = {
     'label': 'OS-SS',
     'luminosity': luminosity,
     'sqrt_s': sqrt_s,

@@ -28,6 +28,14 @@ MC_REGIONS=" \
   mu_tau_qcd_cr_tau25_3p_os \
   mu_tau_qcd_cr_tau25_3p_ss \
   "
+MC_REGIONS="\
+  mu_tau \
+  mu_tau_1p \
+  mu_tau_3p \
+  mu_tau_os \
+  mu_tau_1p_os \
+  mu_tau_3p_os \
+  "
 #MC_REGIONS="mu_tau"
 
 OSSS_REGIONS=" \
@@ -62,16 +70,23 @@ OSSS_REGIONS=" \
   mu_tau_ttbar_cr_tau25_1p \
   mu_tau_ttbar_cr_tau25_3p \
   "
-#OSSS_REGIONS="mu_tau"
-#OSSS_REGIONS="mu_tau_tau25"
-
-OSSS_REGIONS_SYST=" \
+OSSS_REGIONS=" \
   mu_tau \
   mu_tau_1p \
   mu_tau_3p \
   mu_tau_tau25 \
   mu_tau_tau25_1p \
   mu_tau_tau25_3p \
+  "
+#OSSS_REGIONS="\
+  #mu_tau \
+  #mu_tau_tau25 \
+  #"
+#OSSS_REGIONS="mu_tau"
+
+OSSS_REGIONS_SYST=" \
+  mu_tau \
+  mu_tau_tau25 \
   "
 OSSS_REGIONS_SYST="mu_tau"
 
@@ -85,45 +100,27 @@ DATA_PREFIX="/disk/d1/ohman/tagprobe_2016-01-21_merged/"
 
 
 ## Plots with only MC backgrounds, and split into MC processes
-OUTPUT="results/plots_mc"
-"$OWLS/tools/plot.py" \
-  --output $OUTPUT \
-  --extensions $EXTENSIONS \
-  --model-file "$OWLS/definitions/models-2016-01-21.py" \
-  --model mc \
-  --regions-file "$OWLS/definitions/regions-2016-01-21.py" \
-  --regions $MC_REGIONS \
-  --distributions-file "$OWLS/definitions/distributions.py" \
-  --distributions $DISTRIBUTIONS \
-  --environment-file "$SCRIPTS/environment.py" \
-  --text-count \
-  --error-label "Stat. Unc." \
-  data_prefix=$DATA_PREFIX \
-  enable_systematics=False \
-  luminosity=$LUMINOSITY
-
-
-## Plots with only MC backgrounds, and split into truth and fakes for ttbar
-## and single top
-#OUTPUT="results/plots_mc_fakes"
+#OUTPUT="results/plots_mc/mc15b"
 #"$OWLS/tools/plot.py" \
   #--output $OUTPUT \
   #--extensions $EXTENSIONS \
   #--model-file "$OWLS/definitions/models-2016-01-21.py" \
-  #--model mc_fakes \
+  #--model mc \
   #--regions-file "$OWLS/definitions/regions-2016-01-21.py" \
-  #--regions $MC_REGIONS\
+  #--regions $MC_REGIONS \
   #--distributions-file "$OWLS/definitions/distributions.py" \
   #--distributions $DISTRIBUTIONS \
   #--environment-file "$SCRIPTS/environment.py" \
+  #--text-count \
+  #--label "MC15B, 20.1" \
   #--error-label "Stat. Unc." \
+  #--label "MC15B, 20.1" \
   #data_prefix=$DATA_PREFIX \
   #enable_systematics=False \
   #luminosity=$LUMINOSITY
 
-# Plots with OS-SS backgrounds, and split into truth and fakes for ttbar and
-# single top
-OUTPUT="results/plots_osss_fakes"
+# Plots with OS-SS backgrounds
+OUTPUT="results/plots_osss_fakes/mc15b"
 "$OWLS/tools/plot.py" \
   --output $OUTPUT \
   --extensions $EXTENSIONS \
@@ -135,13 +132,32 @@ OUTPUT="results/plots_osss_fakes"
   --distributions $DISTRIBUTIONS \
   --environment-file "$SCRIPTS/environment.py" \
   --text-count \
+  --label "MC15B, 20.1" \
   --error-label "Stat. Unc." \
   data_prefix=$DATA_PREFIX \
   enable_systematics=False \
   luminosity=$LUMINOSITY
 
-## Plots with OS-SS backgrounds, and split into truth and fakes for ttbar and
-## single top
+# Plots with OS-SS backgrounds
+OUTPUT="results/plots_osss_fakes2/mc15b"
+"$OWLS/tools/plot.py" \
+  --output $OUTPUT \
+  --extensions $EXTENSIONS \
+  --model-file "$OWLS/definitions/models-2016-01-21.py" \
+  --model osss_fakes2 \
+  --regions-file "$OWLS/definitions/regions-2016-01-21.py" \
+  --regions $OSSS_REGIONS \
+  --distributions-file "$OWLS/definitions/distributions.py" \
+  --distributions $DISTRIBUTIONS \
+  --environment-file "$SCRIPTS/environment.py" \
+  --text-count \
+  --label "MC15B, 20.1" \
+  --error-label "Stat. Unc." \
+  data_prefix=$DATA_PREFIX \
+  enable_systematics=False \
+  luminosity=$LUMINOSITY
+
+## Plots with OS-SS backgrounds with systematic uncertainties
 #OUTPUT="results/plots_osss_fakes_syst"
 #"$OWLS/tools/plot.py" \
   #--output $OUTPUT \
@@ -154,6 +170,7 @@ OUTPUT="results/plots_osss_fakes"
   #--distributions $DISTRIBUTIONS \
   #--environment-file "$SCRIPTS/environment.py" \
   #--text-count \
+  #--label "MC15B, 20.1" \
   #--error-label "Stat. #oplus Sys. Unc." \
   #data_prefix=$DATA_PREFIX \
   #enable_systematics=True \
