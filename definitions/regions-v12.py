@@ -96,6 +96,7 @@ definitions = {
 
     # b-jet requirement and veto
     'bjet': 'n_bjets >= 1',
+    '2bjet': 'n_bjets >= 2',
     # 'bjet': 'n_bjets >= 1 && jet_0_mvx_tagged',
     'bveto': 'n_bjets == 0',
 
@@ -251,6 +252,15 @@ _vary_me('mu_tau_w_cr',
          expr('[mu_trigger] && [mu_tau] && [medium_tau] && [bveto] && [wcr] && [iso_gradient]'),
          expr('[weight]'),
          'W CR',
+         {'mc': expr('[weight_pileup] * [weight_mu] * [weight_mu_trigger] * [weight_b] * [weight_tau_medium]')},
+         {'rqcd': 'mu_tau_qcd_cr'},
+         _variations)
+
+# ttbar CR
+_vary_me('mu_tau_ttbar_cr',
+         expr('[mu_trigger] && [mu_tau] && [medium_tau] && [2bjet] && [iso_gradient]'),
+         expr('[weight]'),
+         't#bar{t} CR',
          {'mc': expr('[weight_pileup] * [weight_mu] * [weight_mu_trigger] * [weight_b] * [weight_tau_medium]')},
          {'rqcd': 'mu_tau_qcd_cr'},
          _variations)

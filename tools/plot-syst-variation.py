@@ -27,6 +27,7 @@ from owls_mutau.uncertainties import TestSystFlat, TestSystShape, \
         MuonIsoStat, MuonIsoSys, \
         MuonIdSys, MuonMsSys, MuonScaleSys, \
         RqcdStat, RqcdSyst, \
+        PileupSys, \
         BJetEigenB0, BJetEigenB1, BJetEigenB2, BJetEigenB3, BJetEigenB4, \
         BJetEigenC0, BJetEigenC1, BJetEigenC2, BJetEigenC3, \
         BJetEigenLight0, BJetEigenLight1, BJetEigenLight2, BJetEigenLight3, \
@@ -83,8 +84,11 @@ parser.add_argument('-E',
                     required = True,
                     help = 'the path to the environment definition module',
                     metavar = '<environment-file>')
-parser.add_argument('--label', default=None,
-                    help='Label for the plot')
+parser.add_argument('-l',
+                    '--label',
+                    nargs = '*',
+                    help = 'items to add to the custom label',
+                    metavar = '<items>')
 parser.add_argument('-t',
                     '--text-counts',
                     action = 'store_true',
@@ -140,9 +144,10 @@ parallel = ParallelizedEnvironment(backend)
 
 systematics = [
     #TestSystFlat,
-    TestSystShape,
+    # TestSystShape,
     RqcdStat,
     RqcdSyst,
+    PileupSys,
     MuonEffStat,
     MuonEffSys,
     MuonEffTrigStat,
@@ -179,13 +184,17 @@ systematics = [
     #BJetExtrapolationCharm, # Doesn't work
 ]
 
+# Create output directories
+for region_name in regions:
+    # Compute the region's output path
+    region_path = join(arguments.output, region_name)
 
-base_path = arguments.output
-if not exists(base_path):
-    makedirs(base_path)
+    # Try to create it
+    if not exists(region_path):
+        makedirs(region_path)
 
 print('Script options')
-print('  Output directory: {}'.format(base_path))
+print('  Output directory: {}'.format(arguments.output))
 print('  Data prefix: {}'.format(definitions.get('data_prefix', 'UNDEFINED')))
 print('  Systematics enabled: {}'.format(model_file.systematics))
 
@@ -268,12 +277,12 @@ with caching_into(cache):
                 )
 
                 plot.draw_legend()
-                label = [region.label()]
-                if arguments.label is not None:
-                    label.append(arguments.label)
+                label = region.label()
+                if arguments.label:
+                    label += arguments.label
                 plot.draw_atlas_label(custom_label = label)
-                plot.save(join(base_path,
-                               '{}_{}_{}'.format(region_name,
-                                                 distribution_name,
+                plot_output_path = join(arguments.output, region_name)
+                plot.save(join(plot_output_path,
+                               '{}_{}'.format(distribution_name,
                                                  s.name)),
                           arguments.extensions)

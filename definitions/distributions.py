@@ -376,3 +376,67 @@ tau_bdt_score_trig = Histogram(
         'Events'
         )
 
+# Weights
+NOMINAL_pileup_combined_weight = Histogram(
+	'NOMINAL_pileup_combined_weight',
+	(30,0.0,3.0),
+	'',
+	'NOMINAL_pileup_combined_weight',
+	'Events'
+)
+lep_0_NOMINAL_MuEffSF_Reco_QualMedium = Histogram(
+        'lep_0_NOMINAL_MuEffSF_Reco_QualMedium',
+	(25,0.9,1.15),
+        '',
+        'lep_0_NOMINAL_MuEffSF_Reco_QualMedium',
+        'Events'
+)
+lep_0_NOMINAL_MuEffSF_IsoGradient = Histogram(
+        'lep_0_NOMINAL_MuEffSF_IsoGradient',
+	(25,0.9,1.15),
+        '',
+        'lep_0_NOMINAL_MuEffSF_IsoGradient',
+        'Events'
+)
+lep_0_NOMINAL_MuEffSF_HLT_mu20_iloose_L1MU15_OR_HLT_mu40_QualMedium_IsoIsoGradient = Histogram(
+        'lep_0_NOMINAL_MuEffSF_HLT_mu20_iloose_L1MU15_OR_HLT_mu40_QualMedium_IsoIsoGradient',
+	(70,0.7,1.4),
+        '',
+        'lep_0_NOMINAL_MuEffSF_HLT_mu20_iloose_L1MU15_OR_HLT_mu40_QualMedium_IsoIsoGradient',
+        'Events'
+)
+lep_0_NOMINAL_MuEffSF_HLT_mu24_imedium_OR_HLT_mu50_QualMedium_IsoIsoGradient = Histogram(
+        'lep_0_NOMINAL_MuEffSF_HLT_mu24_imedium_OR_HLT_mu50_QualMedium_IsoIsoGradient',
+	(70,0.7,1.4),
+        '',
+        'lep_0_NOMINAL_MuEffSF_HLT_mu24_imedium_OR_HLT_mu50_QualMedium_IsoIsoGradient',
+        'Events'
+)
+tau_0_NOMINAL_effSF_VeryLooseLlhEleOLR_electron = Histogram(
+        'tau_0_NOMINAL_effSF_VeryLooseLlhEleOLR_electron',
+	(30,0.0,3.0),
+        '',
+        'tau_0_NOMINAL_effSF_VeryLooseLlhEleOLR_electron',
+        'Events'
+) 
+tau_0_NOMINAL_TAU_EFF_JETIDBDTMEDIUM = Histogram(
+        'tau_0_NOMINAL_TAU_EFF_JETIDBDTMEDIUM',
+	(30,0.0,3.0),
+        '',
+        'tau_0_NOMINAL_TAU_EFF_JETIDBDTMEDIUM',
+        'Events'
+) 
+tau_0_NOMINAL_TAU_EFF_RECO = Histogram(
+        'tau_0_NOMINAL_TAU_EFF_RECO',
+	(30,0.0,3.0),
+        '',
+        'tau_0_NOMINAL_TAU_EFF_RECO',
+        'Events'
+) 
+tau_0_NOMINAL_TAU_EFF_SELECTION = Histogram(
+        'tau_0_NOMINAL_TAU_EFF_SELECTION',
+	(30,0.0,3.0),
+        '',
+        'tau_0_NOMINAL_TAU_EFF_SELECTION',
+        'Events'
+)

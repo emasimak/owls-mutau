@@ -28,7 +28,7 @@ from owls_hep.plotting import Plot, histogram_stack, combined_histogram, \
 from owls_hep.utility import integral, get_bins_errors
 
 Plot.PLOT_HEADER_HEIGHT = 500
-Plot.PLOT_LEGEND_LEFT = 0.60
+Plot.PLOT_LEGEND_LEFT = 0.70
 
 # Parse command line arguments
 parser = argparse.ArgumentParser(
@@ -98,7 +98,7 @@ parser.add_argument('-l',
                     metavar = '<items>')
 parser.add_argument('-a',
                     '--atlas-label',
-                    default = 'Work in Progress',
+                    default = 'Internal',
                     help = 'the label to use for the ATLAS stamp',
                     metavar = '<atlas-label>')
 parser.add_argument('-x',
@@ -193,7 +193,7 @@ with caching_into(cache):
                     data_process,
                     region
                 )
-                data_histogram.SetTitle('Data')
+                # data_histogram.SetTitle('Data')
 
                 # If this region is blinded, then zero-out the data histogram
                 if region.metadata().get('blinded', False):
