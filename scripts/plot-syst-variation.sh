@@ -43,7 +43,7 @@ OUTPUT="results/systematics/$YEAR"
   #data_prefix=$DATA_PREFIX \
   #year=$YEAR
 
-LUMINOSITY=5115.35 # 1/pb
+LUMINOSITY=7980.0 # 1/pb
 DATA_PREFIX="/disk/d2/ohman/lhtnp_v12_merged"
 YEAR=2016
 OUTPUT="results/systematics/$YEAR"

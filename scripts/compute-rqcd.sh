@@ -37,7 +37,7 @@ REGIONS="\
   #mu_tau_qcd_cr_3p \
   #"
 
-DATA_PREFIX="/disk/d2/ohman/lhtnp_v12_merged/"
+DATA_PREFIX="/disk/d2/ohman/lhtnp_v15_merged/"
 
 # Compute r_QCD
 YEAR=2015
