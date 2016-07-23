@@ -12,7 +12,8 @@ tau_pt = Histogram(
         (20, 0, 200),
         '',
         '#tau p_{T} [GeV]',
-        'Events / 10 GeV'
+        'Events / 10 GeV',
+        include_overflow = True
         )
 
 tau_pt_b1 = Histogram(
@@ -20,15 +21,26 @@ tau_pt_b1 = Histogram(
         (15, 0, 300),
         '',
         '#tau p_{T} [GeV]',
-        'Events / 20 GeV'
+        'Events / 20 GeV',
+        include_overflow = True
         )
 
 tau_pt_b2 = Histogram(
         'tau_0_pt',
-        (10, 50, 150),
+        (26, 70, 200),
         '',
         '#tau p_{T} [GeV]',
-        'Events / 10 GeV'
+        'Events / 5 GeV',
+        include_overflow = True
+        )
+
+tau_pt_b3 = Histogram(
+        'tau_0_pt',
+        (15, 150, 300),
+        '',
+        '#tau p_{T} [GeV]',
+        'Events / 10 GeV',
+        include_overflow = True
         )
 
 tau_eta = Histogram(
@@ -79,7 +91,8 @@ tau_hlt_pt = Histogram(
         (15, 0, 300),
         '',
         'HLT #tau p_{T} [GeV]',
-        'Events / 20 GeV'
+        'Events / 20 GeV',
+        include_overflow = True
         )
 
 tau_hlt_eta = Histogram(
@@ -103,7 +116,8 @@ mu_pt = Histogram(
         (20, 0, 200),
         '',
         '#mu p_{T} [GeV]',
-        'Events / 10 GeV'
+        'Events / 10 GeV',
+        include_overflow = True
         )
 
 mu_eta = Histogram(
@@ -160,7 +174,8 @@ met_et = Histogram(
         (15, 0, 300),
         '',
         'E_{T}^{miss} [GeV]',
-        'Events / 20 GeV'
+        'Events / 20 GeV',
+        include_overflow = True
         )
 
 met_eta = Histogram(
@@ -200,7 +215,8 @@ jet_0_pt = Histogram(
         (15, 0, 300),
         '',
         'Leading jet p_{T} [GeV]',
-        'Events / 20 GeV'
+        'Events / 20 GeV',
+        include_overflow = True
         )
 
 jet_0_eta = Histogram(
@@ -224,7 +240,8 @@ jet_1_pt = Histogram(
         (15, 0, 300),
         '',
         'Subleading jet p_{T} [GeV]',
-        'Events / 20 GeV'
+        'Events / 20 GeV',
+        include_overflow = True
         )
 
 jet_1_eta = Histogram(
@@ -248,7 +265,8 @@ jet_2_pt = Histogram(
         (15, 0, 300),
         '',
         'Third jet p_{T} [GeV]',
-        'Events / 20 GeV'
+        'Events / 20 GeV',
+        include_overflow = True
         )
 
 jet_2_eta = Histogram(
@@ -322,50 +340,40 @@ tau_pt_trig_1gev = Histogram(
         (125,25,150),
         '',
         'Offline #tau p_{T} [GeV]',
-        'Events'
+        'Events',
+        include_overflow = True
         )
 tau_pt_trig_5gev = Histogram(
         'tau_0_pt',
         (25,25,150),
         '',
         'Offline #tau p_{T} [GeV]',
-        'Events'
+        'Events',
+        include_overflow = True
         )
 tau_pt_trig_b1 = Histogram(
         'tau_0_pt',
         (25, 28, 30, 32, 34, 36, 39, 43, 53, 100, 150, 300),
         '',
         'Offline #tau p_{T} [GeV]',
-        'Events'
+        'Events',
+        include_overflow = True
         )
 tau_pt_trig_b2  = Histogram(
         'tau_0_pt',
         (25, 28, 30, 32, 34, 36, 39, 43, 48, 54, 62, 72, 85, 100, 125, 150, 300),
         '',
         'Offline #tau p_{T} [GeV]',
-        'Events'
+        'Events',
+        include_overflow = True
         )
 tau_pt_trig_b3  = Histogram(
         'tau_0_pt',
         (25, 28, 30, 32, 34, 36, 39, 43, 52, 64, 80, 100, 150, 300),
         '',
         'Offline #tau p_{T} [GeV]',
-        'Events'
-        )
-tau_pt_trig_b4  = Histogram(
-        'tau_0_pt',
-        (25, 28, 31, 34, 37, 40, 44, 53, 65, 100, 150, 300),
-        '',
-        'Offline #tau p_{T} [GeV]',
-        'Events'
-        )
-
-tau_pt_trig_b5 = Histogram(
-        'tau_0_pt',
-        (20, 0, 200),
-        '',
-        'Offline #tau p_{T} [GeV]',
-        'Events / 10 GeV'
+        'Events',
+        include_overflow = True
         )
 
 tau_bdt_score_trig = Histogram(
