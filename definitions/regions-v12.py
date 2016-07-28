@@ -28,8 +28,8 @@ definitions = {
 
     # Weight for events with b-jet or b-jet veto
     'weight_b': ('jet_NOMINAL_global_effSF_JVT * '
-        'jet_NOMINAL_global_effSF_MVX * '
-        'jet_NOMINAL_global_ineffSF_MVX'),
+        'jet_NOMINAL_global_effSF_MVX*jet_NOMINAL_global_ineffSF_MVX'),
+        # 'jet_NOMINAL_global_effSF_MVX'),
 
     # Weights for events with muons
     'weight_mu': (
@@ -48,22 +48,22 @@ definitions = {
 
     # Weight for events with taus
     'weight_tau_loose': (
-        'tau_0_NOMINAL_effSF_VeryLooseLlhEleOLR_electron * '
-        'tau_0_NOMINAL_TAU_EFF_JETIDBDTLOOSE * '
-        'tau_0_NOMINAL_TAU_EFF_RECO * '
-        'tau_0_NOMINAL_TAU_EFF_SELECTION'
+        # 'tau_0_NOMINAL_TauEffSF_VeryLooseLlhEleOLR_electron * '
+        'tau_0_NOMINAL_TauEffSF_JetBDTloose * '
+        'tau_0_NOMINAL_TauEffSF_reco * '
+        'tau_0_NOMINAL_TauEffSF_selection'
     ),
     'weight_tau_medium': (
-        'tau_0_NOMINAL_effSF_VeryLooseLlhEleOLR_electron * '
-        'tau_0_NOMINAL_TAU_EFF_JETIDBDTMEDIUM * '
-        'tau_0_NOMINAL_TAU_EFF_RECO * '
-        'tau_0_NOMINAL_TAU_EFF_SELECTION'
+        # 'tau_0_NOMINAL_TauEffSF_VeryLooseLlhEleOLR_electron'
+        'tau_0_NOMINAL_TauEffSF_JetBDTmedium * '
+        'tau_0_NOMINAL_TauEffSF_reco  * '
+        'tau_0_NOMINAL_TauEffSF_selection'
     ),
     'weight_tau_tight': (
-        'tau_0_NOMINAL_effSF_VeryLooseLlhEleOLR_electron * '
-        'tau_0_NOMINAL_TAU_EFF_JETIDBDTTIGHT * '
-        'tau_0_NOMINAL_TAU_EFF_RECO * '
-        'tau_0_NOMINAL_TAU_EFF_SELECTION'
+        # 'tau_0_NOMINAL_TauEffSF_VeryLooseLlhEleOLR_electron'
+        'tau_0_NOMINAL_TauEffSF_JetBDTtight * '
+        'tau_0_NOMINAL_TauEffSF_reco  * '
+        'tau_0_NOMINAL_TauEffSF_selection'
     ),
 
     # Muon trigger for 2015 data
@@ -118,6 +118,29 @@ definitions = {
 
     # W CR
     'wcr': 'met_reco_et > 30 && lephad_mt_lep0_met > 60',
+}
+
+available_tau_triggers = {
+    'tau25':  (
+        'HLT_tau25_medium1_tracktwo_resurrected',
+        'tau_0_trig_HLT_tau25_medium1_tracktwo'
+    ),
+    'tau35':  (
+        'HLT_tau35_medium1_tracktwo_resurrected',
+        'tau_0_trig_HLT_tau35_medium1_tracktwo'
+    ),
+    'tau80':  (
+        'HLT_tau80_medium1_tracktwo_resurrected',
+        'tau_0_trig_HLT_tau80_medium1_tracktwo'
+    ),
+    'tau125': (
+        'HLT_tau125_medium1_tracktwo_resurrected',
+        'tau_0_trig_HLT_tau125_medium1_tracktwo'
+    ),
+    'tau160': (
+        'HLT_tau160_medium1_tracktwo_resurrected',
+        'tau_0_trig_HLT_tau160_medium1_tracktwo'
+    ),
 }
 
 if year == '2015':

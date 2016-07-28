@@ -109,8 +109,8 @@ arguments = parser.parse_args()
 definitions = dict((d.split('=') for d in arguments.definitions))
 
 # Ensure systematic uncertainties is turned on in the model
-definitions['enable_systematics'] = 'Full'
-
+if not 'enable_systematics' in definitions:
+    definitions['enable_systematics'] = 'Full'
 
 model_file = load_module(arguments.model_file, definitions)
 regions_file = load_module(arguments.regions_file, definitions)
@@ -142,47 +142,7 @@ backend = getattr(environment_file, 'parallelization_backend', None)
 # Create the parallelization environment
 parallel = ParallelizedEnvironment(backend)
 
-systematics = [
-    #TestSystFlat,
-    # TestSystShape,
-    RqcdStat,
-    RqcdSyst,
-    PileupSys,
-    MuonEffStat,
-    MuonEffSys,
-    MuonEffTrigStat,
-    MuonEffTrigSys,
-    MuonIsoStat,
-    MuonIsoSys,
-    MuonIdSys,
-    MuonMsSys,
-    MuonScaleSys,
-    BJetEigenB0,
-    BJetEigenB1,
-    BJetEigenB2,
-    BJetEigenB3,
-    BJetEigenB4,
-    BJetEigenC0,
-    BJetEigenC1,
-    BJetEigenC2,
-    BJetEigenC3,
-    BJetEigenLight0,
-    BJetEigenLight1,
-    BJetEigenLight2,
-    BJetEigenLight3,
-    BJetEigenLight4,
-    BJetEigenLight5,
-    BJetEigenLight6,
-    BJetEigenLight7,
-    BJetEigenLight8,
-    BJetEigenLight9,
-    BJetEigenLight10,
-    BJetEigenLight11,
-    BJetEigenLight12,
-    BJetEigenLight13,
-    BJetExtrapolation,
-    #BJetExtrapolationCharm, # Doesn't work
-]
+systematics = model_file.osss_uncertainties
 
 # Create output directories
 for region_name in regions:

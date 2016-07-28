@@ -23,7 +23,8 @@ from owls_parallel import ParallelizedEnvironment
 
 # owls-hep imports
 from owls_hep.module import load as load_module
-from owls_hep.utility import efficiency, add_histograms, integral
+from owls_hep.utility import efficiency, add_histograms, integral, get_bins, \
+        add_overflow_to_last_bin
 from owls_hep.plotting import Plot, style_line
 from owls_hep.variations import Filtered
 from owls_hep.uncertainty import to_shape, sum_quadrature
@@ -165,36 +166,11 @@ data = model['data']
 signals = model['signals']
 backgrounds = model['backgrounds']
 
+available_triggers = regions_file.available_tau_triggers
+systematics = model_file.osss_uncertainties
+
 one_prong = region.varied(OneProng())
 three_prong = region.varied(ThreeProng())
-
-# TODO: This configuration is also model/region dependent, because different
-# productions may have different variable names. Perhaps we should have a
-# variable available_efficiency_triggers in the regions file? Yep, good idea.
-# Beacuse it's nice to be able to produce MC15B results parallel to
-# 2016/MC15C results.
-available_triggers = {
-    'tau25':  (
-        'HLT_tau25_medium1_tracktwo_resurrected',
-        'tau_0_trig_HLT_tau25_medium1_tracktwo'
-    ),
-    'tau35':  (
-        'HLT_tau35_medium1_tracktwo_resurrected',
-        'tau_0_trig_HLT_tau35_medium1_tracktwo'
-    ),
-    'tau80':  (
-        'HLT_tau80_medium1_tracktwo_resurrected',
-        'tau_0_trig_HLT_tau80_medium1_tracktwo'
-    ),
-    'tau125': (
-        'HLT_tau125_medium1_tracktwo_resurrected',
-        'tau_0_trig_HLT_tau125_medium1_tracktwo'
-    ),
-    'tau160': (
-        'HLT_tau160_medium1_tracktwo_resurrected',
-        'tau_0_trig_HLT_tau160_medium1_tracktwo'
-    ),
-}
 
 efficiencies = OrderedDict()
 
@@ -231,53 +207,6 @@ for name in arguments.triggers:
         }
 
 
-# NOTE: See model file for comments about pruning
-# TODO: Maybe we need this to be configurable by year/campaign? Perhaps it
-# can be defined in the model as e.g. model.systematics, where this list in
-# turn can be defined as a set of systematic uncertainties like 'full',
-# 'pruned', 'efficiency', etc?
-systematics = [
-    # TestSystFlat,
-    # TestSystShape,
-    RqcdStat,
-    RqcdSyst,
-    PileupSys,
-    # NOTE: Temporarily disabled.
-    # #MuonEffStat,
-    # #MuonEffSys,
-    # MuonEffTrigStat,
-    # MuonEffTrigSys,
-    # #MuonIsoStat,
-    # #MuonIsoSys,
-    # #MuonIdSys,
-    # #MuonMsSys,
-    # #MuonScaleSys,
-    # BJetEigenB0,
-    # BJetEigenB1,
-    # #BJetEigenB2,
-    # #BJetEigenB3,
-    # #BJetEigenB4,
-    # BJetEigenC0,
-    # #BJetEigenC1,
-    # #BJetEigenC2,
-    # #BJetEigenC3,
-    # BJetEigenLight0,
-    # #BJetEigenLight1,
-    # #BJetEigenLight2,
-    # #BJetEigenLight3,
-    # #BJetEigenLight4,
-    # #BJetEigenLight5,
-    # #BJetEigenLight6,
-    # #BJetEigenLight7,
-    # #BJetEigenLight8,
-    # #BJetEigenLight9,
-    # #BJetEigenLight10,
-    # #BJetEigenLight11,
-    # #BJetEigenLight12,
-    # #BJetEigenLight13,
-    # #BJetExtrapolation,
-]
-
 # Get computation environment
 cache = getattr(environment_file, 'persistent_cache', None)
 backend = getattr(environment_file, 'parallelization_backend', None)
@@ -302,6 +231,8 @@ if arguments.text_output:
 print('Script options')
 print('  Output directory: {}'.format(base_path))
 print('  Data prefix: {}'.format(definitions.get('data_prefix', 'UNDEFINED')))
+print('  Model file: {}'.format(arguments.model_file))
+print('  Region file: {}'.format(arguments.regions_file))
 print('  Systematics treatment: {}'.format(model_file.systematics))
 print('  Region: {}'.format(arguments.region))
 print('  Distribution: {}'.format(arguments.distribution))
@@ -352,6 +283,8 @@ def do_efficiencies(distribution, region, rqcd_addons, efficiency_filter):
     # Compute the total and passed histograms
     data_total = estimation(distribution)(process, total_region)
     data_passed = estimation(distribution)(process, passed_region)
+    add_overflow_to_last_bin(data_total)
+    add_overflow_to_last_bin(data_passed)
 
     backgrounds_total = []
     backgrounds_passed = []
@@ -460,6 +393,8 @@ def do_efficiencies(distribution, region, rqcd_addons, efficiency_filter):
     ##############################################################
     signal_total = add_histograms(signals_total, 'Signal')
     signal_passed = add_histograms(signals_passed, 'Signal')
+    add_overflow_to_last_bin(signal_total)
+    add_overflow_to_last_bin(signal_passed)
 
     write_counts_signal(signal_total, signal_passed)
 
@@ -472,6 +407,8 @@ def do_efficiencies(distribution, region, rqcd_addons, efficiency_filter):
     ##############################################################
     background_total = add_histograms(backgrounds_total, 'Bkg')
     background_passed = add_histograms(backgrounds_passed, 'Bkg')
+    add_overflow_to_last_bin(background_total)
+    add_overflow_to_last_bin(background_passed)
     data_subtracted_total = data_total - background_total
     data_subtracted_passed = data_passed - background_passed
     data_efficiency = efficiency(data_subtracted_total, data_subtracted_passed)
@@ -494,16 +431,29 @@ def do_efficiencies(distribution, region, rqcd_addons, efficiency_filter):
         # and vice versa.
         syst_total_up = add_histograms(systs_total_up[name], 'Bkg')
         syst_passed_up = add_histograms(systs_passed_up[name], 'Bkg')
+        add_overflow_to_last_bin(syst_total_up)
+        add_overflow_to_last_bin(syst_passed_up)
         data_subtracted_total_down = data_total - syst_total_up
         data_subtracted_passed_down = data_passed - syst_passed_up
 
         syst_total_down = add_histograms(systs_total_down[name], 'Bkg')
         syst_passed_down = add_histograms(systs_passed_down[name], 'Bkg')
+        add_overflow_to_last_bin(syst_total_down)
+        add_overflow_to_last_bin(syst_passed_down)
         data_subtracted_total_up = data_total - syst_total_down
         data_subtracted_passed_up = data_passed - syst_passed_down
 
-        data_subtracted_total_test = data_total - background_total
-        data_subtracted_passed_test = data_passed - background_passed
+        # Write out the resulting histograms
+        write_binned_syst('{}-TOTAL'.format(name),
+                          data_total,
+                          data_subtracted_total,
+                          data_subtracted_total_up,
+                          data_subtracted_total_down)
+        write_binned_syst('{}-PASSED'.format(name),
+                          data_passed,
+                          data_subtracted_passed,
+                          data_subtracted_passed_up,
+                          data_subtracted_passed_down)
 
         # Compute the efficiencies
         if name in ['RQCD_STAT', 'RQCD_SYST']:
@@ -532,9 +482,9 @@ def do_efficiencies(distribution, region, rqcd_addons, efficiency_filter):
             print('Using correlated systematics for {}.'.format(name))
             # NOTE: Reversed up/down results in fewer switches
             down = efficiency(data_subtracted_total_up,
-                            data_subtracted_passed_up)
+                              data_subtracted_passed_up)
             up = efficiency(data_subtracted_total_down,
-                              data_subtracted_passed_down)
+                            data_subtracted_passed_down)
             normalize_efficiencies(data_efficiency, up, down)
             up.SetTitle(name + '_UP')
             down.SetTitle(name + '_DOWN')
@@ -883,6 +833,16 @@ def save_to_root(data_efficiency,
 def write_counts_signal(total, passed):
     text_file.write('Signal total/passed: {:.1f}/{:.1f}\n'. \
                     format(integral(total), integral(passed)))
+
+def write_binned_syst(what, raw, nominal, up, down):
+    text_file.write('--- {} ---\n'.format(what))
+    for i, (rx, ry), (nx, ny), (ux, uy), (dx, dy) in zip(range(nominal.GetNbinsX()+2),
+                                               get_bins(raw, True),
+                                               get_bins(nominal, True),
+                                               get_bins(up, True),
+                                               get_bins(down, True)):
+        text_file.write('{:4d} ({:5.1f}, {:6.1f}r {:6.1f}n {:6.1f}↑ {:6.1f}↓)\n'. \
+                        format(i, rx, ry, ny, uy, dy))
 
 def write_total_syst(what, nominal_count, up_offset, down_offset):
     text_file.write('{:30s} {:10s}: {:6.1f} ({:5.2f}%) | {:6.1f} | '

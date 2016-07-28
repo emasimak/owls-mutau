@@ -117,6 +117,29 @@ definitions = {
     'wcr': 'met_reco_et > 30 && lephad_mt_lep0_met > 60',
 }
 
+available_tau_triggers = {
+    'tau25':  (
+        'HLT_tau25_medium1_tracktwo',
+        'tau_0_trig_HLT_tau25_medium1_tracktwo'
+    ),
+    'tau35':  (
+        'HLT_tau35_medium1_tracktwo',
+        'tau_0_trig_HLT_tau35_medium1_tracktwo'
+    ),
+    'tau80':  (
+        'HLT_tau80_medium1_tracktwo',
+        'tau_0_trig_HLT_tau80_medium1_tracktwo'
+    ),
+    'tau125': (
+        'HLT_tau125_medium1_tracktwo',
+        'tau_0_trig_HLT_tau125_medium1_tracktwo'
+    ),
+    'tau160': (
+        'HLT_tau160_medium1_tracktwo',
+        'tau_0_trig_HLT_tau160_medium1_tracktwo'
+    ),
+}
+
 expr = partial(expression_substitute, definitions = definitions)
 
 def _vary_me(name, selection, weight, label, patches, metadata, variations):
