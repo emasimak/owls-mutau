@@ -328,9 +328,12 @@ with caching_into(cache):
                 with open(text_output_path, 'w') as f:
                     # Calculate s/sqrt(b)
                     if background_count != 0.0:
-                        f.write('s/sqrt(b): {0:.2f}\n'. \
-                                format(signal_count /
-                                       sqrt(background_count)))
+                        try:
+                            f.write('s/sqrt(b): {0:.2f}\n'. \
+                                    format(signal_count /
+                                           sqrt(background_count)))
+                        except ValueError:
+                            pass
                         f.write('s/sqrt(s+b): {0:.2f}\n\n'. \
                                 format(signal_count /
                                        sqrt(signal_count + background_count)))
