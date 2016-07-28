@@ -16,8 +16,10 @@ from owls_hep.estimation import Plain, MonteCarlo
 from owls_hep.expression import expression_substitute
 
 # owls-mutau imports
+import owls_mutau
 from owls_mutau.estimation import OSData, SSData, OSSS
-from owls_mutau.uncertainties import TestSystFlat, TestSystShape, \
+from owls_mutau.uncertainties import \
+        TestConfiguration, TestSystFlat, TestSystShape, \
         MuonEffStat, MuonEffSys, \
         MuonEffTrigStat, MuonEffTrigSys, \
         MuonIsoStat, MuonIsoSys, \
@@ -38,6 +40,77 @@ data_prefix = configuration.get('data_prefix', '')
 luminosity = float(configuration.get('luminosity', 1000.0)) # 1/fb
 nominal_tree = 'NOMINAL'
 sqrt_s = 13.0 * 1000 * 1000 # MeV
+
+# NOTE: Remember to escape * to treat it like a multiplication sign in
+# the regular expression
+bjet_nominal = 'bjet_sf_MVX_NOMINAL_sf\*bjet_sf_MVX_NOMINAL_ineff_sf'
+bjet_var = lambda v, d: 'bjet_sf_MVX_FT_EFF_Eigen_{0}_1{1}_sf*bjet_sf_MVX_FT_EFF_Eigen_{0}_1{1}_ineff_sf'.format(v, d)
+owls_mutau.uncertainties.configuration = {
+    'NAME': '2015 MC15B',
+    'MUON_EFF_STAT': (
+        'lep_0_NOMINAL_effSF_RecoMedium',
+        'lep_0_MUON_EFF_STAT_1up_effSF_RecoMedium',
+        'lep_0_MUON_EFF_STAT_1down_effSF_RecoMedium'
+    ),
+    'MUON_EFF_SYS': (
+        'lep_0_NOMINAL_effSF_RecoMedium',
+        'lep_0_MUON_EFF_SYS_1up_effSF_RecoMedium',
+        'lep_0_MUON_EFF_SYS_1down_effSF_RecoMedium'
+    ),
+    'MUON_EFF_TRIG_STAT': (
+        'lep_0_NOMINAL_HLT_mu20_iloose_L1MU15_MU_TRIG_QUAL_MEDIUM_MU_TRIG_ISO_GRADIENT',
+        'lep_0_MUON_EFF_TrigStatUncertainty_1up_HLT_mu20_iloose_L1MU15_MU_TRIG_QUAL_MEDIUM_MU_TRIG_ISO_GRADIENT',
+        'lep_0_MUON_EFF_TrigStatUncertainty_1down_HLT_mu20_iloose_L1MU15_MU_TRIG_QUAL_MEDIUM_MU_TRIG_ISO_GRADIENT'
+    ),
+    'MUON_EFF_TRIG_SYS': (
+        'lep_0_NOMINAL_HLT_mu20_iloose_L1MU15_MU_TRIG_QUAL_MEDIUM_MU_TRIG_ISO_GRADIENT',
+        'lep_0_MUON_EFF_TrigSystUncertainty_1up_HLT_mu20_iloose_L1MU15_MU_TRIG_QUAL_MEDIUM_MU_TRIG_ISO_GRADIENT',
+        'lep_0_MUON_EFF_TrigSystUncertainty_1down_HLT_mu20_iloose_L1MU15_MU_TRIG_QUAL_MEDIUM_MU_TRIG_ISO_GRADIENT'
+    ),
+    'MUON_ISO_STAT': (
+        'lep_0_NOMINAL_effSF_IsoGradient',
+        'lep_0_MUON_ISO_STAT_1up_effSF_IsoGradient',
+        'lep_0_MUON_ISO_STAT_1down_effSF_IsoGradient'
+    ),
+    'MUON_ISO_SYS': (
+        'lep_0_NOMINAL_effSF_IsoGradient',
+        'lep_0_MUON_ISO_SYS_1up_effSF_IsoGradient',
+        'lep_0_MUON_ISO_SYS_1down_effSF_IsoGradient'
+    ),
+    'MUON_ID_SYS': ('MUONS_ID_1up', 'MUONS_ID_1down'),
+    'MUON_MS_SYS': ('MUONS_MS_1up', 'MUONS_MS_1down'),
+    'MUON_SCALE_SYS': ('MUONS_SCALE_1up', 'MUONS_SCALE_1down'),
+    'PRW_SYS': (
+        'NOMINAL_pileup_combined_weight',
+        'PRW_DATASF_1up_pileup_combined_weight',
+        'PRW_DATASF_1down_pileup_combined_weight'
+    ),
+    'BJET_EIGEN_B0': (bjet_nominal, bjet_var('B_0', 'up'), bjet_var('B_0', 'down')),
+    'BJET_EIGEN_B1': (bjet_nominal, bjet_var('B_1', 'up'), bjet_var('B_1', 'down')),
+    'BJET_EIGEN_B2': (bjet_nominal, bjet_var('B_2', 'up'), bjet_var('B_2', 'down')),
+    'BJET_EIGEN_B3': (bjet_nominal, bjet_var('B_3', 'up'), bjet_var('B_3', 'down')),
+    'BJET_EIGEN_B4': (bjet_nominal, bjet_var('B_4', 'up'), bjet_var('B_4', 'down')),
+    'BJET_EIGEN_C0': (bjet_nominal, bjet_var('C_0', 'up'), bjet_var('C_0', 'down')),
+    'BJET_EIGEN_C1': (bjet_nominal, bjet_var('C_1', 'up'), bjet_var('C_1', 'down')),
+    'BJET_EIGEN_C2': (bjet_nominal, bjet_var('C_2', 'up'), bjet_var('C_2', 'down')),
+    'BJET_EIGEN_C3': (bjet_nominal, bjet_var('C_3', 'up'), bjet_var('C_3', 'down')),
+    'BJET_EIGEN_LIGHT0': (bjet_nominal, bjet_var('Light_0', 'up'), bjet_var('Light_0', 'down')),
+    'BJET_EIGEN_LIGHT1': (bjet_nominal, bjet_var('Light_1', 'up'), bjet_var('Light_1', 'down')),
+    'BJET_EIGEN_LIGHT2': (bjet_nominal, bjet_var('Light_2', 'up'), bjet_var('Light_2', 'down')),
+    'BJET_EIGEN_LIGHT3': (bjet_nominal, bjet_var('Light_3', 'up'), bjet_var('Light_3', 'down')),
+    'BJET_EIGEN_LIGHT4': (bjet_nominal, bjet_var('Light_4', 'up'), bjet_var('Light_4', 'down')),
+    'BJET_EIGEN_LIGHT5': (bjet_nominal, bjet_var('Light_5', 'up'), bjet_var('Light_5', 'down')),
+    'BJET_EIGEN_LIGHT6': (bjet_nominal, bjet_var('Light_6', 'up'), bjet_var('Light_6', 'down')),
+    'BJET_EIGEN_LIGHT7': (bjet_nominal, bjet_var('Light_7', 'up'), bjet_var('Light_7', 'down')),
+    'BJET_EIGEN_LIGHT8': (bjet_nominal, bjet_var('Light_8', 'up'), bjet_var('Light_8', 'down')),
+    'BJET_EIGEN_LIGHT9': (bjet_nominal, bjet_var('Light_9', 'up'), bjet_var('Light_9', 'down')),
+    'BJET_EIGEN_LIGHT10': (bjet_nominal, bjet_var('Light_10', 'up'), bjet_var('Light_10', 'down')),
+    'BJET_EIGEN_LIGHT11': (bjet_nominal, bjet_var('Light_11', 'up'), bjet_var('Light_11', 'down')),
+    'BJET_EIGEN_LIGHT12': (bjet_nominal, bjet_var('Light_12', 'up'), bjet_var('Light_12', 'down')),
+    'BJET_EIGEN_LIGHT13': (bjet_nominal, bjet_var('Light_13', 'up'), bjet_var('Light_13', 'down')),
+    'BJET_EXTRAPOLATION': (bjet_nominal, 'bjet_sf_MVX_FT_EFF_extrapolation_1up_sf*bjet_sf_MVX_FT_EFF_extrapolation_1up_ineff_sf', 'bjet_sf_MVX_FT_EFF_extrapolation_1down_sf*bjet_sf_MVX_FT_EFF_extrapolation_1down_ineff_sf'),
+    'BJET_EXTRAPOLATION_CHARM': (bjet_nominal, 'bjet_sf_MVX_FT_EFF_extrapolation from charm_1up_sf*bjet_sf_MVX_FT_EFF_extrapolation from charm_1up_ineff_sf', 'bjet_sf_MVX_FT_EFF_extrapolation from charm_1down_sf*bjet_sf_MVX_FT_EFF_extrapolation from charm_1down_ineff_sf'),
+}
 
 r_qcd = {
     'mu_tau_qcd_cr': [('tau_0_pt <= 40', 1.196, 0.019, 0.05), ('tau_0_pt > 40', 1.376, 0.041, 0.076)],
@@ -66,6 +139,9 @@ r_qcd = {
     'mu_tau_qcd_cr_tight_id_tau25_3p': [('tau_0_pt <= 35', 1.347, 0.187, 0.417), ('tau_0_pt > 35 && tau_0_pt <= 50', 1.663, 0.209, 0.219), ('tau_0_pt > 50', 2.033, 0.48, 0.681)],
 }
 
+print('Using data 2015 with MC15B')
+print('...and systematics configuration {}'.format((TestConfiguration())))
+
 # Redefitions of estimations
 MonteCarlo = partial(MonteCarlo, luminosity = luminosity)
 OSSS = partial(OSSS, r_qcd = r_qcd, luminosity = luminosity)
@@ -76,8 +152,8 @@ SSData = partial(SSData, r_qcd = r_qcd)
 # invoking partial. When invoking partial, the type of the class is exchanged
 # with the partial type. This prevents class comparison, which can be important
 # in some cases.
-RqcdStat.r_qcd = r_qcd
-RqcdSyst.r_qcd = r_qcd
+# RqcdStat.r_qcd = r_qcd
+# RqcdSyst.r_qcd = r_qcd
 
 # Set up patches
 patch_definitions = {
@@ -271,6 +347,7 @@ ttbar_true = ttbar.patched(
     label = 't#bar{t} (true #tau)',
     line_color = 1,
     fill_color = 0,
+    # metadata = {'print_me': ['selection', 'counts']},
 )
 
 ttbar_lfake = ttbar.patched(
@@ -285,7 +362,7 @@ ttbar_jetfake = ttbar.patched(
     label = 't#bar{t} (j #rightarrow #tau)',
     line_color = 1,
     fill_color = 406,
-    # metadata = {'print_me': ['selection', 'expressions']},
+    # metadata = {'print_me': ['syst', 'selection']},
     # metadata = {'print_me': ['estimation']},
 )
 
@@ -349,7 +426,7 @@ all_mc = Process(
     tree = nominal_tree,
     label = 'All MC',
     sample_type = 'mc',
-    # friends = (prw_friend,),
+    friends = (prw_friend,),
     line_color = 1,
     fill_color = 92,
 )
@@ -358,14 +435,16 @@ all_mc_true = all_mc.patched(
     tau_truth_matched,
     label = 'True #tau',
     line_color = 1,
-    fill_color = 861
+    fill_color = 861,
+    # metadata = {'print_me': ['selection', 'counts']},
 )
 
 all_mc_fake = all_mc.patched(
-    tau_fake,
+    tau_jet_fake,
     label = 'MisID #tau (MC)',
     line_color = 1,
-    fill_color = 401
+    fill_color = 401,
+    # metadata = {'print_me': ['selection', 'counts']},
 )
 
 if systematics in ['Pruned', 'True']:
@@ -566,6 +645,28 @@ mc_fakes = {
         }),
         ('ttbar_true', {
             'process': ttbar_true,
+            'estimation': MonteCarlo,
+            'uncertainties': mc_uncertainties,
+        }),
+    )),
+}
+
+mc_fakes2 = {
+    'label': 'Data vs MC',
+    'luminosity': luminosity,
+    'sqrt_s': sqrt_s,
+    'data': {
+        'process': data,
+        'estimation': Plain,
+    },
+    'backgrounds': OrderedDict((
+        ('all_mc_fake', {
+            'process': all_mc_fake,
+            'estimation': MonteCarlo,
+            'uncertainties': mc_uncertainties,
+        }),
+        ('all_mc_true', {
+            'process': all_mc_true,
             'estimation': MonteCarlo,
             'uncertainties': mc_uncertainties,
         }),
@@ -835,6 +936,36 @@ osss_sub = {
         }),
         ('ttbar_jetfake', {
             'process': ttbar_jetfake,
+            'estimation': OSSS,
+            'uncertainties': osss_uncertainties,
+        }),
+    )),
+}
+
+osss_sub2 = {
+    'label': 'Bkg. Sub.',
+    'luminosity': luminosity,
+    'sqrt_s': sqrt_s,
+    'subtract_background': True,
+    'data': {
+        'process': data,
+        'estimation': OSData,
+    },
+    'signals': OrderedDict((
+        ('all_mc_true', {
+            'process': all_mc_true,
+            'estimation': OSSS,
+            'uncertainties': osss_uncertainties,
+        }),
+    )),
+    'backgrounds': OrderedDict((
+        ('ss_data', {
+            'process': ss_data,
+            'estimation': SSData,
+            'uncertainties': ss_data_uncertainties,
+        }),
+        ('all_mc_fake', {
+            'process': all_mc_fake,
             'estimation': OSSS,
             'uncertainties': osss_uncertainties,
         }),

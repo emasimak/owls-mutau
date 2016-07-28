@@ -104,49 +104,49 @@ owls_mutau.uncertainties.configuration = {
     'BJET_EIGEN_C1': (bjet_nominal, bjet_var('C_1', 'up'), bjet_var('C_1', 'down')),
     'BJET_EIGEN_C2': (bjet_nominal, bjet_var('C_2', 'up'), bjet_var('C_2', 'down')),
     'BJET_EIGEN_C3': (bjet_nominal, bjet_var('C_3', 'up'), bjet_var('C_3', 'down')),
-    'BJET_EIGEN_LIGHT0': (bjet_nominal, bjet_var('LIGHT_0', 'up'), bjet_var('LIGHT_0', 'down')),
-    'BJET_EIGEN_LIGHT1': (bjet_nominal, bjet_var('LIGHT_1', 'up'), bjet_var('LIGHT_1', 'down')),
-    'BJET_EIGEN_LIGHT2': (bjet_nominal, bjet_var('LIGHT_2', 'up'), bjet_var('LIGHT_2', 'down')),
-    'BJET_EIGEN_LIGHT3': (bjet_nominal, bjet_var('LIGHT_3', 'up'), bjet_var('LIGHT_3', 'down')),
-    'BJET_EIGEN_LIGHT4': (bjet_nominal, bjet_var('LIGHT_4', 'up'), bjet_var('LIGHT_4', 'down')),
-    'BJET_EIGEN_LIGHT5': (bjet_nominal, bjet_var('LIGHT_5', 'up'), bjet_var('LIGHT_5', 'down')),
-    'BJET_EIGEN_LIGHT6': (bjet_nominal, bjet_var('LIGHT_6', 'up'), bjet_var('LIGHT_6', 'down')),
-    'BJET_EIGEN_LIGHT7': (bjet_nominal, bjet_var('LIGHT_7', 'up'), bjet_var('LIGHT_7', 'down')),
-    'BJET_EIGEN_LIGHT8': (bjet_nominal, bjet_var('LIGHT_8', 'up'), bjet_var('LIGHT_8', 'down')),
-    'BJET_EIGEN_LIGHT9': (bjet_nominal, bjet_var('LIGHT_9', 'up'), bjet_var('LIGHT_9', 'down')),
-    'BJET_EIGEN_LIGHT10': (bjet_nominal, bjet_var('LIGHT_10', 'up'), bjet_var('LIGHT_10', 'down')),
-    'BJET_EIGEN_LIGHT11': (bjet_nominal, bjet_var('LIGHT_11', 'up'), bjet_var('LIGHT_11', 'down')),
-    'BJET_EIGEN_LIGHT12': (bjet_nominal, bjet_var('LIGHT_12', 'up'), bjet_var('LIGHT_12', 'down')),
-    'BJET_EIGEN_LIGHT13': (bjet_nominal, bjet_var('LIGHT_13', 'up'), bjet_var('LIGHT_13', 'down')),
+    'BJET_EIGEN_LIGHT0': (bjet_nominal, bjet_var('Light_0', 'up'), bjet_var('Light_0', 'down')),
+    'BJET_EIGEN_LIGHT1': (bjet_nominal, bjet_var('Light_1', 'up'), bjet_var('Light_1', 'down')),
+    'BJET_EIGEN_LIGHT2': (bjet_nominal, bjet_var('Light_2', 'up'), bjet_var('Light_2', 'down')),
+    'BJET_EIGEN_LIGHT3': (bjet_nominal, bjet_var('Light_3', 'up'), bjet_var('Light_3', 'down')),
+    'BJET_EIGEN_LIGHT4': (bjet_nominal, bjet_var('Light_4', 'up'), bjet_var('Light_4', 'down')),
+    'BJET_EIGEN_LIGHT5': (bjet_nominal, bjet_var('Light_5', 'up'), bjet_var('Light_5', 'down')),
+    'BJET_EIGEN_LIGHT6': (bjet_nominal, bjet_var('Light_6', 'up'), bjet_var('Light_6', 'down')),
+    'BJET_EIGEN_LIGHT7': (bjet_nominal, bjet_var('Light_7', 'up'), bjet_var('Light_7', 'down')),
+    'BJET_EIGEN_LIGHT8': (bjet_nominal, bjet_var('Light_8', 'up'), bjet_var('Light_8', 'down')),
+    'BJET_EIGEN_LIGHT9': (bjet_nominal, bjet_var('Light_9', 'up'), bjet_var('Light_9', 'down')),
+    'BJET_EIGEN_LIGHT10': (bjet_nominal, bjet_var('Light_10', 'up'), bjet_var('Light_10', 'down')),
+    'BJET_EIGEN_LIGHT11': (bjet_nominal, bjet_var('Light_11', 'up'), bjet_var('Light_11', 'down')),
+    'BJET_EIGEN_LIGHT12': (bjet_nominal, bjet_var('Light_12', 'up'), bjet_var('Light_12', 'down')),
+    'BJET_EIGEN_LIGHT13': (bjet_nominal, bjet_var('Light_13', 'up'), bjet_var('Light_13', 'down')),
     'BJET_EXTRAPOLATION': (bjet_nominal, 'bjet_sf_MVX_FT_EFF_extrapolation_1up_sf*bjet_sf_MVX_FT_EFF_extrapolation_1up_ineff_sf', 'bjet_sf_MVX_FT_EFF_extrapolation_1down_sf*bjet_sf_MVX_FT_EFF_extrapolation_1down_ineff_sf'),
     'BJET_EXTRAPOLATION_CHARM': (bjet_nominal, 'bjet_sf_MVX_FT_EFF_extrapolation from charm_1up_sf*bjet_sf_MVX_FT_EFF_extrapolation from charm_1up_ineff_sf', 'bjet_sf_MVX_FT_EFF_extrapolation from charm_1down_sf*bjet_sf_MVX_FT_EFF_extrapolation from charm_1down_ineff_sf'),
 }
 
 r_qcd_2015 = {
-    'mu_tau_qcd_cr': [('tau_0_pt <= 40', 1.187, 0.014, 0.035), ('tau_0_pt > 40', 1.278, 0.025, 0.042)],
-    'mu_tau_qcd_cr_1p': [('tau_0_pt <= 40', 1.163, 0.016, 0.04), ('tau_0_pt > 40', 1.23, 0.026, 0.058)],
-    'mu_tau_qcd_cr_3p': [('tau_0_pt <= 35', 1.252, 0.031, 0.06), ('tau_0_pt > 35 && tau_0_pt <= 50', 1.362, 0.057, 0.07), ('tau_0_pt > 50', 1.62, 0.113, 0.117)],
-    'mu_tau_qcd_cr_loose_id': [('tau_0_pt <= 40', 1.153, 0.01, 0.027), ('tau_0_pt > 40', 1.25, 0.018, 0.033)],
-    'mu_tau_qcd_cr_loose_id_1p': [('tau_0_pt <= 40', 1.135, 0.012, 0.032), ('tau_0_pt > 40', 1.201, 0.02, 0.044)],
-    'mu_tau_qcd_cr_loose_id_3p': [('tau_0_pt <= 35', 1.177, 0.018, 0.039), ('tau_0_pt > 35 && tau_0_pt <= 50', 1.281, 0.034, 0.055), ('tau_0_pt > 50', 1.442, 0.056, 0.067)],
-    'mu_tau_qcd_cr_medium_id': [('tau_0_pt <= 40', 1.187, 0.014, 0.035), ('tau_0_pt > 40', 1.278, 0.025, 0.042)],
-    'mu_tau_qcd_cr_medium_id_1p': [('tau_0_pt <= 40', 1.163, 0.016, 0.04), ('tau_0_pt > 40', 1.23, 0.026, 0.058)],
-    'mu_tau_qcd_cr_medium_id_3p': [('tau_0_pt <= 35', 1.252, 0.031, 0.06), ('tau_0_pt > 35 && tau_0_pt <= 50', 1.362, 0.057, 0.07), ('tau_0_pt > 50', 1.62, 0.113, 0.117)],
-    'mu_tau_qcd_cr_tight_id': [('tau_0_pt <= 40', 1.222, 0.021, 0.059), ('tau_0_pt > 40', 1.31, 0.036, 0.054)],
-    'mu_tau_qcd_cr_tight_id_1p': [('tau_0_pt <= 40', 1.183, 0.023, 0.062), ('tau_0_pt > 40', 1.271, 0.038, 0.061)],
-    'mu_tau_qcd_cr_tight_id_3p': [('tau_0_pt <= 35', 1.357, 0.055, 0.109), ('tau_0_pt > 35 && tau_0_pt <= 50', 1.588, 0.11, 0.087), ('tau_0_pt > 50', 1.506, 0.177, 0.174)],
-    'mu_tau_qcd_cr_tau25': [('tau_0_pt <= 40', 1.214, 0.021, 0.041), ('tau_0_pt > 40', 1.29, 0.029, 0.047)],
-    'mu_tau_qcd_cr_tau25_1p': [('tau_0_pt <= 40', 1.186, 0.022, 0.05), ('tau_0_pt > 40', 1.244, 0.031, 0.05)],
-    'mu_tau_qcd_cr_tau25_3p': [('tau_0_pt <= 35', 1.457, 0.086, 0.135), ('tau_0_pt > 35 && tau_0_pt <= 50', 1.412, 0.078, 0.079), ('tau_0_pt > 50', 1.646, 0.141, 0.108)],
-    'mu_tau_qcd_cr_loose_id_tau25': [('tau_0_pt <= 40', 1.187, 0.016, 0.032), ('tau_0_pt > 40', 1.266, 0.022, 0.043)],
-    'mu_tau_qcd_cr_loose_id_tau25_1p': [('tau_0_pt <= 40', 1.163, 0.018, 0.04), ('tau_0_pt > 40', 1.207, 0.024, 0.049)],
-    'mu_tau_qcd_cr_loose_id_tau25_3p': [('tau_0_pt <= 35', 1.323, 0.052, 0.069), ('tau_0_pt > 35 && tau_0_pt <= 50', 1.329, 0.049, 0.08), ('tau_0_pt > 50', 1.556, 0.081, 0.093)],
-    'mu_tau_qcd_cr_medium_id_tau25': [('tau_0_pt <= 40', 1.214, 0.021, 0.041), ('tau_0_pt > 40', 1.29, 0.029, 0.047)],
-    'mu_tau_qcd_cr_medium_id_tau25_1p': [('tau_0_pt <= 40', 1.186, 0.022, 0.05), ('tau_0_pt > 40', 1.244, 0.031, 0.05)],
-    'mu_tau_qcd_cr_medium_id_tau25_3p': [('tau_0_pt <= 35', 1.457, 0.086, 0.135), ('tau_0_pt > 35 && tau_0_pt <= 50', 1.412, 0.078, 0.079), ('tau_0_pt > 50', 1.646, 0.141, 0.108)],
-    'mu_tau_qcd_cr_tight_id_tau25': [('tau_0_pt <= 40', 1.236, 0.029, 0.08), ('tau_0_pt > 40', 1.345, 0.043, 0.055)],
-    'mu_tau_qcd_cr_tight_id_tau25_1p': [('tau_0_pt <= 40', 1.198, 0.03, 0.085), ('tau_0_pt > 40', 1.302, 0.045, 0.056)],
-    'mu_tau_qcd_cr_tight_id_tau25_3p': [('tau_0_pt <= 35', 1.551, 0.142, 0.171), ('tau_0_pt > 35 && tau_0_pt <= 50', 1.715, 0.148, 0.115), ('tau_0_pt > 50', 1.613, 0.224, 0.253)],
+    'mu_tau_qcd_cr': [('tau_0_pt <= 40', 1.188, 0.014, 0.035), ('tau_0_pt > 40', 1.279, 0.025, 0.042)],
+    'mu_tau_qcd_cr_1p': [('tau_0_pt <= 40', 1.163, 0.016, 0.04), ('tau_0_pt > 40', 1.231, 0.026, 0.058)],
+    'mu_tau_qcd_cr_3p': [('tau_0_pt <= 35', 1.252, 0.031, 0.06), ('tau_0_pt > 35 && tau_0_pt <= 50', 1.361, 0.057, 0.071), ('tau_0_pt > 50', 1.623, 0.113, 0.117)],
+    'mu_tau_qcd_cr_loose_id': [('tau_0_pt <= 40', 1.153, 0.01, 0.027), ('tau_0_pt > 40', 1.251, 0.018, 0.033)],
+    'mu_tau_qcd_cr_loose_id_1p': [('tau_0_pt <= 40', 1.135, 0.012, 0.032), ('tau_0_pt > 40', 1.202, 0.02, 0.043)],
+    'mu_tau_qcd_cr_loose_id_3p': [('tau_0_pt <= 35', 1.178, 0.018, 0.039), ('tau_0_pt > 35 && tau_0_pt <= 50', 1.281, 0.034, 0.055), ('tau_0_pt > 50', 1.442, 0.056, 0.066)],
+    'mu_tau_qcd_cr_medium_id': [('tau_0_pt <= 40', 1.188, 0.014, 0.035), ('tau_0_pt > 40', 1.279, 0.025, 0.042)],
+    'mu_tau_qcd_cr_medium_id_1p': [('tau_0_pt <= 40', 1.163, 0.016, 0.04), ('tau_0_pt > 40', 1.231, 0.026, 0.058)],
+    'mu_tau_qcd_cr_medium_id_3p': [('tau_0_pt <= 35', 1.252, 0.031, 0.06), ('tau_0_pt > 35 && tau_0_pt <= 50', 1.361, 0.057, 0.071), ('tau_0_pt > 50', 1.623, 0.113, 0.117)],
+    'mu_tau_qcd_cr_tight_id': [('tau_0_pt <= 40', 1.222, 0.021, 0.059), ('tau_0_pt > 40', 1.312, 0.036, 0.054)],
+    'mu_tau_qcd_cr_tight_id_1p': [('tau_0_pt <= 40', 1.183, 0.023, 0.062), ('tau_0_pt > 40', 1.273, 0.038, 0.06)],
+    'mu_tau_qcd_cr_tight_id_3p': [('tau_0_pt <= 35', 1.357, 0.055, 0.11), ('tau_0_pt > 35 && tau_0_pt <= 50', 1.587, 0.11, 0.088), ('tau_0_pt > 50', 1.513, 0.178, 0.172)],
+    'mu_tau_qcd_cr_tau25': [('tau_0_pt <= 40', 1.214, 0.021, 0.041), ('tau_0_pt > 40', 1.291, 0.029, 0.046)],
+    'mu_tau_qcd_cr_tau25_1p': [('tau_0_pt <= 40', 1.186, 0.022, 0.05), ('tau_0_pt > 40', 1.245, 0.031, 0.049)],
+    'mu_tau_qcd_cr_tau25_3p': [('tau_0_pt <= 35', 1.457, 0.086, 0.135), ('tau_0_pt > 35 && tau_0_pt <= 50', 1.411, 0.078, 0.078), ('tau_0_pt > 50', 1.65, 0.141, 0.108)],
+    'mu_tau_qcd_cr_loose_id_tau25': [('tau_0_pt <= 40', 1.187, 0.016, 0.032), ('tau_0_pt > 40', 1.267, 0.022, 0.043)],
+    'mu_tau_qcd_cr_loose_id_tau25_1p': [('tau_0_pt <= 40', 1.163, 0.018, 0.04), ('tau_0_pt > 40', 1.208, 0.024, 0.049)],
+    'mu_tau_qcd_cr_loose_id_tau25_3p': [('tau_0_pt <= 35', 1.323, 0.052, 0.069), ('tau_0_pt > 35 && tau_0_pt <= 50', 1.329, 0.049, 0.08), ('tau_0_pt > 50', 1.557, 0.081, 0.093)],
+    'mu_tau_qcd_cr_medium_id_tau25': [('tau_0_pt <= 40', 1.214, 0.021, 0.041), ('tau_0_pt > 40', 1.291, 0.029, 0.046)],
+    'mu_tau_qcd_cr_medium_id_tau25_1p': [('tau_0_pt <= 40', 1.186, 0.022, 0.05), ('tau_0_pt > 40', 1.245, 0.031, 0.049)],
+    'mu_tau_qcd_cr_medium_id_tau25_3p': [('tau_0_pt <= 35', 1.457, 0.086, 0.135), ('tau_0_pt > 35 && tau_0_pt <= 50', 1.411, 0.078, 0.078), ('tau_0_pt > 50', 1.65, 0.141, 0.108)],
+    'mu_tau_qcd_cr_tight_id_tau25': [('tau_0_pt <= 40', 1.236, 0.029, 0.08), ('tau_0_pt > 40', 1.347, 0.043, 0.054)],
+    'mu_tau_qcd_cr_tight_id_tau25_1p': [('tau_0_pt <= 40', 1.198, 0.03, 0.085), ('tau_0_pt > 40', 1.305, 0.045, 0.056)],
+    'mu_tau_qcd_cr_tight_id_tau25_3p': [('tau_0_pt <= 35', 1.55, 0.142, 0.171), ('tau_0_pt > 35 && tau_0_pt <= 50', 1.714, 0.148, 0.116), ('tau_0_pt > 50', 1.624, 0.225, 0.25)],
 }
 
 r_qcd_2016 = {
@@ -161,7 +161,7 @@ r_qcd_2016 = {
     'mu_tau_qcd_cr_medium_id_3p': [('tau_0_pt <= 35', 1.243, 0.028, 0.068), ('tau_0_pt > 35 && tau_0_pt <= 50', 1.361, 0.049, 0.099), ('tau_0_pt > 50', 1.484, 0.074, 0.149)],
     'mu_tau_qcd_cr_tight_id': [('tau_0_pt <= 40', 1.216, 0.018, 0.045), ('tau_0_pt > 40', 1.337, 0.029, 0.044)],
     'mu_tau_qcd_cr_tight_id_1p': [('tau_0_pt <= 40', 1.194, 0.02, 0.042), ('tau_0_pt > 40', 1.288, 0.03, 0.047)],
-    'mu_tau_qcd_cr_tight_id_3p': [('tau_0_pt <= 35', 1.298, 0.048, 0.084), ('tau_0_pt > 35 && tau_0_pt <= 50', 1.515, 0.089, 0.124), ('tau_0_pt > 50', 1.644, 0.129, 0.211)],
+    'mu_tau_qcd_cr_tight_id_3p': [('tau_0_pt <= 35', 1.298, 0.048, 0.085), ('tau_0_pt > 35 && tau_0_pt <= 50', 1.515, 0.089, 0.124), ('tau_0_pt > 50', 1.644, 0.129, 0.211)],
     'mu_tau_qcd_cr_tau25': [('tau_0_pt <= 40', 1.176, 0.018, 0.079), ('tau_0_pt > 40', 1.318, 0.024, 0.031)],
     'mu_tau_qcd_cr_tau25_1p': [('tau_0_pt <= 40', 1.158, 0.019, 0.061), ('tau_0_pt > 40', 1.273, 0.026, 0.039)],
     'mu_tau_qcd_cr_tau25_3p': [('tau_0_pt <= 35', 1.241, 0.061, 0.25), ('tau_0_pt > 35 && tau_0_pt <= 50', 1.495, 0.073, 0.162), ('tau_0_pt > 50', 1.539, 0.095, 0.142)],
@@ -522,6 +522,7 @@ ttbar_2015 = Process(
     line_color = 1,
     fill_color = 0,
     # metadata = {'print_me': ['expression', 'selection', 'counts']},
+    # metadata = {'print_me': ['counts']},
 )
 
 ttbar_2016 = Process(
@@ -572,8 +573,8 @@ SSData = partial(SSData, r_qcd = r_qcd)
 # invoking partial. When invoking partial, the type of the class is exchanged
 # with the partial type. This prevents class comparison, which can be important
 # in some cases.
-RqcdStat.r_qcd = r_qcd
-RqcdSyst.r_qcd = r_qcd
+# RqcdStat.r_qcd = r_qcd
+# RqcdSyst.r_qcd = r_qcd
 
 ss_data = Process(
     (
@@ -584,13 +585,15 @@ ss_data = Process(
     sample_type = 'data',
     line_color = 1,
     fill_color = 410,
+    # metadata = {'print_me': ['estimation']},
 )
 
 single_top_true = single_top.patched(
     tau_truth_matched,
     label = 'Single Top (true #tau)',
     line_color = 1,
-    fill_color = 920
+    fill_color = 920,
+    # metadata = {'print_me': ['estimation']},
 )
 
 single_top_lfake = single_top.patched(
@@ -598,7 +601,7 @@ single_top_lfake = single_top.patched(
     label = 'Single Top (l #rightarrow #tau)',
     line_color = 1,
     fill_color = 865,
-    # metadata = {'print_me': ['counts']},
+    # metadata = {'print_me': ['estimation']},
 )
 
 single_top_jetfake = single_top.patched(
@@ -606,7 +609,7 @@ single_top_jetfake = single_top.patched(
     label = 'Single Top (j #rightarrow #tau)',
     line_color = 1,
     fill_color = 411,
-    # metadata = {'print_me': ['counts']},
+    # metadata = {'print_me': ['estimation']},
 )
 
 ttbar_true = ttbar.patched(
@@ -614,6 +617,8 @@ ttbar_true = ttbar.patched(
     label = 't#bar{t} (true #tau)',
     line_color = 1,
     fill_color = 0,
+    # metadata = {'print_me': ['counts']},
+    # metadata = {'print_me': ['estimation', 'selection', 'counts']},
 )
 
 ttbar_lfake = ttbar.patched(
@@ -622,6 +627,7 @@ ttbar_lfake = ttbar.patched(
     line_color = 1,
     fill_color = 867,
     # metadata = {'print_me': ['counts']},
+    # metadata = {'print_me': ['estimation']},
 )
 
 ttbar_jetfake = ttbar.patched(
@@ -630,6 +636,7 @@ ttbar_jetfake = ttbar.patched(
     line_color = 1,
     fill_color = 406,
     # metadata = {'print_me': ['counts']},
+    # metadata = {'print_me': ['estimation']},
 )
 
 # Other process for mu+tau
@@ -650,7 +657,8 @@ other_true = other.patched(
     tau_truth_matched,
     label = 'Other (true #tau)',
     line_color = 1,
-    fill_color = 921
+    fill_color = 921,
+    # metadata = {'print_me': ['estimation']},
 )
 
 other_lfake = other.patched(
@@ -658,7 +666,7 @@ other_lfake = other.patched(
     label = 'Other (l #rightarrow #tau)',
     line_color = 1,
     fill_color = 866,
-    # metadata = {'print_me': ['counts']},
+    # metadata = {'print_me': ['estimation']},
 )
 
 other_jetfake = other.patched(
@@ -666,7 +674,7 @@ other_jetfake = other.patched(
     label = 'Other (j #rightarrow #tau)',
     line_color = 1,
     fill_color = 408,
-    # metadata = {'print_me': ['counts']},
+    # metadata = {'print_me': ['estimation']},
 )
 
 all_mc = Process(
@@ -688,14 +696,16 @@ all_mc_true = all_mc.patched(
     tau_truth_matched,
     label = 'True #tau',
     line_color = 1,
-    fill_color = 861
+    fill_color = 861,
+    # metadata = {'print_me': ['counts']},
 )
 
 all_mc_fake = all_mc.patched(
     tau_fake,
     label = 'MisID #tau (MC)',
     line_color = 1,
-    fill_color = 401
+    fill_color = 401,
+    # metadata = {'print_me': ['counts']},
 )
 
 if systematics in ['Pruned', 'True']:
@@ -794,11 +804,6 @@ else:
     ss_data_uncertainties = []
     osss_uncertainties = []
 
-#mc_uncertainties = [
-    #TestSystFlat,
-    #TestSystShape,
-#]
-
 # Create models
 mc = {
     'label': 'Data vs MC',
@@ -851,13 +856,48 @@ mc_fakes = {
         'estimation': Plain,
     },
     'backgrounds': OrderedDict((
-        ('all_mc_fake', {
-            'process': all_mc_fake,
+        ('other_lfake', {
+            'process': other_lfake,
             'estimation': MonteCarlo,
             'uncertainties': mc_uncertainties,
         }),
-        ('all_mc_true', {
-            'process': all_mc_true,
+        ('single_top_lfake', {
+            'process': single_top_lfake,
+            'estimation': MonteCarlo,
+            'uncertainties': mc_uncertainties,
+        }),
+        ('ttbar_lfake', {
+            'process': ttbar_lfake,
+            'estimation': MonteCarlo,
+            'uncertainties': mc_uncertainties,
+        }),
+        ('other_jetfake', {
+            'process': other_jetfake,
+            'estimation': MonteCarlo,
+            'uncertainties': mc_uncertainties,
+        }),
+        ('single_top_jetfake', {
+            'process': single_top_jetfake,
+            'estimation': MonteCarlo,
+            'uncertainties': mc_uncertainties,
+        }),
+        ('ttbar_jetfake', {
+            'process': ttbar_jetfake,
+            'estimation': MonteCarlo,
+            'uncertainties': mc_uncertainties,
+        }),
+        ('other_true', {
+            'process': other_true,
+            'estimation': MonteCarlo,
+            'uncertainties': mc_uncertainties,
+        }),
+        ('single_top_true', {
+            'process': single_top_true,
+            'estimation': MonteCarlo,
+            'uncertainties': mc_uncertainties,
+        }),
+        ('ttbar_true', {
+            'process': ttbar_true,
             'estimation': MonteCarlo,
             'uncertainties': mc_uncertainties,
         }),
@@ -1003,6 +1043,71 @@ osss_fakes2 = {
 }
 
 osss_sub = {
+    'label': 'Bkg. Sub.',
+    'luminosity': luminosity,
+    'sqrt_s': sqrt_s,
+    'subtract_background': True,
+    'data': {
+        'process': data,
+        'estimation': OSData,
+    },
+    'signals': OrderedDict((
+        ('other_true', {
+            'process': other_true,
+            'estimation': OSSS,
+            'uncertainties': osss_uncertainties,
+        }),
+        ('single_top_true', {
+            'process': single_top_true,
+            'estimation': OSSS,
+            'uncertainties': osss_uncertainties,
+        }),
+        ('ttbar_true', {
+            'process': ttbar_true,
+            'estimation': OSSS,
+            'uncertainties': osss_uncertainties,
+        }),
+    )),
+    'backgrounds': OrderedDict((
+        ('ss_data', {
+            'process': ss_data,
+            'estimation': SSData,
+            'uncertainties': ss_data_uncertainties,
+        }),
+        ('other_lfake', {
+            'process': other_lfake,
+            'estimation': OSSS,
+            'uncertainties': osss_uncertainties,
+        }),
+        ('single_top_lfake', {
+            'process': single_top_lfake,
+            'estimation': OSSS,
+            'uncertainties': osss_uncertainties,
+        }),
+        ('ttbar_lfake', {
+            'process': ttbar_lfake,
+            'estimation': OSSS,
+            'uncertainties': osss_uncertainties,
+        }),
+        ('other_jetfake', {
+            'process': other_jetfake,
+            'estimation': OSSS,
+            'uncertainties': osss_uncertainties,
+        }),
+        ('single_top_jetfake', {
+            'process': single_top_jetfake,
+            'estimation': OSSS,
+            'uncertainties': osss_uncertainties,
+        }),
+        ('ttbar_jetfake', {
+            'process': ttbar_jetfake,
+            'estimation': OSSS,
+            'uncertainties': osss_uncertainties,
+        }),
+    )),
+}
+
+osss_sub2 = {
     'label': 'Bkg. Sub.',
     'luminosity': luminosity,
     'sqrt_s': sqrt_s,
