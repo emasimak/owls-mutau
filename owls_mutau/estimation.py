@@ -38,9 +38,12 @@ class OSSS(Estimation):
             else:
                 r_qcd = (nominal, nominal, nominal)
 
-            #if process.metadata().get('print_me', False):
-                #print('For split {} I\'m using r_qcd = {} for {} and {}'. \
-                      #format(split, r_qcd, type(self._calculation), process.label()))
+            if 'rqcd_split' in process.metadata().get('print_me', []):
+                print('For split {} I\'m using r_qcd = {} for {} and {}'. \
+                      format(split,
+                             r_qcd,
+                             type(self._calculation),
+                             process.label()))
 
             # Append OS component
             components.append((
@@ -90,9 +93,12 @@ class SSData(Estimation):
             else:
                 r_qcd = (nominal, nominal, nominal)
 
-            #if process.metadata().get('print_me', False):
-                #print('For split {} I\'m using r_qcd = {} for {} and {}'. \
-                      #format(split, r_qcd, type(self._calculation), process.label()))
+            if 'rqcd_split' in process.metadata().get('print_me', []):
+                print('For split {} I\'m using r_qcd = {} for {} and {}'. \
+                      format(split,
+                             r_qcd,
+                             type(self._calculation),
+                             process.label()))
 
             # Append SS component, with rQCD correction
             components.append((
