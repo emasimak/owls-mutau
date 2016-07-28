@@ -10,11 +10,10 @@ LUMINOSITY=3209.0 # 1/pb
 DATA_PREFIX="/disk/d1/ohman/tagprobe_2016-01-21_merged/"
 
 TRIGGERS="tau25 tau35 tau80 tau125 tau160"
-#TRIGGERS="tau25 tau35"
 TRIGGERS="tau25"
 
 REGIONS=(mu_tau_loose_id mu_tau_medium_id mu_tau_tight_id)
-#REGIONS=(mu_tau_medium_id)
+REGIONS=(mu_tau_medium_id)
 
 #DISTRIBUTIONS=(tau_pt_trig_b1 tau_pt_trig_b3)
 DISTRIBUTIONS=(tau_pt_trig_b3)
@@ -27,7 +26,7 @@ for REGION in ${REGIONS[@]}
 do
   for DISTRIBUTION in ${DISTRIBUTIONS[@]}
   do
-    OUTPUT="results/plots_tau_efficiency/${REGION}_${DISTRIBUTION}"
+    OUTPUT="results/plots_tau_efficiency/mc15b/${REGION}"
     "$OWLS/tools/plot-tau-efficiency.py" \
       --output "$OUTPUT" \
       --extensions $EXTENSIONS \
@@ -44,6 +43,7 @@ do
       --label "MC15B, 20.1" \
       -- \
       data_prefix=$DATA_PREFIX \
+      luminosity=$LUMINOSITY \
       enable_systematics=True
   done
 done

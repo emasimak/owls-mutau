@@ -8,18 +8,19 @@ EXTENSIONS="pdf eps"
 #EXTENSIONS="pdf"
 
 TRIGGERS="tau25 tau35 tau80 tau125 tau160"
-#TRIGGERS="tau25 tau35"
 TRIGGERS="tau25 tau125"
+TRIGGERS="tau25"
 
 REGIONS=(mu_tau_loose_id mu_tau_medium_id mu_tau_tight_id mu_tau_ttbar_cr)
-#REGIONS=(mu_tau_medium_id)
+REGIONS=(mu_tau_medium_id)
 
 #DISTRIBUTIONS=(tau_pt_trig_b1 tau_pt_trig_b3)
 DISTRIBUTIONS=(tau_pt_trig_b3)
 
+DATA_PREFIX="/disk/d2/ohman/lhtnp_v16_merged"
+
 echo ">>> Plotting tau efficiency and scale factors for 2015 data"
 LUMINOSITY=3193.68 # 1/pb
-DATA_PREFIX="/disk/d2/ohman/lhtnp_v15_merged"
 YEAR=2015
 OUTPUT="results/plots_tau_efficiency/$YEAR"
 for REGION in ${REGIONS[@]}
@@ -49,8 +50,7 @@ do
 done
 
 echo ">>> Plotting tau efficiency and scale factors for 2016 data"
-LUMINOSITY=7980.0 # 1/pb
-DATA_PREFIX="/disk/d2/ohman/lhtnp_v15_merged"
+LUMINOSITY=7587.26 # 1/pb
 YEAR=2016
 OUTPUT="results/plots_tau_efficiency/$YEAR"
 for REGION in ${REGIONS[@]}

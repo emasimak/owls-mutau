@@ -29,12 +29,12 @@ MC_REGIONS=" \
   mu_tau_qcd_cr_tau25_3p_ss \
   "
 MC_REGIONS="\
-  mu_tau \
-  mu_tau_1p \
-  mu_tau_3p \
   mu_tau_os \
   mu_tau_1p_os \
   mu_tau_3p_os \
+  mu_tau_ss \
+  mu_tau_1p_ss \
+  mu_tau_3p_ss \
   "
 #MC_REGIONS="mu_tau"
 
@@ -84,15 +84,16 @@ OSSS_REGIONS=" \
   #"
 #OSSS_REGIONS="mu_tau"
 
-OSSS_REGIONS_SYST=" \
-  mu_tau \
-  mu_tau_tau25 \
+DISTRIBUTIONS="\
+  tau_pt \
+  tau_pt_b2 \
+  tau_pt_b3 \
+  tau_pt_trig_b3 \
   "
-OSSS_REGIONS_SYST="mu_tau"
+#DISTRIBUTIONS="tau_pt"
+#DISTRIBUTIONS="tau_pt_trig_b3"
 
-DISTRIBUTIONS="tau_pt"
-
-#EXTENSIONS="pdf eps"
+EXTENSIONS="pdf eps"
 EXTENSIONS="pdf"
 LUMINOSITY=3209.0 # 1/pb
 DATA_PREFIX="/disk/d1/ohman/tagprobe_2016-01-21_merged/"
@@ -113,10 +114,28 @@ DATA_PREFIX="/disk/d1/ohman/tagprobe_2016-01-21_merged/"
   #--text-count \
   #--label "MC15B, 20.1" \
   #--error-label "Stat. Unc." \
-  #--label "MC15B, 20.1" \
   #data_prefix=$DATA_PREFIX \
   #enable_systematics=False \
   #luminosity=$LUMINOSITY
+
+# Plots with only MC backgrounds, and split into MC processes
+OUTPUT="results/plots_mc_fakes/mc15b"
+"$OWLS/tools/plot.py" \
+  --output $OUTPUT \
+  --extensions $EXTENSIONS \
+  --model-file "$OWLS/definitions/models-2016-01-21.py" \
+  --model mc_fakes \
+  --regions-file "$OWLS/definitions/regions-2016-01-21.py" \
+  --regions $MC_REGIONS \
+  --distributions-file "$OWLS/definitions/distributions.py" \
+  --distributions $DISTRIBUTIONS \
+  --environment-file "$SCRIPTS/environment.py" \
+  --text-count \
+  --label "MC15B, 20.1" \
+  --error-label "Stat. Unc." \
+  data_prefix=$DATA_PREFIX \
+  enable_systematics=False \
+  luminosity=$LUMINOSITY
 
 # Plots with OS-SS backgrounds
 OUTPUT="results/plots_osss_fakes/mc15b"
