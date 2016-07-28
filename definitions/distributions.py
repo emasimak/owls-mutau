@@ -385,6 +385,27 @@ tau_bdt_score_trig = Histogram(
         )
 
 # Weights
+jet_NOMINAL_global_effSF_JVT  = Histogram(
+	'jet_NOMINAL_global_effSF_JVT ',
+	(30,0.5,1.5),
+	'',
+	'jet_NOMINAL_global_effSF_JVT',
+	'Events'
+)
+jet_NOMINAL_global_effSF_MVX  = Histogram(
+	'jet_NOMINAL_global_effSF_MVX ',
+	(30,0.5,1.5),
+	'',
+	'jet_NOMINAL_global_effSF_MVX',
+	'Events'
+)
+jet_NOMINAL_global_ineffSF_MVX  = Histogram(
+	'jet_NOMINAL_global_ineffSF_MVX ',
+	(30,0.5,1.5),
+	'',
+	'jet_NOMINAL_global_ineffSF_MVX',
+	'Events'
+)
 NOMINAL_pileup_combined_weight = Histogram(
 	'NOMINAL_pileup_combined_weight',
 	(30,0.0,3.0),
