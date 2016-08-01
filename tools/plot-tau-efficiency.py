@@ -119,6 +119,10 @@ parser.add_argument('-x',
                     nargs = '+',
                     default = ['pdf'],
                     help = 'save these extensions (default: pdf)')
+parser.add_argument('-p',
+                    '--publish',
+                    action = 'store_true',
+                    help = 'make plots for publishing')
 parser.add_argument('-l',
                     '--label',
                     nargs = '*',
@@ -145,6 +149,22 @@ parser.add_argument('definitions',
                     metavar = '<definition>')
 arguments = parser.parse_args()
 
+
+# Style for tau triger public plots
+if arguments.publish:
+    # Plot.PLOT_ERROR_BAND_FILL_STYLE = 3013
+    # Plot.PLOT_ERROR_BAND_FILL_COLOR = 1
+    # Plot.PLOT_RATIO_ERROR_BAND_FILL_STYLE = 3001
+    # Plot.PLOT_RATIO_ERROR_BAND_FILL_COLOR = 632
+    Plot.PLOT_LEGEND_LEFT = 0.50
+    Plot.PLOT_LEGEND_N_COLUMNS = 2
+    Plot.PLOT_LEGEND_TEXT_SIZE = 0.035
+    Plot.PLOT_LEGEND_TEXT_SIZE_WITH_RATIO = 0.040
+    Plot.PLOT_LEGEND_ROW_SIZE = 0.05
+    Plot.PLOT_LEGEND_ROW_SIZE_WITH_RATIO = 0.055
+    Plot.PLOT_LEGEND_PIVOT_COLUMNS = True
+    # Plot.PLOT_RATIO_Y_AXIS_MINIMUM = 0.0
+    # Plot.PLOT_RATIO_Y_AXIS_MAXIMUM = 2.0
 
 # Parse definitions
 definitions = dict((d.split('=') for d in arguments.definitions))
@@ -182,16 +202,17 @@ for name in arguments.triggers:
 
     if arguments.inclusive:
         efficiencies[name] = {
-            'label': trigger[0],
+            'label': trigger[2],
             'region': region,
-            'title': '1+3-prong',
+            # 'title': '1+3-prong',
+            'title': None,
             'rqcd_addons': ('', '_tau25'),
             'filter': Filtered('{} && {}'.format(*trigger))
         }
 
     if arguments.prong_separated:
         efficiencies[name + '_1p'] = {
-            'label': trigger[0],
+            'label': trigger[2],
             'region': one_prong,
             'title': '1-prong',
             'rqcd_addons': ('_1p', '_tau25_1p'),
@@ -199,7 +220,7 @@ for name in arguments.triggers:
         }
 
         efficiencies[name + '_3p'] = {
-            'label': trigger[0],
+            'label': trigger[2],
             'region': three_prong,
             'title': '3-prong',
             'rqcd_addons': ('_3p', '_tau25_3p'),
@@ -831,42 +852,48 @@ def save_to_root(data_efficiency,
     clone.Write()
 
 def write_counts_signal(total, passed):
-    text_file.write('Signal total/passed: {:.1f}/{:.1f}\n'. \
-                    format(integral(total), integral(passed)))
+    if arguments.text_output:
+        text_file.write('Signal total/passed: {:.1f}/{:.1f}\n'. \
+                        format(integral(total), integral(passed)))
 
 def write_binned_syst(what, raw, nominal, up, down):
-    text_file.write('--- {} ---\n'.format(what))
-    for i, (rx, ry), (nx, ny), (ux, uy), (dx, dy) in zip(range(nominal.GetNbinsX()+2),
-                                               get_bins(raw, True),
-                                               get_bins(nominal, True),
-                                               get_bins(up, True),
-                                               get_bins(down, True)):
-        text_file.write('{:4d} ({:5.1f}, {:6.1f}r {:6.1f}n {:6.1f}↑ {:6.1f}↓)\n'. \
-                        format(i, rx, ry, ny, uy, dy))
+    if arguments.text_output:
+        text_file.write('--- {} ---\n'.format(what))
+        for i, (rx, ry), (nx, ny), (ux, uy), (dx, dy) \
+                in zip(range(nominal.GetNbinsX()+2),
+                       get_bins(raw, True),
+                       get_bins(nominal, True),
+                       get_bins(up, True),
+                       get_bins(down, True)):
+            text_file.write('{:4d} ({:5.1f}, {:6.1f}r {:6.1f}n '
+                            '{:6.1f}↑ {:6.1f}↓)\n'.
+                            format(i, rx, ry, ny, uy, dy))
 
 def write_total_syst(what, nominal_count, up_offset, down_offset):
-    text_file.write('{:30s} {:10s}: {:6.1f} ({:5.2f}%) | {:6.1f} | '
-                    '{:6.1f} ({:5.2f}%)\n'. \
-                    format('ALL',
-                           what,
-                           nominal_count - down_offset,
-                           -down_offset / nominal_count * 100.0,
-                           nominal_count,
-                           nominal_count + up_offset,
-                           up_offset / nominal_count * 100.0))
+    if arguments.text_output:
+        text_file.write('{:30s} {:10s}: {:6.1f} ({:5.2f}%) | {:6.1f} | '
+                        '{:6.1f} ({:5.2f}%)\n'. \
+                        format('ALL',
+                               what,
+                               nominal_count - down_offset,
+                               -down_offset / nominal_count * 100.0,
+                               nominal_count,
+                               nominal_count + up_offset,
+                               up_offset / nominal_count * 100.0))
 
 def write_counts_background(syst, what, nominal, up, down):
-    nominal, up, down = integral(nominal), integral(up), integral(down)
-    if syst == 'TEST_SYST_SHAPE':
-        print('nominal: {:.1f}'.format(nominal))
-        print('up: {:.1f}'.format(up))
-        print('down: {:.1f}'.format(down))
     def percentage(var):
         return (var/nominal - 1.0) * 100.0
-    pc_up, pc_down = percentage(up), percentage(down)
-    text_file.write('{:30s} {:10s}: {:6.1f} ({:5.2f}%) | {:6.1f} | '
-                    '{:6.1f} ({:5.2f}%)\n'. \
-                    format(syst, what, down, pc_down, nominal, up, pc_up))
+    if arguments.text_output:
+        nominal, up, down = integral(nominal), integral(up), integral(down)
+        if syst == 'TEST_SYST_SHAPE':
+            print('nominal: {:.1f}'.format(nominal))
+            print('up: {:.1f}'.format(up))
+            print('down: {:.1f}'.format(down))
+        pc_up, pc_down = percentage(up), percentage(down)
+        text_file.write('{:30s} {:10s}: {:6.1f} ({:5.2f}%) | {:6.1f} | '
+                        '{:6.1f} ({:5.2f}%)\n'. \
+                        format(syst, what, down, pc_down, nominal, up, pc_up))
 
 
 # Run in a cached environment

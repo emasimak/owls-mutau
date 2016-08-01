@@ -8,6 +8,7 @@ from os import makedirs
 from os.path import join, exists, isdir
 from itertools import product, chain
 from math import sqrt
+from copy import copy
 
 # Six imports
 from six import itervalues
@@ -82,6 +83,10 @@ parser.add_argument('-n',
                     '--no-counts',
                     action = 'store_true',
                     help = 'disable event counts in legends')
+parser.add_argument('-p',
+                    '--publish',
+                    action = 'store_true',
+                    help = 'make plots for publishing')
 parser.add_argument('-e',
                     '--error-label',
                     default = 'Stat. Unc.',
@@ -112,6 +117,21 @@ parser.add_argument('definitions',
                     metavar = '<definition>')
 arguments = parser.parse_args()
 
+# Style for tau triger public plots
+if arguments.publish:
+    Plot.PLOT_ERROR_BAND_FILL_STYLE = 3013
+    Plot.PLOT_ERROR_BAND_FILL_COLOR = 1
+    Plot.PLOT_RATIO_ERROR_BAND_FILL_STYLE = 3001
+    Plot.PLOT_RATIO_ERROR_BAND_FILL_COLOR = 632
+    Plot.PLOT_LEGEND_LEFT = 0.50
+    Plot.PLOT_LEGEND_N_COLUMNS = 2
+    Plot.PLOT_LEGEND_TEXT_SIZE = 0.035
+    Plot.PLOT_LEGEND_TEXT_SIZE_WITH_RATIO = 0.040
+    Plot.PLOT_LEGEND_ROW_SIZE = 0.05
+    Plot.PLOT_LEGEND_ROW_SIZE_WITH_RATIO = 0.055
+    Plot.PLOT_LEGEND_PIVOT_COLUMNS = False
+    Plot.PLOT_RATIO_Y_AXIS_MINIMUM = 0.0
+    Plot.PLOT_RATIO_Y_AXIS_MAXIMUM = 2.0
 
 # Parse definitions
 definitions = dict((d.split('=') for d in arguments.definitions))
@@ -462,7 +482,7 @@ with caching_into(cache):
             plot.draw_legend(legend_entries = legend_entries)
 
             # Draw an ATLAS stamp
-            label = region.label()
+            label = copy(region.label())
             if arguments.label:
                 label += arguments.label
             plot.draw_atlas_label(luminosity,
