@@ -141,25 +141,25 @@ YEAR=2015
   #enable_systematics=False \
   #luminosity=$LUMINOSITY
 
-## Plots with OS-SS backgrounds
-#OUTPUT="results/plots_osss_fakes/$YEAR"
-#"$OWLS/tools/plot.py" \
-  #--output $OUTPUT \
-  #--extensions $EXTENSIONS \
-  #--model-file "$OWLS/definitions/models-v12.py" \
-  #--model osss_fakes2 \
-  #--regions-file "$OWLS/definitions/regions-v12.py" \
-  #--regions $OSSS_REGIONS \
-  #--distributions-file "$OWLS/definitions/distributions.py" \
-  #--distributions $DISTRIBUTIONS \
-  #--environment-file "$SCRIPTS/environment.py" \
-  #--text-count \
-  #--label "MC15C, 20.7, Data $YEAR" \
-  #--error-label "Stat. Unc." \
-  #data_prefix=$DATA_PREFIX \
-  #year=$YEAR \
-  #enable_systematics=False \
-  #luminosity=$LUMINOSITY
+# Plots with OS-SS backgrounds
+OUTPUT="results/plots_osss_fakes/$YEAR"
+"$OWLS/tools/plot.py" \
+  --output $OUTPUT \
+  --extensions $EXTENSIONS \
+  --model-file "$OWLS/definitions/models-v12.py" \
+  --model osss_fakes2 \
+  --regions-file "$OWLS/definitions/regions-v12.py" \
+  --regions $OSSS_REGIONS \
+  --distributions-file "$OWLS/definitions/distributions.py" \
+  --distributions $DISTRIBUTIONS \
+  --environment-file "$SCRIPTS/environment.py" \
+  --text-count \
+  --label "MC15C, 20.7, Data $YEAR" \
+  --error-label "Stat. Unc." \
+  data_prefix=$DATA_PREFIX \
+  year=$YEAR \
+  enable_systematics=False \
+  luminosity=$LUMINOSITY
 
 LUMINOSITY=7587.26 # 1/pb
 YEAR=2016
@@ -184,25 +184,25 @@ YEAR=2016
   #enable_systematics=False \
   #luminosity=$LUMINOSITY
 
-# Plots with MC backgrounds only
-OUTPUT="results/plots_mc_fakes/$YEAR"
-"$OWLS/tools/plot.py" \
-  --output $OUTPUT \
-  --extensions $EXTENSIONS \
-  --model-file "$OWLS/definitions/models-v12.py" \
-  --model mc_fakes \
-  --regions-file "$OWLS/definitions/regions-v12.py" \
-  --regions $MC_REGIONS \
-  --distributions-file "$OWLS/definitions/distributions.py" \
-  --distributions $DISTRIBUTIONS \
-  --environment-file "$SCRIPTS/environment.py" \
-  --text-count \
-  --label "MC15C, 20.7, Data $YEAR" \
-  --error-label "Stat. Unc." \
-  data_prefix=$DATA_PREFIX \
-  year=$YEAR \
-  enable_systematics=False \
-  luminosity=$LUMINOSITY
+## Plots with MC backgrounds only
+#OUTPUT="results/plots_mc_fakes/$YEAR"
+#"$OWLS/tools/plot.py" \
+  #--output $OUTPUT \
+  #--extensions $EXTENSIONS \
+  #--model-file "$OWLS/definitions/models-v12.py" \
+  #--model mc_fakes \
+  #--regions-file "$OWLS/definitions/regions-v12.py" \
+  #--regions $MC_REGIONS \
+  #--distributions-file "$OWLS/definitions/distributions.py" \
+  #--distributions $DISTRIBUTIONS \
+  #--environment-file "$SCRIPTS/environment.py" \
+  #--text-count \
+  #--label "MC15C, 20.7, Data $YEAR" \
+  #--error-label "Stat. Unc." \
+  #data_prefix=$DATA_PREFIX \
+  #year=$YEAR \
+  #enable_systematics=False \
+  #luminosity=$LUMINOSITY
 
 # Plots with OS-SS backgrounds
 OUTPUT="results/plots_osss_fakes/$YEAR"
