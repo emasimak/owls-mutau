@@ -53,8 +53,8 @@ else:
 
 # NOTE: Remember to escape * to treat it like a multiplication sign in
 # the regular expression
-bjet_nominal = 'jet_NOMINAL_global_effSF_MVX\*jet_NOMINAL_global_ineffSF_MVX'
-bjet_var = lambda v, d: 'jet_FT_EFF_Eigen_{0}_1{1}_global_effSF_MVX*jet_FT_EFF_Eigen_{0}_1{1}_global_ineffSF_MVX'.format(v, d)
+bjet_nominal = 'jet_NOMINAL_global_effSF_MVX'
+bjet_var = lambda v, d: 'jet_FT_EFF_Eigen_{0}_1{1}_global_effSF_MVX'.format(v, d)
 owls_mutau.uncertainties.configuration = {
     'NAME': 'v12 {} {}'.format(year, trigger),
     'MUON_EFF_STAT': (
@@ -118,8 +118,8 @@ owls_mutau.uncertainties.configuration = {
     'BJET_EIGEN_LIGHT11': (bjet_nominal, bjet_var('Light_11', 'up'), bjet_var('Light_11', 'down')),
     'BJET_EIGEN_LIGHT12': (bjet_nominal, bjet_var('Light_12', 'up'), bjet_var('Light_12', 'down')),
     'BJET_EIGEN_LIGHT13': (bjet_nominal, bjet_var('Light_13', 'up'), bjet_var('Light_13', 'down')),
-    'BJET_EXTRAPOLATION': (bjet_nominal, 'bjet_sf_MVX_FT_EFF_extrapolation_1up_sf*bjet_sf_MVX_FT_EFF_extrapolation_1up_ineff_sf', 'bjet_sf_MVX_FT_EFF_extrapolation_1down_sf*bjet_sf_MVX_FT_EFF_extrapolation_1down_ineff_sf'),
-    'BJET_EXTRAPOLATION_CHARM': (bjet_nominal, 'bjet_sf_MVX_FT_EFF_extrapolation from charm_1up_sf*bjet_sf_MVX_FT_EFF_extrapolation from charm_1up_ineff_sf', 'bjet_sf_MVX_FT_EFF_extrapolation from charm_1down_sf*bjet_sf_MVX_FT_EFF_extrapolation from charm_1down_ineff_sf'),
+    'BJET_EXTRAPOLATION': (bjet_nominal, 'bjet_sf_MVX_FT_EFF_extrapolation_1up_sf', 'bjet_sf_MVX_FT_EFF_extrapolation_1down_sf'),
+    'BJET_EXTRAPOLATION_CHARM': (bjet_nominal, 'bjet_sf_MVX_FT_EFF_extrapolation from charm_1up_sf', 'bjet_sf_MVX_FT_EFF_extrapolation from charm_1down_sf'),
 }
 
 r_qcd_2015 = {
@@ -153,6 +153,11 @@ r_qcd_2016 = {
     'mu_tau_qcd_cr': [('tau_0_pt <= 40', 1.188, 0.013, 0.043), ('tau_0_pt > 40', 1.297, 0.02, 0.031)],
     'mu_tau_qcd_cr_1p': [('tau_0_pt <= 40', 1.164, 0.015, 0.033), ('tau_0_pt > 40', 1.266, 0.021, 0.025)],
     'mu_tau_qcd_cr_3p': [('tau_0_pt <= 35', 1.243, 0.028, 0.068), ('tau_0_pt > 35 && tau_0_pt <= 50', 1.361, 0.049, 0.099), ('tau_0_pt > 50', 1.484, 0.074, 0.149)],
+    ### Manual entries for tau pT > 60 selection
+    'mu_tau60_qcd_cr': [('tau_0_pt > 40', 1.297, 0.02, 0.031)],
+    'mu_tau60_qcd_cr_1p': [('tau_0_pt > 40', 1.266, 0.021, 0.025)],
+    'mu_tau60_qcd_cr_3p': [('tau_0_pt > 50', 1.484, 0.074, 0.149)],
+    ### END
     'mu_tau_qcd_cr_loose_id': [('tau_0_pt <= 40', 1.159, 0.009, 0.026), ('tau_0_pt > 40', 1.275, 0.015, 0.027)],
     'mu_tau_qcd_cr_loose_id_1p': [('tau_0_pt <= 40', 1.142, 0.012, 0.02), ('tau_0_pt > 40', 1.237, 0.017, 0.023)],
     'mu_tau_qcd_cr_loose_id_3p': [('tau_0_pt <= 35', 1.183, 0.017, 0.042), ('tau_0_pt > 35 && tau_0_pt <= 50', 1.3, 0.031, 0.092), ('tau_0_pt > 50', 1.377, 0.041, 0.063)],
@@ -165,6 +170,11 @@ r_qcd_2016 = {
     'mu_tau_qcd_cr_tau25': [('tau_0_pt <= 40', 1.176, 0.018, 0.079), ('tau_0_pt > 40', 1.318, 0.024, 0.031)],
     'mu_tau_qcd_cr_tau25_1p': [('tau_0_pt <= 40', 1.158, 0.019, 0.061), ('tau_0_pt > 40', 1.273, 0.026, 0.039)],
     'mu_tau_qcd_cr_tau25_3p': [('tau_0_pt <= 35', 1.241, 0.061, 0.25), ('tau_0_pt > 35 && tau_0_pt <= 50', 1.495, 0.073, 0.162), ('tau_0_pt > 50', 1.539, 0.095, 0.142)],
+    ### Manual entries for tau pT > 60 selection
+    'mu_tau60_qcd_cr_tau25': [('tau_0_pt > 40', 1.318, 0.024, 0.031)],
+    'mu_tau60_qcd_cr_tau25_1p': [('tau_0_pt > 40', 1.273, 0.026, 0.039)],
+    'mu_tau60_qcd_cr_tau25_3p': [('tau_0_pt > 50', 1.539, 0.095, 0.142)],
+    ### END
     'mu_tau_qcd_cr_loose_id_tau25': [('tau_0_pt <= 40', 1.156, 0.015, 0.05), ('tau_0_pt > 40', 1.298, 0.019, 0.036)],
     'mu_tau_qcd_cr_loose_id_tau25_1p': [('tau_0_pt <= 40', 1.145, 0.016, 0.044), ('tau_0_pt > 40', 1.243, 0.021, 0.025)],
     'mu_tau_qcd_cr_loose_id_tau25_3p': [('tau_0_pt <= 35', 1.196, 0.042, 0.081), ('tau_0_pt > 35 && tau_0_pt <= 50', 1.363, 0.047, 0.129), ('tau_0_pt > 50', 1.491, 0.061, 0.106)],

@@ -11,7 +11,7 @@ tau_pt = Histogram(
         'tau_0_pt',
         (20, 0, 200),
         '',
-        '#tau p_{T} [GeV]',
+        'Offline #tau p_{T} [GeV]',
         'Events / 10 GeV',
         include_overflow = True
         )
@@ -161,9 +161,25 @@ mu_iso_var_trk = Histogram(
         'Events'
         )
 
+mu_iso_var_trk_b2 = Histogram(
+        'lep_0_iso_ptvarcone30/1000.0/lep_0_pt',
+        (10, 0.0, 0.1),
+        '',
+        '#mu p_{T}^{varcone30}/p_{T}',
+        'Events'
+        )
+
 mu_iso_topo_cal = Histogram(
         'lep_0_iso_topoetcone20/1000.0/lep_0_et',
         (30, -0.1, 0.4),
+        '',
+        '#mu E_{T}^{topocone20}/E_{T}',
+        'Events'
+        )
+
+mu_iso_topo_cal_b2 = Histogram(
+        'lep_0_iso_topoetcone20/1000.0/lep_0_et',
+        (20, -0.1, 0.1),
         '',
         '#mu E_{T}^{topocone20}/E_{T}',
         'Events'
@@ -295,7 +311,7 @@ mt = Histogram(
 
 dphi = Histogram(
         'abs(lephad_dphi)',
-        (16, 0, 3.2),
+        (20, 0, 5.0),
         '',
         '#Delta#phi(#mu,#tau)',
         'Events'
@@ -311,7 +327,7 @@ deta = Histogram(
 
 dr = Histogram(
         'abs(lephad_dr)',
-        (16, 0, 3.2),
+        (20, 0, 5.0),
         '',
         '#Delta R(#mu,#tau)',
         'Events'
