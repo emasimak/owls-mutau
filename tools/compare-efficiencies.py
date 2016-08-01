@@ -55,7 +55,7 @@ parser.add_argument('-t',
                     help = 'which trigger to compare')
 parser.add_argument('-m',
                     '--mc',
-                    default = False,
+                    action = 'store_true',
                     help = 'plot MC efficiencies (default: data)')
 parser.add_argument('-x',
                     '--extensions',
