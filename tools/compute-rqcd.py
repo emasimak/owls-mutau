@@ -128,6 +128,7 @@ all_splits = {
         ('low_pt', 'tau_0_pt <= 40'),
         ('high_pt', 'tau_0_pt > 40'),
     ],
+    'tau60': [('all', ''),],
     '3p': [
         ('low_pt', 'tau_0_pt <= 35'),
         ('med_pt', 'tau_0_pt > 35 && tau_0_pt <= 50'),
@@ -220,7 +221,9 @@ with caching_into(cache):
             region = regions[region_name]
             r_qcd_dict[region_name] = []
 
-            if '3p' in region_name:
+            if 'tau60' in region_name:
+                splits = all_splits['tau60']
+            elif '3p' in region_name:
                 splits = all_splits['3p']
             else:
                 splits = all_splits['default']
