@@ -32,20 +32,6 @@ from owls_hep.uncertainty import to_shape, sum_quadrature
 # owls-mutau imports
 from owls_mutau.variations import OneProng, ThreeProng
 from owls_mutau.styling import default_black, default_red
-from owls_mutau.uncertainties import TestSystFlat, TestSystShape, \
-        MuonEffStat, MuonEffSys, \
-        MuonEffTrigStat, MuonEffTrigSys, \
-        MuonIsoStat, MuonIsoSys, \
-        MuonIdSys, MuonMsSys, MuonScaleSys, \
-        RqcdStat, RqcdSyst, \
-        PileupSys, \
-        BJetEigenB0, BJetEigenB1, BJetEigenB2, BJetEigenB3, BJetEigenB4, \
-        BJetEigenC0, BJetEigenC1, BJetEigenC2, BJetEigenC3, \
-        BJetEigenLight0, BJetEigenLight1, BJetEigenLight2, BJetEigenLight3, \
-        BJetEigenLight4, BJetEigenLight5, BJetEigenLight6, BJetEigenLight7, \
-        BJetEigenLight8, BJetEigenLight9, BJetEigenLight10, BJetEigenLight11, \
-        BJetEigenLight12, BJetEigenLight13, \
-        BJetExtrapolation
 
 # ROOT imports
 from ROOT import TGraphAsymmErrors, TFile, SetOwnership, \
@@ -416,9 +402,6 @@ def do_efficiencies(distribution, region, rqcd_addons, efficiency_filter):
     signal_passed = add_histograms(signals_passed, 'Signal')
     add_overflow_to_last_bin(signal_total)
     add_overflow_to_last_bin(signal_passed)
-
-    write_counts_signal(signal_total, signal_passed)
-
     signal_efficiency = efficiency(signal_total, signal_passed)
     signal_efficiency.SetTitle('MC')
 
@@ -434,6 +417,13 @@ def do_efficiencies(distribution, region, rqcd_addons, efficiency_filter):
     data_subtracted_passed = data_passed - background_passed
     data_efficiency = efficiency(data_subtracted_total, data_subtracted_passed)
     data_efficiency.SetTitle(data['process'].label())
+
+    # Write the signal and data counts
+    write_counts('Signal total/passed', signal_total, signal_passed)
+    write_counts('Data total/passed', data_total, data_passed)
+    write_counts('Data-bkg total/passed',
+                 data_subtracted_total,
+                 data_subtracted_passed)
 
     ##############################################################
     # COMPUTE EFFICIENCIES FOR SYSTEMATIC VARIATIONS
@@ -851,10 +841,10 @@ def save_to_root(data_efficiency,
     clone.SetTitle('_'.join(['sf', file_name, 'STAT']))
     clone.Write()
 
-def write_counts_signal(total, passed):
+def write_counts(message, total, passed):
     if arguments.text_output:
-        text_file.write('Signal total/passed: {:.1f}/{:.1f}\n'. \
-                        format(integral(total), integral(passed)))
+        text_file.write('{}: {:.1f}/{:.1f}\n'. \
+                        format(message, integral(total), integral(passed)))
 
 def write_binned_syst(what, raw, nominal, up, down):
     if arguments.text_output:
