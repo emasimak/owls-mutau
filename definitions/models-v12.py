@@ -24,6 +24,7 @@ from owls_mutau.uncertainties import \
         MuonEffTrigStat, MuonEffTrigSys, \
         MuonIsoStat, MuonIsoSys, \
         MuonIdSys, MuonMsSys, MuonScaleSys, \
+        TauIdSys, TauRecoSys, TauEleOlrSys, \
         RqcdStat, RqcdSyst, \
         PileupSys, \
         BJetEigenB0, BJetEigenB1, BJetEigenB2, BJetEigenB3, BJetEigenB4, \
@@ -90,6 +91,21 @@ owls_mutau.uncertainties.configuration = {
     'MUON_ID_SYS': ('MUONS_ID_1up', 'MUONS_ID_1down'),
     'MUON_MS_SYS': ('MUONS_MS_1up', 'MUONS_MS_1down'),
     'MUON_SCALE_SYS': ('MUONS_SCALE_1up', 'MUONS_SCALE_1down'),
+    'TAU_ID_SYS': (
+        'tau_0_NOMINAL_TauEffSF_JetBDT(loose|medium|tight)',
+        'tau_0_TAUS_TRUEHADTAU_EFF_JETID_TOTAL_1up_TauEffSF_JetBDT\\1',
+        'tau_0_TAUS_TRUEHADTAU_EFF_JETID_TOTAL_1down_TauEffSF_JetBDT\\1'
+    ),
+    'TAU_RECO_SYS': (
+        'tau_0_NOMINAL_TauEffSF_reco',
+        'tau_0_TAUS_TRUEHADTAU_EFF_RECO_TOTAL_1up_TauEffSF_reco',
+        'tau_0_TAUS_TRUEHADTAU_EFF_RECO_TOTAL_1down_TauEffSF_reco'
+    ),
+    'TAU_ELEOLR_SYS': (
+        'tau_0_NOMINAL_TauEffSF_HadTauEleOLR_tauhad',
+        'tau_0_TAUS_TRUEHADTAU_EFF_ELEOLR_TOTAL_1up_TauEffSF_HadTauEleOLR_tauhad',
+        'tau_0_TAUS_TRUEHADTAU_EFF_ELEOLR_TOTAL_1down_TauEffSF_HadTauEleOLR_tauhad'
+    ),
     'PRW_SYS': (
         'NOMINAL_pileup_combined_weight',
         'PRW_DATASF_1up_pileup_combined_weight',
@@ -118,72 +134,68 @@ owls_mutau.uncertainties.configuration = {
     'BJET_EIGEN_LIGHT11': (bjet_nominal, bjet_var('Light_11', 'up'), bjet_var('Light_11', 'down')),
     'BJET_EIGEN_LIGHT12': (bjet_nominal, bjet_var('Light_12', 'up'), bjet_var('Light_12', 'down')),
     'BJET_EIGEN_LIGHT13': (bjet_nominal, bjet_var('Light_13', 'up'), bjet_var('Light_13', 'down')),
-    'BJET_EXTRAPOLATION': (bjet_nominal, 'bjet_sf_MVX_FT_EFF_extrapolation_1up_sf', 'bjet_sf_MVX_FT_EFF_extrapolation_1down_sf'),
-    'BJET_EXTRAPOLATION_CHARM': (bjet_nominal, 'bjet_sf_MVX_FT_EFF_extrapolation from charm_1up_sf', 'bjet_sf_MVX_FT_EFF_extrapolation from charm_1down_sf'),
+    'BJET_EXTRAPOLATION': (bjet_nominal, 'jet_FT_EFF_extrapolation_1up_global_effSF_MVX', 'jet_FT_EFF_extrapolation_1up_global_effSF_MVX'),
+    'BJET_EXTRAPOLATION_CHARM': (bjet_nominal, 'jet_FT_EFF_extrapolation_from_charm_1up_global_effSF_MVX', 'jet_FT_EFF_extrapolation_from_charm_1down_global_effSF_MVX'),
 }
 
 r_qcd_2015 = {
-    'mu_tau_qcd_cr': [('tau_0_pt <= 40', 1.188, 0.014, 0.035), ('tau_0_pt > 40', 1.279, 0.025, 0.042)],
-    'mu_tau_qcd_cr_1p': [('tau_0_pt <= 40', 1.163, 0.016, 0.04), ('tau_0_pt > 40', 1.231, 0.026, 0.058)],
-    'mu_tau_qcd_cr_3p': [('tau_0_pt <= 35', 1.252, 0.031, 0.06), ('tau_0_pt > 35 && tau_0_pt <= 50', 1.361, 0.057, 0.071), ('tau_0_pt > 50', 1.623, 0.113, 0.117)],
-    'mu_tau_qcd_cr_loose_id': [('tau_0_pt <= 40', 1.153, 0.01, 0.027), ('tau_0_pt > 40', 1.251, 0.018, 0.033)],
-    'mu_tau_qcd_cr_loose_id_1p': [('tau_0_pt <= 40', 1.135, 0.012, 0.032), ('tau_0_pt > 40', 1.202, 0.02, 0.043)],
-    'mu_tau_qcd_cr_loose_id_3p': [('tau_0_pt <= 35', 1.178, 0.018, 0.039), ('tau_0_pt > 35 && tau_0_pt <= 50', 1.281, 0.034, 0.055), ('tau_0_pt > 50', 1.442, 0.056, 0.066)],
-    'mu_tau_qcd_cr_medium_id': [('tau_0_pt <= 40', 1.188, 0.014, 0.035), ('tau_0_pt > 40', 1.279, 0.025, 0.042)],
-    'mu_tau_qcd_cr_medium_id_1p': [('tau_0_pt <= 40', 1.163, 0.016, 0.04), ('tau_0_pt > 40', 1.231, 0.026, 0.058)],
-    'mu_tau_qcd_cr_medium_id_3p': [('tau_0_pt <= 35', 1.252, 0.031, 0.06), ('tau_0_pt > 35 && tau_0_pt <= 50', 1.361, 0.057, 0.071), ('tau_0_pt > 50', 1.623, 0.113, 0.117)],
-    'mu_tau_qcd_cr_tight_id': [('tau_0_pt <= 40', 1.222, 0.021, 0.059), ('tau_0_pt > 40', 1.312, 0.036, 0.054)],
-    'mu_tau_qcd_cr_tight_id_1p': [('tau_0_pt <= 40', 1.183, 0.023, 0.062), ('tau_0_pt > 40', 1.273, 0.038, 0.06)],
-    'mu_tau_qcd_cr_tight_id_3p': [('tau_0_pt <= 35', 1.357, 0.055, 0.11), ('tau_0_pt > 35 && tau_0_pt <= 50', 1.587, 0.11, 0.088), ('tau_0_pt > 50', 1.513, 0.178, 0.172)],
-    'mu_tau_qcd_cr_tau25': [('tau_0_pt <= 40', 1.214, 0.021, 0.041), ('tau_0_pt > 40', 1.291, 0.029, 0.046)],
-    'mu_tau_qcd_cr_tau25_1p': [('tau_0_pt <= 40', 1.186, 0.022, 0.05), ('tau_0_pt > 40', 1.245, 0.031, 0.049)],
-    'mu_tau_qcd_cr_tau25_3p': [('tau_0_pt <= 35', 1.457, 0.086, 0.135), ('tau_0_pt > 35 && tau_0_pt <= 50', 1.411, 0.078, 0.078), ('tau_0_pt > 50', 1.65, 0.141, 0.108)],
-    'mu_tau_qcd_cr_loose_id_tau25': [('tau_0_pt <= 40', 1.187, 0.016, 0.032), ('tau_0_pt > 40', 1.267, 0.022, 0.043)],
-    'mu_tau_qcd_cr_loose_id_tau25_1p': [('tau_0_pt <= 40', 1.163, 0.018, 0.04), ('tau_0_pt > 40', 1.208, 0.024, 0.049)],
-    'mu_tau_qcd_cr_loose_id_tau25_3p': [('tau_0_pt <= 35', 1.323, 0.052, 0.069), ('tau_0_pt > 35 && tau_0_pt <= 50', 1.329, 0.049, 0.08), ('tau_0_pt > 50', 1.557, 0.081, 0.093)],
-    'mu_tau_qcd_cr_medium_id_tau25': [('tau_0_pt <= 40', 1.214, 0.021, 0.041), ('tau_0_pt > 40', 1.291, 0.029, 0.046)],
-    'mu_tau_qcd_cr_medium_id_tau25_1p': [('tau_0_pt <= 40', 1.186, 0.022, 0.05), ('tau_0_pt > 40', 1.245, 0.031, 0.049)],
-    'mu_tau_qcd_cr_medium_id_tau25_3p': [('tau_0_pt <= 35', 1.457, 0.086, 0.135), ('tau_0_pt > 35 && tau_0_pt <= 50', 1.411, 0.078, 0.078), ('tau_0_pt > 50', 1.65, 0.141, 0.108)],
-    'mu_tau_qcd_cr_tight_id_tau25': [('tau_0_pt <= 40', 1.236, 0.029, 0.08), ('tau_0_pt > 40', 1.347, 0.043, 0.054)],
-    'mu_tau_qcd_cr_tight_id_tau25_1p': [('tau_0_pt <= 40', 1.198, 0.03, 0.085), ('tau_0_pt > 40', 1.305, 0.045, 0.056)],
-    'mu_tau_qcd_cr_tight_id_tau25_3p': [('tau_0_pt <= 35', 1.55, 0.142, 0.171), ('tau_0_pt > 35 && tau_0_pt <= 50', 1.714, 0.148, 0.116), ('tau_0_pt > 50', 1.624, 0.225, 0.25)],
+    'qcd_cr': [('tau_0_pt <= 40', 1.188, 0.014, 0.035), ('tau_0_pt > 40', 1.279, 0.025, 0.042)],
+    'qcd_cr_1p': [('tau_0_pt <= 40', 1.163, 0.016, 0.04), ('tau_0_pt > 40', 1.231, 0.026, 0.058)],
+    'qcd_cr_3p': [('tau_0_pt <= 35', 1.252, 0.031, 0.06), ('tau_0_pt > 35 && tau_0_pt <= 50', 1.361, 0.057, 0.071), ('tau_0_pt > 50', 1.623, 0.113, 0.117)],
+    'qcd_cr_loose_id': [('tau_0_pt <= 40', 1.153, 0.01, 0.027), ('tau_0_pt > 40', 1.251, 0.018, 0.033)],
+    'qcd_cr_loose_id_1p': [('tau_0_pt <= 40', 1.135, 0.012, 0.032), ('tau_0_pt > 40', 1.202, 0.02, 0.043)],
+    'qcd_cr_loose_id_3p': [('tau_0_pt <= 35', 1.178, 0.018, 0.039), ('tau_0_pt > 35 && tau_0_pt <= 50', 1.281, 0.034, 0.055), ('tau_0_pt > 50', 1.442, 0.056, 0.066)],
+    'qcd_cr_medium_id': [('tau_0_pt <= 40', 1.188, 0.014, 0.035), ('tau_0_pt > 40', 1.279, 0.025, 0.042)],
+    'qcd_cr_medium_id_1p': [('tau_0_pt <= 40', 1.163, 0.016, 0.04), ('tau_0_pt > 40', 1.231, 0.026, 0.058)],
+    'qcd_cr_medium_id_3p': [('tau_0_pt <= 35', 1.252, 0.031, 0.06), ('tau_0_pt > 35 && tau_0_pt <= 50', 1.361, 0.057, 0.071), ('tau_0_pt > 50', 1.623, 0.113, 0.117)],
+    'qcd_cr_tight_id': [('tau_0_pt <= 40', 1.222, 0.021, 0.059), ('tau_0_pt > 40', 1.312, 0.036, 0.054)],
+    'qcd_cr_tight_id_1p': [('tau_0_pt <= 40', 1.183, 0.023, 0.062), ('tau_0_pt > 40', 1.273, 0.038, 0.06)],
+    'qcd_cr_tight_id_3p': [('tau_0_pt <= 35', 1.357, 0.055, 0.11), ('tau_0_pt > 35 && tau_0_pt <= 50', 1.587, 0.11, 0.088), ('tau_0_pt > 50', 1.513, 0.178, 0.172)],
+    'qcd_cr_tau25': [('tau_0_pt <= 40', 1.214, 0.021, 0.041), ('tau_0_pt > 40', 1.291, 0.029, 0.046)],
+    'qcd_cr_tau25_1p': [('tau_0_pt <= 40', 1.186, 0.022, 0.05), ('tau_0_pt > 40', 1.245, 0.031, 0.049)],
+    'qcd_cr_tau25_3p': [('tau_0_pt <= 35', 1.457, 0.086, 0.135), ('tau_0_pt > 35 && tau_0_pt <= 50', 1.411, 0.078, 0.078), ('tau_0_pt > 50', 1.65, 0.141, 0.108)],
+    'qcd_cr_loose_id_tau25': [('tau_0_pt <= 40', 1.187, 0.016, 0.032), ('tau_0_pt > 40', 1.267, 0.022, 0.043)],
+    'qcd_cr_loose_id_tau25_1p': [('tau_0_pt <= 40', 1.163, 0.018, 0.04), ('tau_0_pt > 40', 1.208, 0.024, 0.049)],
+    'qcd_cr_loose_id_tau25_3p': [('tau_0_pt <= 35', 1.323, 0.052, 0.069), ('tau_0_pt > 35 && tau_0_pt <= 50', 1.329, 0.049, 0.08), ('tau_0_pt > 50', 1.557, 0.081, 0.093)],
+    'qcd_cr_medium_id_tau25': [('tau_0_pt <= 40', 1.214, 0.021, 0.041), ('tau_0_pt > 40', 1.291, 0.029, 0.046)],
+    'qcd_cr_medium_id_tau25_1p': [('tau_0_pt <= 40', 1.186, 0.022, 0.05), ('tau_0_pt > 40', 1.245, 0.031, 0.049)],
+    'qcd_cr_medium_id_tau25_3p': [('tau_0_pt <= 35', 1.457, 0.086, 0.135), ('tau_0_pt > 35 && tau_0_pt <= 50', 1.411, 0.078, 0.078), ('tau_0_pt > 50', 1.65, 0.141, 0.108)],
+    'qcd_cr_tight_id_tau25': [('tau_0_pt <= 40', 1.236, 0.029, 0.08), ('tau_0_pt > 40', 1.347, 0.043, 0.054)],
+    'qcd_cr_tight_id_tau25_1p': [('tau_0_pt <= 40', 1.198, 0.03, 0.085), ('tau_0_pt > 40', 1.305, 0.045, 0.056)],
+    'qcd_cr_tight_id_tau25_3p': [('tau_0_pt <= 35', 1.55, 0.142, 0.171), ('tau_0_pt > 35 && tau_0_pt <= 50', 1.714, 0.148, 0.116), ('tau_0_pt > 50', 1.624, 0.225, 0.25)],
 }
 
 r_qcd_2016 = {
-    'mu_tau_qcd_cr': [('tau_0_pt <= 40', 1.188, 0.013, 0.043), ('tau_0_pt > 40', 1.297, 0.02, 0.031)],
-    'mu_tau_qcd_cr_1p': [('tau_0_pt <= 40', 1.164, 0.015, 0.033), ('tau_0_pt > 40', 1.266, 0.021, 0.025)],
-    'mu_tau_qcd_cr_3p': [('tau_0_pt <= 35', 1.243, 0.028, 0.068), ('tau_0_pt > 35 && tau_0_pt <= 50', 1.361, 0.049, 0.099), ('tau_0_pt > 50', 1.484, 0.074, 0.149)],
-    ### Manual entries for tau pT > 60 selection
-    'mu_tau60_qcd_cr': [('tau_0_pt > 40', 1.297, 0.02, 0.031)],
-    'mu_tau60_qcd_cr_1p': [('tau_0_pt > 40', 1.266, 0.021, 0.025)],
-    'mu_tau60_qcd_cr_3p': [('tau_0_pt > 50', 1.484, 0.074, 0.149)],
-    ### END
-    'mu_tau_qcd_cr_loose_id': [('tau_0_pt <= 40', 1.159, 0.009, 0.026), ('tau_0_pt > 40', 1.275, 0.015, 0.027)],
-    'mu_tau_qcd_cr_loose_id_1p': [('tau_0_pt <= 40', 1.142, 0.012, 0.02), ('tau_0_pt > 40', 1.237, 0.017, 0.023)],
-    'mu_tau_qcd_cr_loose_id_3p': [('tau_0_pt <= 35', 1.183, 0.017, 0.042), ('tau_0_pt > 35 && tau_0_pt <= 50', 1.3, 0.031, 0.092), ('tau_0_pt > 50', 1.377, 0.041, 0.063)],
-    'mu_tau_qcd_cr_medium_id': [('tau_0_pt <= 40', 1.188, 0.013, 0.043), ('tau_0_pt > 40', 1.297, 0.02, 0.031)],
-    'mu_tau_qcd_cr_medium_id_1p': [('tau_0_pt <= 40', 1.164, 0.015, 0.033), ('tau_0_pt > 40', 1.266, 0.021, 0.025)],
-    'mu_tau_qcd_cr_medium_id_3p': [('tau_0_pt <= 35', 1.243, 0.028, 0.068), ('tau_0_pt > 35 && tau_0_pt <= 50', 1.361, 0.049, 0.099), ('tau_0_pt > 50', 1.484, 0.074, 0.149)],
-    'mu_tau_qcd_cr_tight_id': [('tau_0_pt <= 40', 1.216, 0.018, 0.045), ('tau_0_pt > 40', 1.337, 0.029, 0.044)],
-    'mu_tau_qcd_cr_tight_id_1p': [('tau_0_pt <= 40', 1.194, 0.02, 0.042), ('tau_0_pt > 40', 1.288, 0.03, 0.047)],
-    'mu_tau_qcd_cr_tight_id_3p': [('tau_0_pt <= 35', 1.298, 0.048, 0.085), ('tau_0_pt > 35 && tau_0_pt <= 50', 1.515, 0.089, 0.124), ('tau_0_pt > 50', 1.644, 0.129, 0.211)],
-    'mu_tau_qcd_cr_tau25': [('tau_0_pt <= 40', 1.176, 0.018, 0.079), ('tau_0_pt > 40', 1.318, 0.024, 0.031)],
-    'mu_tau_qcd_cr_tau25_1p': [('tau_0_pt <= 40', 1.158, 0.019, 0.061), ('tau_0_pt > 40', 1.273, 0.026, 0.039)],
-    'mu_tau_qcd_cr_tau25_3p': [('tau_0_pt <= 35', 1.241, 0.061, 0.25), ('tau_0_pt > 35 && tau_0_pt <= 50', 1.495, 0.073, 0.162), ('tau_0_pt > 50', 1.539, 0.095, 0.142)],
-    ### Manual entries for tau pT > 60 selection
-    'mu_tau60_qcd_cr_tau25': [('tau_0_pt > 40', 1.318, 0.024, 0.031)],
-    'mu_tau60_qcd_cr_tau25_1p': [('tau_0_pt > 40', 1.273, 0.026, 0.039)],
-    'mu_tau60_qcd_cr_tau25_3p': [('tau_0_pt > 50', 1.539, 0.095, 0.142)],
-    ### END
-    'mu_tau_qcd_cr_loose_id_tau25': [('tau_0_pt <= 40', 1.156, 0.015, 0.05), ('tau_0_pt > 40', 1.298, 0.019, 0.036)],
-    'mu_tau_qcd_cr_loose_id_tau25_1p': [('tau_0_pt <= 40', 1.145, 0.016, 0.044), ('tau_0_pt > 40', 1.243, 0.021, 0.025)],
-    'mu_tau_qcd_cr_loose_id_tau25_3p': [('tau_0_pt <= 35', 1.196, 0.042, 0.081), ('tau_0_pt > 35 && tau_0_pt <= 50', 1.363, 0.047, 0.129), ('tau_0_pt > 50', 1.491, 0.061, 0.106)],
-    'mu_tau_qcd_cr_medium_id_tau25': [('tau_0_pt <= 40', 1.176, 0.018, 0.079), ('tau_0_pt > 40', 1.318, 0.024, 0.031)],
-    'mu_tau_qcd_cr_medium_id_tau25_1p': [('tau_0_pt <= 40', 1.158, 0.019, 0.061), ('tau_0_pt > 40', 1.273, 0.026, 0.039)],
-    'mu_tau_qcd_cr_medium_id_tau25_3p': [('tau_0_pt <= 35', 1.241, 0.061, 0.25), ('tau_0_pt > 35 && tau_0_pt <= 50', 1.495, 0.073, 0.162), ('tau_0_pt > 50', 1.539, 0.095, 0.142)],
-    'mu_tau_qcd_cr_tight_id_tau25': [('tau_0_pt <= 40', 1.225, 0.025, 0.071), ('tau_0_pt > 40', 1.376, 0.035, 0.051)],
-    'mu_tau_qcd_cr_tight_id_tau25_1p': [('tau_0_pt <= 40', 1.203, 0.026, 0.057), ('tau_0_pt > 40', 1.313, 0.036, 0.063)],
-    'mu_tau_qcd_cr_tight_id_tau25_3p': [('tau_0_pt <= 35', 1.331, 0.098, 0.306), ('tau_0_pt > 35 && tau_0_pt <= 50', 1.745, 0.13, 0.176), ('tau_0_pt > 50', 1.778, 0.167, 0.186)],
+    'qcd_cr': [('tau_0_pt <= 40', 1.153, 0.029, 0.036), ('tau_0_pt > 40', 1.189, 0.041, 0.076)],
+    'qcd_cr_1p': [('tau_0_pt <= 40', 1.121, 0.033, 0.055), ('tau_0_pt > 40', 1.187, 0.045, 0.093)],
+    'qcd_cr_3p': [('tau_0_pt <= 35', 1.244, 0.068, 0.202), ('tau_0_pt > 35 && tau_0_pt <= 50', 1.243, 0.109, 0.149), ('tau_0_pt > 50', 1.208, 0.127, 0.217)],
+    'qcd_cr_tau60': [('', 1.206, 0.063, 0.08)],
+    'qcd_cr_tau60_1p': [('', 1.191, 0.068, 0.099)],
+    'qcd_cr_tau60_3p': [('', 1.286, 0.166, 0.211)],
+    'qcd_cr_loose_id': [('tau_0_pt <= 40', 1.103, 0.021, 0.032), ('tau_0_pt > 40', 1.17, 0.031, 0.036)],
+    'qcd_cr_loose_id_1p': [('tau_0_pt <= 40', 1.092, 0.026, 0.067), ('tau_0_pt > 40', 1.146, 0.036, 0.043)],
+    'qcd_cr_loose_id_3p': [('tau_0_pt <= 35', 1.141, 0.039, 0.105), ('tau_0_pt > 35 && tau_0_pt <= 50', 1.103, 0.063, 0.113), ('tau_0_pt > 50', 1.284, 0.085, 0.215)],
+    'qcd_cr_medium_id': [('tau_0_pt <= 40', 1.153, 0.029, 0.036), ('tau_0_pt > 40', 1.189, 0.041, 0.076)],
+    'qcd_cr_medium_id_1p': [('tau_0_pt <= 40', 1.121, 0.033, 0.055), ('tau_0_pt > 40', 1.187, 0.045, 0.093)],
+    'qcd_cr_medium_id_3p': [('tau_0_pt <= 35', 1.244, 0.068, 0.202), ('tau_0_pt > 35 && tau_0_pt <= 50', 1.243, 0.109, 0.149), ('tau_0_pt > 50', 1.208, 0.127, 0.217)],
+    'qcd_cr_tight_id': [('tau_0_pt <= 40', 1.209, 0.043, 0.077), ('tau_0_pt > 40', 1.259, 0.06, 0.141)],
+    'qcd_cr_tight_id_1p': [('tau_0_pt <= 40', 1.165, 0.046, 0.116), ('tau_0_pt > 40', 1.2, 0.062, 0.154)],
+    'qcd_cr_tight_id_3p': [('tau_0_pt <= 35', 1.402, 0.127, 0.224), ('tau_0_pt > 35 && tau_0_pt <= 50', 1.701, 0.248, 0.224), ('tau_0_pt > 50', 1.494, 0.23, 0.289)],
+    'qcd_cr_tau25': [('tau_0_pt <= 40', 1.161, 0.041, 0.063), ('tau_0_pt > 40', 1.183, 0.048, 0.114)],
+    'qcd_cr_tau25_1p': [('tau_0_pt <= 40', 1.134, 0.044, 0.036), ('tau_0_pt > 40', 1.172, 0.052, 0.15)],
+    'qcd_cr_tau25_3p': [('tau_0_pt <= 35', 1.389, 0.168, 0.346), ('tau_0_pt > 35 && tau_0_pt <= 50', 1.287, 0.146, 0.191), ('tau_0_pt > 50', 1.2, 0.15, 0.359)],
+    'qcd_cr_tau60_tau25': [('', 1.183, 0.074, 0.097)],
+    'qcd_cr_tau60_tau25_1p': [('', 1.171, 0.08, 0.1)],
+    'qcd_cr_tau60_tau25_3p': [('', 1.246, 0.196, 0.307)],
+    'qcd_cr_loose_id_tau25': [('tau_0_pt <= 40', 1.115, 0.033, 0.051), ('tau_0_pt > 40', 1.164, 0.039, 0.047)],
+    'qcd_cr_loose_id_tau25_1p': [('tau_0_pt <= 40', 1.122, 0.037, 0.036), ('tau_0_pt > 40', 1.123, 0.042, 0.061)],
+    'qcd_cr_loose_id_tau25_3p': [('tau_0_pt <= 35', 1.164, 0.099, 0.242), ('tau_0_pt > 35 && tau_0_pt <= 50', 1.139, 0.092, 0.121), ('tau_0_pt > 50', 1.297, 0.115, 0.218)],
+    'qcd_cr_medium_id_tau25': [('tau_0_pt <= 40', 1.161, 0.041, 0.063), ('tau_0_pt > 40', 1.183, 0.048, 0.114)],
+    'qcd_cr_medium_id_tau25_1p': [('tau_0_pt <= 40', 1.134, 0.044, 0.036), ('tau_0_pt > 40', 1.172, 0.052, 0.15)],
+    'qcd_cr_medium_id_tau25_3p': [('tau_0_pt <= 35', 1.389, 0.168, 0.346), ('tau_0_pt > 35 && tau_0_pt <= 50', 1.287, 0.146, 0.191), ('tau_0_pt > 50', 1.2, 0.15, 0.359)],
+    'qcd_cr_tight_id_tau25': [('tau_0_pt <= 40', 1.244, 0.059, 0.051), ('tau_0_pt > 40', 1.321, 0.073, 0.18)],
+    'qcd_cr_tight_id_tau25_1p': [('tau_0_pt <= 40', 1.201, 0.06, 0.087), ('tau_0_pt > 40', 1.247, 0.074, 0.197)],
+    'qcd_cr_tight_id_tau25_3p': [('tau_0_pt <= 35', 1.673, 0.307, 0.568), ('tau_0_pt > 35 && tau_0_pt <= 50', 2.016, 0.369, 0.384), ('tau_0_pt > 50', 1.661, 0.302, 0.222)],
 }
 
 # Set up patches
@@ -629,6 +641,7 @@ ttbar_true = ttbar.patched(
     fill_color = 0,
     # metadata = {'print_me': ['counts']},
     # metadata = {'print_me': ['estimation', 'selection', 'counts']},
+    # metadata = {'print_me': ['selection', 'counts']},
 )
 
 ttbar_lfake = ttbar.patched(
@@ -731,6 +744,57 @@ if systematics in ['Pruned', 'True']:
         # Candidate MuonIdSys,
         # Candidate MuonMsSys,
         # Candidate MuonScaleSys,
+        TauIdSys,
+        TauRecoSys,
+        TauEleOlrSys,
+        PileupSys,
+        BJetEigenB0,
+        BJetEigenB1,
+        # Pruned BJetEigenB2,
+        # Pruned BJetEigenB3,
+        # Pruned BJetEigenB4,
+        BJetEigenC0,
+        # Pruned BJetEigenC1,
+        # Pruned BJetEigenC2,
+        # Pruned BJetEigenC3,
+        BJetEigenLight0,
+        # Pruned BJetEigenLight1,
+        # Pruned BJetEigenLight2,
+        # Pruned BJetEigenLight3,
+        # Pruned BJetEigenLight4,
+        # Pruned BJetEigenLight5,
+        # Pruned BJetEigenLight6,
+        # Pruned BJetEigenLight7,
+        # Pruned BJetEigenLight8,
+        # Pruned BJetEigenLight9,
+        # Pruned BJetEigenLight10,
+        # Pruned BJetEigenLight11,
+        # Pruned BJetEigenLight12,
+        # Pruned BJetEigenLight13,
+        # Pruned BJetExtrapolation,
+        # Pruuned BJetExtrapolationCharm,
+    ]
+    ss_data_uncertainties = [
+        RqcdStat,
+        RqcdSyst,
+    ]
+    osss_uncertainties = mc_uncertainties + ss_data_uncertainties
+elif systematics == 'Efficiency':
+    mc_uncertainties = [
+        #TestSystFlat,
+        #TestSystShape,
+        # Pruned MuonEffStat,
+        # Pruned MuonEffSys,
+        MuonEffTrigStat,
+        MuonEffTrigSys,
+        # Pruned MuonIsoStat,
+        # Pruned MuonIsoSys,
+        # Candidate MuonIdSys,
+        # Candidate MuonMsSys,
+        # Candidate MuonScaleSys,
+        # Candidate TauIdSys,
+        # Candidate TauRecoSys,
+        # Candidate TauEleOlrSys,
         PileupSys,
         BJetEigenB0,
         BJetEigenB1,
@@ -764,6 +828,7 @@ if systematics in ['Pruned', 'True']:
     ]
     osss_uncertainties = mc_uncertainties + ss_data_uncertainties
 
+
 elif systematics == 'Full':
     mc_uncertainties = [
         #TestSystFlat,
@@ -777,6 +842,9 @@ elif systematics == 'Full':
         MuonIdSys,
         MuonMsSys,
         MuonScaleSys,
+        TauIdSys,
+        # TauRecoSys,
+        # TauEleOlrSys,
         PileupSys,
         BJetEigenB0,
         BJetEigenB1,
