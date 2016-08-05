@@ -27,11 +27,17 @@ OSSS_REGIONS="\
   mu_tau_tau25 \
   mu_tau_tau25_1p mu_tau_tau25_3p \
   "
+#OSSS_REGIONS="\
+  #mu_tau60 \
+  #mu_tau60_tau25 \
+  #ttbar_cr_tau60 \
+  #ttbar_cr_tau25_tau60 \
+  #"
 OSSS_REGIONS="\
-  mu_tau60 \
-  mu_tau60_tau25 \
-  mu_tau60_ttbar_cr \
-  mu_tau60_ttbar_cr_tau25 \
+  mu_tau \
+  mu_tau_tau25 \
+  ttbar_cr \
+  ttbar_cr_tau25 \
   "
 
 # All kinematic distributions

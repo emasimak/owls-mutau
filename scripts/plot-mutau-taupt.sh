@@ -15,18 +15,18 @@ MC_REGIONS=" \
   mu_tau_1p_ss \
   mu_tau_3p_os \
   mu_tau_3p_ss \
-  mu_tau_qcd_cr_os \
-  mu_tau_qcd_cr_ss \
-  mu_tau_qcd_cr_1p_os \
-  mu_tau_qcd_cr_1p_ss \
-  mu_tau_qcd_cr_3p_os \
-  mu_tau_qcd_cr_3p_ss \
-  mu_tau_qcd_cr_tau25_os \
-  mu_tau_qcd_cr_tau25_ss \
-  mu_tau_qcd_cr_tau25_1p_os \
-  mu_tau_qcd_cr_tau25_1p_ss \
-  mu_tau_qcd_cr_tau25_3p_os \
-  mu_tau_qcd_cr_tau25_3p_ss \
+  qcd_cr_os \
+  qcd_cr_ss \
+  qcd_cr_1p_os \
+  qcd_cr_1p_ss \
+  qcd_cr_3p_os \
+  qcd_cr_3p_ss \
+  qcd_cr_tau25_os \
+  qcd_cr_tau25_ss \
+  qcd_cr_tau25_1p_os \
+  qcd_cr_tau25_1p_ss \
+  qcd_cr_tau25_3p_os \
+  qcd_cr_tau25_3p_ss \
   "
 MC_REGIONS="\
   mu_tau_os \
@@ -63,12 +63,12 @@ OSSS_REGIONS=" \
   mu_tau_tight_id_tau25 \
   mu_tau_tight_id_tau25_1p \
   mu_tau_tight_id_tau25_3p \
-  mu_tau_ttbar_cr \
-  mu_tau_ttbar_cr_1p \
-  mu_tau_ttbar_cr_3p \
-  mu_tau_ttbar_cr_tau25 \
-  mu_tau_ttbar_cr_tau25_1p \
-  mu_tau_ttbar_cr_tau25_3p \
+  ttbar_cr \
+  ttbar_cr_1p \
+  ttbar_cr_3p \
+  ttbar_cr_tau25 \
+  ttbar_cr_tau25_1p \
+  ttbar_cr_tau25_3p \
   "
 OSSS_REGIONS=" \
   mu_tau \
@@ -77,6 +77,14 @@ OSSS_REGIONS=" \
   mu_tau_tau25 \
   mu_tau_tau25_1p \
   mu_tau_tau25_3p \
+  "
+OSSS_REGIONS="\
+  mu_tau \
+  mu_tau_1p \
+  mu_tau_3p \
+  mu_tau60 \
+  mu_tau60_1p \
+  mu_tau60_3p \
   "
 #OSSS_REGIONS="\
   #mu_tau \
@@ -90,7 +98,7 @@ DISTRIBUTIONS=" \
   tau_pt_b3 \
   tau_pt_trig_b3 \
   "
-#DISTRIBUTIONS="tau_pt"
+DISTRIBUTIONS="tau_pt"
 #DISTRIBUTIONS="tau_pt_trig_b3"
 
 EXTENSIONS="pdf eps"
@@ -141,25 +149,25 @@ YEAR=2015
   #enable_systematics=False \
   #luminosity=$LUMINOSITY
 
-# Plots with OS-SS backgrounds
-OUTPUT="results/plots_osss_fakes/$YEAR"
-"$OWLS/tools/plot.py" \
-  --output $OUTPUT \
-  --extensions $EXTENSIONS \
-  --model-file "$OWLS/definitions/models-v12.py" \
-  --model osss_fakes2 \
-  --regions-file "$OWLS/definitions/regions-v12.py" \
-  --regions $OSSS_REGIONS \
-  --distributions-file "$OWLS/definitions/distributions.py" \
-  --distributions $DISTRIBUTIONS \
-  --environment-file "$SCRIPTS/environment.py" \
-  --text-count \
-  --label "MC15C, 20.7, Data $YEAR" \
-  --error-label "Stat. Unc." \
-  data_prefix=$DATA_PREFIX \
-  year=$YEAR \
-  enable_systematics=False \
-  luminosity=$LUMINOSITY
+## Plots with OS-SS backgrounds
+#OUTPUT="results/plots_osss_fakes/$YEAR"
+#"$OWLS/tools/plot.py" \
+  #--output $OUTPUT \
+  #--extensions $EXTENSIONS \
+  #--model-file "$OWLS/definitions/models-v12.py" \
+  #--model osss_fakes2 \
+  #--regions-file "$OWLS/definitions/regions-v12.py" \
+  #--regions $OSSS_REGIONS \
+  #--distributions-file "$OWLS/definitions/distributions.py" \
+  #--distributions $DISTRIBUTIONS \
+  #--environment-file "$SCRIPTS/environment.py" \
+  #--text-count \
+  #--label "MC15C, 20.7, Data $YEAR" \
+  #--error-label "Stat. Unc." \
+  #data_prefix=$DATA_PREFIX \
+  #year=$YEAR \
+  #enable_systematics=False \
+  #luminosity=$LUMINOSITY
 
 LUMINOSITY=7587.26 # 1/pb
 YEAR=2016
@@ -222,4 +230,24 @@ OUTPUT="results/plots_osss_fakes/$YEAR"
   data_prefix=$DATA_PREFIX \
   year=$YEAR \
   enable_systematics=False \
+  luminosity=$LUMINOSITY
+
+# Plots with OS-SS backgrounds
+OUTPUT="results/plots_osss_fakes_syst/$YEAR"
+"$OWLS/tools/plot.py" \
+  --output $OUTPUT \
+  --extensions $EXTENSIONS \
+  --model-file "$OWLS/definitions/models-v12.py" \
+  --model osss_fakes2 \
+  --regions-file "$OWLS/definitions/regions-v12.py" \
+  --regions $OSSS_REGIONS \
+  --distributions-file "$OWLS/definitions/distributions.py" \
+  --distributions $DISTRIBUTIONS \
+  --environment-file "$SCRIPTS/environment.py" \
+  --text-count \
+  --label "MC15C, 20.7, Data $YEAR" \
+  --error-label "Stat. #oplus Syst. Unc." \
+  data_prefix=$DATA_PREFIX \
+  year=$YEAR \
+  enable_systematics=True \
   luminosity=$LUMINOSITY

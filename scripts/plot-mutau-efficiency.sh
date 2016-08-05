@@ -12,7 +12,8 @@ TRIGGERS="tau25 tau125"
 TRIGGERS="tau25"
 
 REGIONS=(mu_tau_loose_id mu_tau_medium_id mu_tau_tight_id mu_tau_ttbar_cr)
-REGIONS=(mu_tau_medium_id mu_tau_ttbar_cr)
+REGIONS=(mu_tau_medium_id)
+REGIONS=(mu_tau60 mu_tau60_id_1up)
 
 #DISTRIBUTIONS=(tau_pt_trig_b1 tau_pt_trig_b3)
 DISTRIBUTIONS=(tau_pt_trig_b3)
