@@ -15,18 +15,18 @@ MC_REGIONS=" \
   mu_tau_1p_ss \
   mu_tau_3p_os \
   mu_tau_3p_ss \
-  mu_tau_qcd_cr_os \
-  mu_tau_qcd_cr_ss \
-  mu_tau_qcd_cr_1p_os \
-  mu_tau_qcd_cr_1p_ss \
-  mu_tau_qcd_cr_3p_os \
-  mu_tau_qcd_cr_3p_ss \
-  mu_tau_qcd_cr_tau25_os \
-  mu_tau_qcd_cr_tau25_ss \
-  mu_tau_qcd_cr_tau25_1p_os \
-  mu_tau_qcd_cr_tau25_1p_ss \
-  mu_tau_qcd_cr_tau25_3p_os \
-  mu_tau_qcd_cr_tau25_3p_ss \
+  qcd_cr_os \
+  qcd_cr_ss \
+  qcd_cr_1p_os \
+  qcd_cr_1p_ss \
+  qcd_cr_3p_os \
+  qcd_cr_3p_ss \
+  qcd_cr_tau25_os \
+  qcd_cr_tau25_ss \
+  qcd_cr_tau25_1p_os \
+  qcd_cr_tau25_1p_ss \
+  qcd_cr_tau25_3p_os \
+  qcd_cr_tau25_3p_ss \
   "
 MC_REGIONS="\
   mu_tau_os \
@@ -38,63 +38,109 @@ MC_REGIONS="\
   "
 #MC_REGIONS="mu_tau"
 
-OSSS_REGIONS=" \
-  mu_tau \
-  mu_tau_1p \
-  mu_tau_3p \
-  mu_tau_loose_id \
-  mu_tau_loose_id_1p \
-  mu_tau_loose_id_3p \
-  mu_tau_medium_id \
-  mu_tau_medium_id_1p \
-  mu_tau_medium_id_3p \
-  mu_tau_tight_id \
-  mu_tau_tight_id_1p \
-  mu_tau_tight_id_3p \
-  mu_tau_tau25 \
-  mu_tau_tau25_1p \
-  mu_tau_tau25_3p \
-  mu_tau_loose_id_tau25 \
-  mu_tau_loose_id_tau25_1p \
-  mu_tau_loose_id_tau25_3p \
-  mu_tau_medium_id_tau25 \
-  mu_tau_medium_id_tau25_1p \
-  mu_tau_medium_id_tau25_3p \
-  mu_tau_tight_id_tau25 \
-  mu_tau_tight_id_tau25_1p \
-  mu_tau_tight_id_tau25_3p \
-  mu_tau_ttbar_cr \
-  mu_tau_ttbar_cr_1p \
-  mu_tau_ttbar_cr_3p \
-  mu_tau_ttbar_cr_tau25 \
-  mu_tau_ttbar_cr_tau25_1p \
-  mu_tau_ttbar_cr_tau25_3p \
-  "
-OSSS_REGIONS=" \
-  mu_tau \
-  mu_tau_1p \
-  mu_tau_3p \
-  mu_tau_tau25 \
-  mu_tau_tau25_1p \
-  mu_tau_tau25_3p \
-  "
+OSSS_REGIONS=""
 #OSSS_REGIONS="\
+  #$OSSS_REGIONS \
   #mu_tau \
+  #"
+#OSSS_REGIONS="\
+  #$OSSS_REGIONS \
+  #mu_tau_1p \
+  #mu_tau_3p \
+  #"
+#OSSS_REGIONS="\
+  #$OSSS_REGIONS \
   #mu_tau_tau25 \
   #"
-#OSSS_REGIONS="mu_tau"
-
-DISTRIBUTIONS="\
-  tau_pt \
-  tau_pt_b2 \
-  tau_pt_b3 \
-  tau_pt_trig_b3 \
+#OSSS_REGIONS="\
+  #$OSSS_REGIONS \
+  #mu_tau_tau25_1p \
+  #mu_tau_tau25_3p \
+  #"
+OSSS_REGIONS="\
+  $OSSS_REGIONS \
+  mu_tau60 \
   "
-#DISTRIBUTIONS="tau_pt"
-#DISTRIBUTIONS="tau_pt_trig_b3"
+OSSS_REGIONS="\
+  $OSSS_REGIONS \
+  mu_tau60_1p \
+  mu_tau60_3p \
+  "
+OSSS_REGIONS="\
+  $OSSS_REGIONS \
+  mu_tau60_tau25 \
+  "
+OSSS_REGIONS="\
+  $OSSS_REGIONS \
+  mu_tau60_tau25_1p \
+  mu_tau60_tau25_3p \
+  "
+OSSS_REGIONS="\
+  $OSSS_REGIONS \
+  ttbar_cr_tau60 \
+  "
+OSSS_REGIONS="\
+  $OSSS_REGIONS \
+  ttbar_cr_tau60_1p \
+  ttbar_cr_tau60_3p \
+  "
+OSSS_REGIONS="\
+  $OSSS_REGIONS \
+  ttbar_cr_tau60_tau25 \
+  "
+OSSS_REGIONS="\
+  $OSSS_REGIONS \
+  ttbar_cr_tau60_tau25_1p \
+  ttbar_cr_tau60_tau25_3p \
+  "
+#OSSS_REGIONS="\
+  #$OSSS_REGIONS \
+  #mu_tau_loose \
+  #mu_tau_loose_1p \
+  #mu_tau_loose_3p \
+  #mu_tau_medium \
+  #mu_tau_medium_1p \
+  #mu_tau_medium_3p \
+  #mu_tau_tight \
+  #mu_tau_tight_1p \
+  #mu_tau_tight_3p \
+  #mu_tau_loose_tau25 \
+  #mu_tau_loose_tau25_1p \
+  #mu_tau_loose_tau25_3p \
+  #mu_tau_medium_tau25 \
+  #mu_tau_medium_tau25_1p \
+  #mu_tau_medium_tau25_3p \
+  #mu_tau_tight_tau25 \
+  #mu_tau_tight_tau25_1p \
+  #mu_tau_tight_tau25_3p \
+  #"
 
-EXTENSIONS="pdf eps"
+DISTRIBUTIONS=""
+#DISTRIBUTIONS="\
+  #$DISTRIBUTIONS
+  #tau_pt
+#"
+DISTRIBUTIONS="\
+  $DISTRIBUTIONS
+  tau_pt_b2 \
+  "
+#DISTRIBUTIONS="\
+  #$DISTRIBUTIONS
+  #tau_pt_b3 \
+  #"
+DISTRIBUTIONS="\
+  $DISTRIBUTIONS
+  tau_pt_b4 \
+  "
+#DISTRIBUTIONS="\
+  #$DISTRIBUTIONS
+  #tau_pt_trig_b3 \
+  #"
+
+
 EXTENSIONS="pdf"
+EXTENSIONS="$EXTENSIONS eps"
+
 LUMINOSITY=3209.0 # 1/pb
 DATA_PREFIX="/disk/d1/ohman/tagprobe_2016-01-21_merged/"
 
