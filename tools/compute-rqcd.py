@@ -75,6 +75,9 @@ parser.add_argument('-x',
                     nargs = '+',
                     default = ['pdf'],
                     help = 'save these extensions (default: pdf)')
+parser.add_argument('--high-pt',
+                    action = 'store_true',
+                    help = 'Use high pT rQCD derivation')
 parser.add_argument('definitions',
                     nargs = '*',
                     help = 'definitions to use within modules in the form x=y',
@@ -123,19 +126,22 @@ etcone_syst = Histogram(
     'Events'
 )
 
-all_splits = {
-    'default': [
-        ('low_pt', 'tau_0_pt <= 40'),
-        ('high_pt', 'tau_0_pt > 40'),
-    ],
-    'tau60': [('all', ''),],
-    '3p': [
-        ('low_pt', 'tau_0_pt <= 35'),
-        ('med_pt', 'tau_0_pt > 35 && tau_0_pt <= 50'),
-        ('high_pt', 'tau_0_pt > 50'),
-    ],
-
-}
+if arguments.high_pt:
+    all_splits = {
+        'default': [('all', ''),],
+    }
+else:
+    all_splits = {
+        'default': [
+            ('low_pt', 'tau_0_pt <= 40'),
+            ('high_pt', 'tau_0_pt > 40'),
+        ],
+        '3p': [
+            ('low_pt', 'tau_0_pt <= 35'),
+            ('med_pt', 'tau_0_pt > 35 && tau_0_pt <= 50'),
+            ('high_pt', 'tau_0_pt > 50'),
+        ],
+    }
 
 # Get computation environment
 cache = getattr(environment_file, 'persistent_cache', None)
@@ -177,7 +183,7 @@ def compute_syst(region, distribution, label, file_name):
     ratio = ratio_histogram(os, ss)
 
     os.SetTitle('Opposite sign ({:.0f})'.format(os.GetBinContent(1)))
-    ss.SetTitle('Same sign({:.0f})'.format(os.GetBinContent(1)))
+    ss.SetTitle('Same sign({:.0f})'.format(ss.GetBinContent(1)))
 
     up = ratio.GetBinContent(ratio.GetMaximumBin())
     down = ratio.GetBinContent(ratio.GetMinimumBin())
@@ -219,11 +225,10 @@ with caching_into(cache):
         # Loop over regions
         for region_name in regions:
             region = regions[region_name]
-            r_qcd_dict[region_name] = []
+            r_qcd_name = region.metadata()['rqcd']
+            r_qcd_dict[r_qcd_name] = []
 
-            if 'tau60' in region_name:
-                splits = all_splits['tau60']
-            elif '3p' in region_name:
+            if '3p' in region_name and '3p' in all_splits:
                 splits = all_splits['3p']
             else:
                 splits = all_splits['default']
@@ -290,7 +295,7 @@ with caching_into(cache):
                 r_qcd = round(r_qcd, 3)
                 r_qcd_stat = round(r_qcd_stat, 3)
                 r_qcd_syst = round(r_qcd_syst, 3)
-                r_qcd_dict[region_name].append(
+                r_qcd_dict[r_qcd_name].append(
                     (split, r_qcd, r_qcd_stat, r_qcd_syst)
                 )
 
@@ -304,7 +309,7 @@ with caching_into(cache):
 
             # Print the result
             print('{}:'.format(region.label()))
-            for e in r_qcd_dict[region_name]:
+            for e in r_qcd_dict[r_qcd_name]:
                 print('    {0:35s}: {1:.2f} ± {2:.2f} ± {3:.2f}'.format(*e))
 
 
