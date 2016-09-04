@@ -13,18 +13,18 @@ OSSS_REGIONS=" \
   mu_tau_3p \
   mu_tau_tau25_1p \
   mu_tau_tau25_3p \
-  mu_tau_loose_id_1p \
-  mu_tau_loose_id_3p \
-  mu_tau_loose_id_tau25_1p \
-  mu_tau_loose_id_tau25_3p \
-  mu_tau_medium_id_1p \
-  mu_tau_medium_id_3p \
-  mu_tau_medium_id_tau25_1p \
-  mu_tau_medium_id_tau25_3p \
-  mu_tau_tight_id_1p \
-  mu_tau_tight_id_3p \
-  mu_tau_tight_id_tau25_1p \
-  mu_tau_tight_id_tau25_3p \
+  mu_tau_loose_1p \
+  mu_tau_loose_3p \
+  mu_tau_loose_tau25_1p \
+  mu_tau_loose_tau25_3p \
+  mu_tau_medium_1p \
+  mu_tau_medium_3p \
+  mu_tau_medium_tau25_1p \
+  mu_tau_medium_tau25_3p \
+  mu_tau_tight_1p \
+  mu_tau_tight_3p \
+  mu_tau_tight_tau25_1p \
+  mu_tau_tight_tau25_3p \
   "
 
 DISTRIBUTIONS=" \

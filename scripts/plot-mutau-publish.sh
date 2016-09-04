@@ -56,9 +56,8 @@ DATA_PREFIX="/disk/d1/ohman/tagprobe_2016-01-21_merged/"
 
 
 LUMINOSITY=3193.68 # 1/pb
-DATA_PREFIX="/disk/d2/ohman/lhtnp_v16_merged"
 YEAR=2015
-SYSTEMATICS=False
+DATA_PREFIX="/disk/d3/ohman/lhtnp_v16_merged"
 
 ## Plots with OS-SS backgrounds
 #OUTPUT="results/plots_publish/$YEAR"
@@ -169,7 +168,7 @@ DISTRIBUTION="tau_pt_trig_b3"
   enable_systematics=True
 
 LUMINOSITY=7980.0 # 1/pb
-DATA_PREFIX="/disk/d2/ohman/lhtnp_v16_merged"
+DATA_PREFIX="/disk/d3/ohman/lhtnp_v19_merged"
 YEAR=2016
 
 ## Plots with OS-SS backgrounds

@@ -27,7 +27,7 @@ tau_pt_b1 = Histogram(
 
 tau_pt_b2 = Histogram(
         'tau_0_pt',
-        (26, 70, 200),
+        (28, 60, 200),
         '',
         '#tau p_{T} [GeV]',
         'Events / 5 GeV',
@@ -37,6 +37,15 @@ tau_pt_b2 = Histogram(
 tau_pt_b3 = Histogram(
         'tau_0_pt',
         (15, 150, 300),
+        '',
+        '#tau p_{T} [GeV]',
+        'Events / 10 GeV',
+        include_overflow = True
+        )
+
+tau_pt_b4 = Histogram(
+        'tau_0_pt',
+        (24, 60, 300),
         '',
         '#tau p_{T} [GeV]',
         'Events / 10 GeV',
@@ -84,6 +93,47 @@ tau_n_trk_core_wide = Histogram(
         #'N_{core+wide}',
         'Events'
         )
+tau_decay_mode = Histogram(
+        'tau_0_decay_mode',
+        (5, -0.5, 4.5),
+        '',
+        '#tau decay mode',
+        'Events'
+        )
+
+# Tau BDT variables
+tau_ip_sig_ld_trk = Histogram(
+        'tau_0_id_ipSigLeadTrk',
+        (10, 0, 2.0),
+        '',
+        'S_{leadtrack}',
+        'Events'
+        )
+
+tau_ip_sig_ld_trk_corr = Histogram(
+        'tau_0_id_ipSigLeadTrkCorrected',
+        (10, 0, 2.0),
+        '',
+        'Corrected S_{leadtrack}',
+        'Events'
+        )
+
+tau_trig_ip_sig_ld_trk = Histogram(
+        'tau_0_trig1_HLT_ipSigLeadTrk',
+        (10, 0, 2.0),
+        '',
+        'HLT S_{leadtrack}',
+        'Events'
+        )
+
+tau_trig_ip_sig_ld_trk_corr = Histogram(
+        'tau_0_trig1_HLT_ipSigLeadTrk',
+        (10, 0, 2.0),
+        '',
+        'HLT Corrected S_{leadtrack}',
+        'Events'
+        )
+
 
 # Tau trigger variables
 tau_hlt_pt = Histogram(

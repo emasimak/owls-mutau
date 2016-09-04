@@ -15,49 +15,6 @@
 SCRIPTS=$(dirname "$0")
 OWLS="$SCRIPTS/.."
 
-MC_REGIONS=""
-MC_REGIONS=" \
-  $MC_REGIONS \
-  mu_tau_os \
-  mu_tau_ss \
-  "
-#MC_REGIONS=" \
-  #$MC_REGIONS \
-  #mu_tau_1p_os \
-  #mu_tau_1p_ss \
-  #mu_tau_3p_os \
-  #mu_tau_3p_ss \
-  #"
-MC_REGIONS=" \
-  $MC_REGIONS \
-  mu_tau_tau25_os \
-  mu_tau_tau25_ss \
-  "
-MC_REGIONS=" \
-  $MC_REGIONS \
-  qcd_cr_os \
-  qcd_cr_ss \
-  "
-#MC_REGIONS=" \
-  #$MC_REGIONS \
-  #qcd_cr_1p_os \
-  #qcd_cr_1p_ss \
-  #qcd_cr_3p_os \
-  #qcd_cr_3p_ss \
-  #"
-#MC_REGIONS=" \
-  #$MC_REGIONS \
-  #qcd_cr_tau25_os \
-  #qcd_cr_tau25_ss \
-  #"
-#MC_REGIONS=" \
-  #$MC_REGIONS \
-  #qcd_cr_tau25_1p_os \
-  #qcd_cr_tau25_1p_ss \
-  #qcd_cr_tau25_3p_os \
-  #qcd_cr_tau25_3p_ss \
-  #"
-
 OSSS_REGIONS=""
 OSSS_REGIONS="\
   $OSSS_REGIONS \
@@ -98,70 +55,32 @@ OSSS_REGIONS="\
   #mu_tau_tight_tau25_1p \
   #mu_tau_tight_tau25_3p \
   #"
-OSSS_REGIONS="\
-  $OSSS_REGIONS \
-  ttbar_cr \
-  "
-OSSS_REGIONS="\
-  $OSSS_REGIONS \
-  ttbar_cr_1p \
-  ttbar_cr_3p \
-  "
-OSSS_REGIONS="\
-  $OSSS_REGIONS \
-  ttbar_cr_tau25 \
-  "
-OSSS_REGIONS="\
-  $OSSS_REGIONS \
-  ttbar_cr_tau25_1p \
-  ttbar_cr_tau25_3p \
-  "
+#OSSS_REGIONS="\
+  #$OSSS_REGIONS \
+  #ttbar_cr \
+  #"
+#OSSS_REGIONS="\
+  #$OSSS_REGIONS \
+  #ttbar_cr_1p \
+  #ttbar_cr_3p \
+  #"
+#OSSS_REGIONS="\
+  #$OSSS_REGIONS \
+  #ttbar_cr_tau25 \
+  #"
+#OSSS_REGIONS="\
+  #$OSSS_REGIONS \
+  #ttbar_cr_tau25_1p \
+  #ttbar_cr_tau25_3p \
+  #"
 OSSS_SYST_REGIONS=$OSSS_REGIONS
-
-OSSS_REGIONS="\
-  $OSSS_REGIONS \
-  1bjet_cr \
-  "
-OSSS_REGIONS="\
-  $OSSS_REGIONS \
-  1bjet_cr_1p \
-  1bjet_cr_3p \
-  "
-OSSS_REGIONS="\
-  $OSSS_REGIONS \
-  1bjet_cr_tau25 \
-  "
-OSSS_REGIONS="\
-  $OSSS_REGIONS \
-  1bjet_cr_tau25_1p \
-  1bjet_cr_tau25_3p \
-  "
 
 
 DISTRIBUTIONS=""
 DISTRIBUTIONS="\
   $DISTRIBUTIONS
-  tau_pt
+  tau_bdt_score
 "
-#DISTRIBUTIONS="\
-  #$DISTRIBUTIONS
-  #tau_pt_trig_b3 \
-  #"
-
-DISTRIBUTIONS_HIPT=""
-DISTRIBUTIONS_HIPT="\
-  $DISTRIBUTIONS_HIPT
-  tau_pt_b2 \
-  "
-#DISTRIBUTIONS_HIPT="\
-  #$DISTRIBUTIONS_HIPT
-  #tau_pt_b3 \
-  #"
-DISTRIBUTIONS_HIPT="\
-  $DISTRIBUTIONS_HIPT
-  tau_pt_b4 \
-  "
-
 
 EXTENSIONS="pdf"
 EXTENSIONS="$EXTENSIONS eps"
@@ -175,42 +94,6 @@ TAU_PT=60
 LUMINOSITY=3193.68 # 1/pb
 YEAR=2015
 DATA_PREFIX="/disk/d2/ohman/lhtnp_v16_merged"
-# MC
-OUTPUT="results/plots_mc_fakes/$YEAR/tau25"
-"$OWLS/tools/plot.py" \
-  --output $OUTPUT \
-  --extensions $EXTENSIONS \
-  --model-file "$OWLS/definitions/models-v12.py" \
-  --model mc_fakes \
-  --regions-file "$OWLS/definitions/regions-v12.py" \
-  --regions $MC_REGIONS \
-  --distributions-file "$OWLS/definitions/distributions.py" \
-  --distributions $DISTRIBUTIONS \
-  --environment-file "$SCRIPTS/environment.py" \
-  --text-count \
-  --error-label "Stat. Unc." \
-  data_prefix=$DATA_PREFIX \
-  year=$YEAR \
-  enable_systematics=False \
-  luminosity=$LUMINOSITY
-OUTPUT="results/plots_mc_fakes/$YEAR/tau$TAU_PT"
-"$OWLS/tools/plot.py" \
-  --output $OUTPUT \
-  --extensions $EXTENSIONS \
-  --model-file "$OWLS/definitions/models-v12.py" \
-  --model mc_fakes \
-  --regions-file "$OWLS/definitions/regions-v12.py" \
-  --regions $MC_REGIONS \
-  --distributions-file "$OWLS/definitions/distributions.py" \
-  --distributions $DISTRIBUTIONS_HIPT \
-  --environment-file "$SCRIPTS/environment.py" \
-  --text-count \
-  --error-label "Stat. Unc." \
-  data_prefix=$DATA_PREFIX \
-  year=$YEAR \
-  tau_pt=$TAU_PT \
-  enable_systematics=False \
-  luminosity=$LUMINOSITY
 
 # OSSS
 OUTPUT="results/plots_osss_fakes/$YEAR/tau25"
@@ -239,7 +122,7 @@ OUTPUT="results/plots_osss_fakes/$YEAR/tau$TAU_PT"
   --regions-file "$OWLS/definitions/regions-v12.py" \
   --regions $OSSS_REGIONS \
   --distributions-file "$OWLS/definitions/distributions.py" \
-  --distributions $DISTRIBUTIONS_HIPT \
+  --distributions $DISTRIBUTIONS \
   --environment-file "$SCRIPTS/environment.py" \
   --text-count \
   --error-label "Stat. Unc." \
@@ -276,7 +159,7 @@ OUTPUT="results/plots_osss_fakes_syst/$YEAR/tau$TAU_PT"
   --regions-file "$OWLS/definitions/regions-v12.py" \
   --regions $OSSS_SYST_REGIONS \
   --distributions-file "$OWLS/definitions/distributions.py" \
-  --distributions $DISTRIBUTIONS_HIPT \
+  --distributions $DISTRIBUTIONS \
   --environment-file "$SCRIPTS/environment.py" \
   --text-count \
   --error-label "Stat. #oplus Syst. Unc." \
@@ -293,43 +176,6 @@ LUMINOSITY=11473.88 # 1/pb
 YEAR=2016
 DATA_PREFIX="/disk/d3/ohman/lhtnp_v19_merged"
 
-# MC
-OUTPUT="results/plots_mc_fakes/$YEAR/tau25"
-"$OWLS/tools/plot.py" \
-  --output $OUTPUT \
-  --extensions $EXTENSIONS \
-  --model-file "$OWLS/definitions/models-v12.py" \
-  --model mc_fakes \
-  --regions-file "$OWLS/definitions/regions-v12.py" \
-  --regions $MC_REGIONS \
-  --distributions-file "$OWLS/definitions/distributions.py" \
-  --distributions $DISTRIBUTIONS \
-  --environment-file "$SCRIPTS/environment.py" \
-  --text-count \
-  --error-label "Stat. Unc." \
-  data_prefix=$DATA_PREFIX \
-  year=$YEAR \
-  enable_systematics=False \
-  luminosity=$LUMINOSITY
-OUTPUT="results/plots_mc_fakes/$YEAR/tau$TAU_PT"
-"$OWLS/tools/plot.py" \
-  --output $OUTPUT \
-  --extensions $EXTENSIONS \
-  --model-file "$OWLS/definitions/models-v12.py" \
-  --model mc_fakes \
-  --regions-file "$OWLS/definitions/regions-v12.py" \
-  --regions $MC_REGIONS \
-  --distributions-file "$OWLS/definitions/distributions.py" \
-  --distributions $DISTRIBUTIONS_HIPT \
-  --environment-file "$SCRIPTS/environment.py" \
-  --text-count \
-  --error-label "Stat. Unc." \
-  data_prefix=$DATA_PREFIX \
-  year=$YEAR \
-  tau_pt=$TAU_PT \
-  enable_systematics=False \
-  luminosity=$LUMINOSITY
-
 # OSSS
 OUTPUT="results/plots_osss_fakes/$YEAR/tau25"
 "$OWLS/tools/plot.py" \
@@ -357,7 +203,7 @@ OUTPUT="results/plots_osss_fakes/$YEAR/tau$TAU_PT"
   --regions-file "$OWLS/definitions/regions-v12.py" \
   --regions $OSSS_REGIONS \
   --distributions-file "$OWLS/definitions/distributions.py" \
-  --distributions $DISTRIBUTIONS_HIPT \
+  --distributions $DISTRIBUTIONS \
   --environment-file "$SCRIPTS/environment.py" \
   --text-count \
   --error-label "Stat. Unc." \
@@ -394,7 +240,7 @@ OUTPUT="results/plots_osss_fakes_syst/$YEAR/tau$TAU_PT"
   --regions-file "$OWLS/definitions/regions-v12.py" \
   --regions $OSSS_SYST_REGIONS \
   --distributions-file "$OWLS/definitions/distributions.py" \
-  --distributions $DISTRIBUTIONS_HIPT \
+  --distributions $DISTRIBUTIONS \
   --environment-file "$SCRIPTS/environment.py" \
   --text-count \
   --error-label "Stat. #oplus Syst. Unc." \

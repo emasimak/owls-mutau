@@ -7,42 +7,44 @@ OWLS="$SCRIPTS/.."
 #EXTENSIONS="pdf eps"
 EXTENSIONS="pdf"
 
+REGIONS=""
 REGIONS="\
+  $REGIONS \
   mu_tau \
-  mu_tau_1p \
-  mu_tau_3p \
-  mu_tau_tau25 \
-  mu_tau_tau25_1p \
-  mu_tau_tau25_3p \
   "
+#REGIONS="\
+  #$REGIONS \
+  #mu_tau_1p \
+  #mu_tau_3p \
+  #"
 REGIONS="\
-  mu_tau_1p \
-  mu_tau_3p \
-  mu_tau_tau25_1p \
-  mu_tau_tau25_3p \
-  "
-REGIONS=" \
-  mu_tau \
+  $REGIONS \
   mu_tau_tau25 \
   "
-#REGIONS="mu_tau"
+#REGIONS="\
+  #$REGIONS \
+  #mu_tau_tau25_1p \
+  #mu_tau_tau25_3p \
+  #"
 
+DISTRIBUTIONS=""
 DISTRIBUTIONS="\
-  tau_pt \
-  tau_pt_trig_b3 \
-  "
-DISTRIBUTIONS="tau_pt"
+  $DISTRIBUTIONS
+  tau_pt
+"
+
+# Cut for high pT distributions
+TAU_PT=60
 
 SYSTEMATICS="Full"
 SYSTEMATICS="Pruned"
-
-DATA_PREFIX="/disk/d2/ohman/lhtnp_v16_merged"
-
+#SYSTEMATICS="Efficiency"
 
 LUMINOSITY=3193.68 # 1/pb
 YEAR=2015
-OUTPUT="results/systematics/$YEAR"
+DATA_PREFIX="/disk/d2/ohman/lhtnp_v16_merged"
 
+OUTPUT="results/systematics/$YEAR/tau25"
 "$OWLS/tools/plot-syst-variation.py" \
   --output $OUTPUT \
   --extensions $EXTENSIONS \
@@ -59,10 +61,29 @@ OUTPUT="results/systematics/$YEAR"
   enable_systematics=$SYSTEMATICS \
   year=$YEAR
 
-LUMINOSITY=7587.26 # 1/pb
+OUTPUT="results/systematics/$YEAR/tau$TAU_PT"
+"$OWLS/tools/plot-syst-variation.py" \
+  --output $OUTPUT \
+  --extensions $EXTENSIONS \
+  --model-file "$OWLS/definitions/models-v12.py" \
+  --model osss_sub \
+  --regions-file "$OWLS/definitions/regions-v12.py" \
+  --regions $REGIONS \
+  --distributions-file "$OWLS/definitions/distributions.py" \
+  --distributions $DISTRIBUTIONS \
+  --environment-file "$SCRIPTS/environment.py" \
+  --label "Bkg MC (OS-SS) + SS Data" \
+  -- \
+  data_prefix=$DATA_PREFIX \
+  enable_systematics=$SYSTEMATICS \
+  year=$YEAR \
+  tau_pt=$TAU_PT
+
+LUMINOSITY=11473.88 # 1/pb
 YEAR=2016
-OUTPUT="results/systematics/$YEAR"
+DATA_PREFIX="/disk/d3/ohman/lhtnp_v19_merged"
 
+OUTPUT="results/systematics/$YEAR/tau25"
 "$OWLS/tools/plot-syst-variation.py" \
   --output $OUTPUT \
   --extensions $EXTENSIONS \
@@ -78,3 +99,21 @@ OUTPUT="results/systematics/$YEAR"
   data_prefix=$DATA_PREFIX \
   enable_systematics=$SYSTEMATICS \
   year=$YEAR
+
+OUTPUT="results/systematics/$YEAR/tau$TAU_PT"
+"$OWLS/tools/plot-syst-variation.py" \
+  --output $OUTPUT \
+  --extensions $EXTENSIONS \
+  --model-file "$OWLS/definitions/models-v12.py" \
+  --model osss_sub \
+  --regions-file "$OWLS/definitions/regions-v12.py" \
+  --regions $REGIONS \
+  --distributions-file "$OWLS/definitions/distributions.py" \
+  --distributions $DISTRIBUTIONS \
+  --environment-file "$SCRIPTS/environment.py" \
+  --label "Bkg MC (OS-SS) + SS Data" \
+  -- \
+  data_prefix=$DATA_PREFIX \
+  enable_systematics=$SYSTEMATICS \
+  year=$YEAR \
+  tau_pt=$TAU_PT
