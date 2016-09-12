@@ -226,15 +226,6 @@ base_path = arguments.output
 if not exists(base_path):
     makedirs(base_path)
 
-# Open root file for output
-if arguments.root_output:
-    root_file =  TFile.Open(join(base_path, 'tau_efficiencies.root'),
-                            'RECREATE')
-
-# Open root file for output
-if arguments.text_output:
-    text_file =  open(join(base_path, 'tau_efficiencies_counts.txt'), 'w')
-
 print('Script options')
 print('  Output directory: {}'.format(base_path))
 print('  Data prefix: {}'.format(definitions.get('data_prefix', 'UNDEFINED')))
@@ -411,10 +402,13 @@ def do_efficiencies(distribution, region, rqcd_addons, efficiency_filter):
     ##############################################################
     background_total = add_histograms(backgrounds_total, 'Bkg')
     background_passed = add_histograms(backgrounds_passed, 'Bkg')
+
     add_overflow_to_last_bin(background_total)
     add_overflow_to_last_bin(background_passed)
+
     data_subtracted_total = data_total - background_total
     data_subtracted_passed = data_passed - background_passed
+
     data_efficiency = efficiency(data_subtracted_total, data_subtracted_passed)
     data_efficiency.SetTitle(data['process'].label())
 
@@ -885,6 +879,26 @@ def write_counts_background(syst, what, nominal, up, down):
                         '{:6.1f} ({:5.2f}%)\n'. \
                         format(syst, what, down, pc_down, nominal, up, pc_up))
 
+def open_files(path, file_name_components):
+    # Open root file for output
+    global root_file
+    file_name = join(path, '{}.root'.format('_'.join(file_name_components)))
+    if arguments.root_output:
+        root_file =  TFile.Open(file_name, 'RECREATE')
+
+    # Open text file for output
+    global text_file
+    file_name = join(path, '{}.txt'.format('_'.join(file_name_components)))
+    if arguments.text_output:
+        text_file =  open(file_name, 'w')
+
+def close_files():
+    if arguments.text_output:
+        text_file.close()
+
+    if arguments.root_output:
+        root_file.ls()
+        root_file.Close()
 
 # Run in a cached environment
 with caching_into(cache):
@@ -895,6 +909,7 @@ with caching_into(cache):
             print('Computing efficiencies...')
 
         for eff_name, eff in iteritems(efficiencies):
+            open_files(base_path, [eff_name])
             efficiency_filter = eff['filter']
             region = eff['region']
             rqcd_addons = eff['rqcd_addons']
@@ -957,10 +972,5 @@ with caching_into(cache):
                              scale_factor,
                              scale_factor_uncertainties,
                              eff_name)
+            close_files()
 
-if arguments.text_output:
-    text_file.close()
-
-if arguments.root_output:
-    root_file.ls()
-    root_file.Close()

@@ -417,25 +417,60 @@ tau_pt_trig_5gev = Histogram(
         'Events',
         include_overflow = True
         )
-tau_pt_trig_b1 = Histogram(
-        'tau_0_pt',
-        (25, 28, 30, 32, 34, 36, 39, 43, 53, 100, 150, 300),
-        '',
-        'Offline #tau p_{T} [GeV]',
-        'Events',
-        include_overflow = True
-        )
-tau_pt_trig_b2  = Histogram(
-        'tau_0_pt',
-        (25, 28, 30, 32, 34, 36, 39, 43, 48, 54, 62, 72, 85, 100, 125, 150, 300),
-        '',
-        'Offline #tau p_{T} [GeV]',
-        'Events',
-        include_overflow = True
-        )
-tau_pt_trig_b3  = Histogram(
+
+tau_pt_tau25  = Histogram(
         'tau_0_pt',
         (25, 28, 30, 32, 34, 36, 39, 43, 52, 64, 80, 100, 150, 300),
+        '',
+        'Offline #tau p_{T} [GeV]',
+        'Events',
+        include_overflow = True
+        )
+tau_pt_tau35  = Histogram(
+        'tau_0_pt',
+        (35, 39, 43, 52, 64, 80, 100, 150, 300),
+        '',
+        'Offline #tau p_{T} [GeV]',
+        'Events',
+        include_overflow = True
+        )
+tau_pt_tau50  = Histogram(
+        'tau_0_pt',
+        (50, 64, 80, 100, 150, 300),
+        '',
+        'Offline #tau p_{T} [GeV]',
+        'Events',
+        include_overflow = True
+        )
+tau_pt_tau80  = Histogram(
+        'tau_0_pt',
+        (80, 100, 150, 300),
+        '',
+        'Offline #tau p_{T} [GeV]',
+        'Events',
+        include_overflow = True
+        )
+# Two bins (three edges); need to specify that it's a custom binning, and not
+# a range.
+tau_pt_tau125  = Histogram(
+        'tau_0_pt',
+        ('custom', 125, 150, 300),
+        '',
+        'Offline #tau p_{T} [GeV]',
+        'Events',
+        include_overflow = True
+        )
+tau_pt_tau160  = Histogram(
+        'tau_0_pt',
+        (160, 300),
+        '',
+        'Offline #tau p_{T} [GeV]',
+        'Events',
+        include_overflow = True
+        )
+tau_pt_trig_from60 = Histogram(
+        'tau_0_pt',
+        (60, 80, 100, 150, 300),
         '',
         'Offline #tau p_{T} [GeV]',
         'Events',
