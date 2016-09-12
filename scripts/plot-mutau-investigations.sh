@@ -126,16 +126,74 @@ LUMINOSITY=11473.88 # 1/pb
 YEAR=2016
 DATA_PREFIX="/disk/d3/ohman/lhtnp_v19_merged"
 
-OUTPUT="results/plots_osss_fakes_extra/$YEAR/tau$TAU_PT"
+#OUTPUT="results/plots_osss_fakes_extra/$YEAR/tau$TAU_PT"
+#"$OWLS/tools/plot.py" \
+  #--output $OUTPUT \
+  #--extensions $EXTENSIONS \
+  #--model-file "$OWLS/definitions/models-v12.py" \
+  #--model osss_fakes2 \
+  #--regions-file "$OWLS/definitions/regions-v12.py" \
+  #--regions $OSSS_REGIONS \
+  #--distributions-file "$OWLS/definitions/distributions.py" \
+  #--distributions $DISTRIBUTIONS \
+  #--environment-file "$SCRIPTS/environment.py" \
+  #--text-count \
+  #--error-label "Stat. Unc." \
+  #data_prefix=$DATA_PREFIX \
+  #year=$YEAR \
+  #tau_pt=$TAU_PT \
+  #enable_systematics=False \
+  #luminosity=$LUMINOSITY
+
+#OUTPUT="results/plots_osss_fakes_extra/$YEAR/tau$TAU_PT"
+#"$OWLS/tools/plot.py" \
+  #--output $OUTPUT \
+  #--extensions $EXTENSIONS \
+  #--model-file "$OWLS/definitions/models-v12.py" \
+  #--model osss_fakes2 \
+  #--regions-file "$OWLS/definitions/regions-v12.py" \
+  #--regions $OSSS_REGIONS_1p \
+  #--distributions-file "$OWLS/definitions/distributions.py" \
+  #--distributions $DISTRIBUTIONS_1p \
+  #--environment-file "$SCRIPTS/environment.py" \
+  #--text-count \
+  #--error-label "Stat. Unc." \
+  #data_prefix=$DATA_PREFIX \
+  #year=$YEAR \
+  #tau_pt=$TAU_PT \
+  #enable_systematics=False \
+  #luminosity=$LUMINOSITY
+
+#OUTPUT="results/plots_osss_fakes_extra/$YEAR/tau$TAU_PT"
+#"$OWLS/tools/plot.py" \
+  #--output $OUTPUT \
+  #--extensions $EXTENSIONS \
+  #--model-file "$OWLS/definitions/models-v12.py" \
+  #--model osss_fakes2 \
+  #--regions-file "$OWLS/definitions/regions-v12.py" \
+  #--regions $OSSS_REGIONS_1p \
+  #--distributions-file "$OWLS/definitions/distributions.py" \
+  #--distributions $DISTRIBUTIONS_3p \
+  #--environment-file "$SCRIPTS/environment.py" \
+  #--text-count \
+  #--error-label "Stat. Unc." \
+  #data_prefix=$DATA_PREFIX \
+  #year=$YEAR \
+  #tau_pt=$TAU_PT \
+  #enable_systematics=False \
+  #luminosity=$LUMINOSITY
+
+# Plot the OS/SS distribution with MC
+OUTPUT="results/plots_mc/$YEAR/tau$TAU_PT"
 "$OWLS/tools/plot.py" \
   --output $OUTPUT \
   --extensions $EXTENSIONS \
   --model-file "$OWLS/definitions/models-v12.py" \
-  --model osss_fakes2 \
+  --model mc \
   --regions-file "$OWLS/definitions/regions-v12.py" \
-  --regions $OSSS_REGIONS \
+  --regions mu_tau_1p_os mu_tau_1p_ss mu_tau_3p_os mu_tau_3p_ss \
   --distributions-file "$OWLS/definitions/distributions.py" \
-  --distributions $DISTRIBUTIONS \
+  --distributions tau_pt_b2 \
   --environment-file "$SCRIPTS/environment.py" \
   --text-count \
   --error-label "Stat. Unc." \
@@ -145,40 +203,3 @@ OUTPUT="results/plots_osss_fakes_extra/$YEAR/tau$TAU_PT"
   enable_systematics=False \
   luminosity=$LUMINOSITY
 
-OUTPUT="results/plots_osss_fakes_extra/$YEAR/tau$TAU_PT"
-"$OWLS/tools/plot.py" \
-  --output $OUTPUT \
-  --extensions $EXTENSIONS \
-  --model-file "$OWLS/definitions/models-v12.py" \
-  --model osss_fakes2 \
-  --regions-file "$OWLS/definitions/regions-v12.py" \
-  --regions $OSSS_REGIONS_1p \
-  --distributions-file "$OWLS/definitions/distributions.py" \
-  --distributions $DISTRIBUTIONS_1p \
-  --environment-file "$SCRIPTS/environment.py" \
-  --text-count \
-  --error-label "Stat. Unc." \
-  data_prefix=$DATA_PREFIX \
-  year=$YEAR \
-  tau_pt=$TAU_PT \
-  enable_systematics=False \
-  luminosity=$LUMINOSITY
-
-OUTPUT="results/plots_osss_fakes_extra/$YEAR/tau$TAU_PT"
-"$OWLS/tools/plot.py" \
-  --output $OUTPUT \
-  --extensions $EXTENSIONS \
-  --model-file "$OWLS/definitions/models-v12.py" \
-  --model osss_fakes2 \
-  --regions-file "$OWLS/definitions/regions-v12.py" \
-  --regions $OSSS_REGIONS_1p \
-  --distributions-file "$OWLS/definitions/distributions.py" \
-  --distributions $DISTRIBUTIONS_3p \
-  --environment-file "$SCRIPTS/environment.py" \
-  --text-count \
-  --error-label "Stat. Unc." \
-  data_prefix=$DATA_PREFIX \
-  year=$YEAR \
-  tau_pt=$TAU_PT \
-  enable_systematics=False \
-  luminosity=$LUMINOSITY

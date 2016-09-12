@@ -745,29 +745,29 @@ other_true = other.patched(
     # metadata = {'print_me': ['estimation']},
 )
 
-other_lfake = other.patched(
-    tau_lepton_matched,
-    label = 'Other (l #rightarrow #tau)',
-    line_color = 1,
-    fill_color = 866,
-    # metadata = {'print_me': ['estimation']},
-)
+# other_lfake = other.patched(
+    # tau_lepton_matched,
+    # label = 'Other (l #rightarrow #tau)',
+    # line_color = 1,
+    # fill_color = 866,
+    # # metadata = {'print_me': ['estimation']},
+# )
 
-other_jetfake = other.patched(
-    tau_jet_fake,
-    label = 'Other (j #rightarrow #tau)',
-    line_color = 1,
-    fill_color = 408,
-    # metadata = {'print_me': ['estimation']},
-)
+# other_jetfake = other.patched(
+    # tau_jet_fake,
+    # label = 'Other (j #rightarrow #tau)',
+    # line_color = 1,
+    # fill_color = 408,
+    # # metadata = {'print_me': ['estimation']},
+# )
 
 all_mc = Process(
     ttbar.files() + \
-        single_top.files() + \
-        zll.files() + \
-        ztautau.files() + \
-        wlnu.files() + \
-        wtaunu.files(),
+        # zll.files() + \
+        # ztautau.files() + \
+        # wlnu.files() + \
+        # wtaunu.files(),
+    single_top.files(),
     tree = nominal_tree,
     label = 'All MC',
     sample_type = 'mc',
@@ -995,11 +995,11 @@ mc_fakes = {
         'estimation': Plain,
     },
     'backgrounds': OrderedDict((
-        ('other_lfake', {
-            'process': other_lfake,
-            'estimation': MonteCarlo,
-            'uncertainties': mc_uncertainties,
-        }),
+        # ('other_lfake', {
+            # 'process': other_lfake,
+            # 'estimation': MonteCarlo,
+            # 'uncertainties': mc_uncertainties,
+        # }),
         ('single_top_lfake', {
             'process': single_top_lfake,
             'estimation': MonteCarlo,
@@ -1010,11 +1010,11 @@ mc_fakes = {
             'estimation': MonteCarlo,
             'uncertainties': mc_uncertainties,
         }),
-        ('other_jetfake', {
-            'process': other_jetfake,
-            'estimation': MonteCarlo,
-            'uncertainties': mc_uncertainties,
-        }),
+        # ('other_jetfake', {
+            # 'process': other_jetfake,
+            # 'estimation': MonteCarlo,
+            # 'uncertainties': mc_uncertainties,
+        # }),
         ('single_top_jetfake', {
             'process': single_top_jetfake,
             'estimation': MonteCarlo,
@@ -1133,11 +1133,11 @@ osss_fakes2 = {
             'estimation': SSData,
             'uncertainties': ss_data_uncertainties,
         }),
-        ('other_lfake', {
-            'process': other_lfake,
-            'estimation': OSSS,
-            'uncertainties': osss_uncertainties,
-        }),
+        # ('other_lfake', {
+            # 'process': other_lfake,
+            # 'estimation': OSSS,
+            # 'uncertainties': osss_uncertainties,
+        # }),
         ('single_top_lfake', {
             'process': single_top_lfake,
             'estimation': OSSS,
@@ -1148,11 +1148,11 @@ osss_fakes2 = {
             'estimation': OSSS,
             'uncertainties': osss_uncertainties,
         }),
-        ('other_jetfake', {
-            'process': other_jetfake,
-            'estimation': OSSS,
-            'uncertainties': osss_uncertainties,
-        }),
+        # ('other_jetfake', {
+            # 'process': other_jetfake,
+            # 'estimation': OSSS,
+            # 'uncertainties': osss_uncertainties,
+        # }),
         ('single_top_jetfake', {
             'process': single_top_jetfake,
             'estimation': OSSS,
@@ -1213,11 +1213,11 @@ osss_sub = {
             'estimation': SSData,
             'uncertainties': ss_data_uncertainties,
         }),
-        ('other_lfake', {
-            'process': other_lfake,
-            'estimation': OSSS,
-            'uncertainties': osss_uncertainties,
-        }),
+        # ('other_lfake', {
+            # 'process': other_lfake,
+            # 'estimation': OSSS,
+            # 'uncertainties': osss_uncertainties,
+        # }),
         ('single_top_lfake', {
             'process': single_top_lfake,
             'estimation': OSSS,
@@ -1228,11 +1228,11 @@ osss_sub = {
             'estimation': OSSS,
             'uncertainties': osss_uncertainties,
         }),
-        ('other_jetfake', {
-            'process': other_jetfake,
-            'estimation': OSSS,
-            'uncertainties': osss_uncertainties,
-        }),
+        # ('other_jetfake', {
+            # 'process': other_jetfake,
+            # 'estimation': OSSS,
+            # 'uncertainties': osss_uncertainties,
+        # }),
         ('single_top_jetfake', {
             'process': single_top_jetfake,
             'estimation': OSSS,

@@ -145,7 +145,7 @@ DISTRIBUTIONS="\
 "
 DISTRIBUTIONS="\
   $DISTRIBUTIONS
-  tau_pt_trig_b3 \
+  tau_pt_tau25 \
   "
 
 DISTRIBUTIONS_HIPT=""
@@ -163,7 +163,7 @@ DISTRIBUTIONS_HIPT="\
   "
 DISTRIBUTIONS_HIPT="\
   $DISTRIBUTIONS_HIPT
-  tau_pt_trig_b3 \
+  tau_pt_trig_from60 \
   "
 
 
@@ -180,115 +180,118 @@ LUMINOSITY=3193.68 # 1/pb
 YEAR=2015
 DATA_PREFIX="/disk/d2/ohman/lhtnp_v16_merged"
 # MC
-OUTPUT="results/plots_mc_fakes/$YEAR/tau25"
-"$OWLS/tools/plot.py" \
-  --output $OUTPUT \
-  --extensions $EXTENSIONS \
-  --model-file "$OWLS/definitions/models-v12.py" \
-  --model mc_fakes \
-  --regions-file "$OWLS/definitions/regions-v12.py" \
-  --regions $MC_REGIONS \
-  --distributions-file "$OWLS/definitions/distributions.py" \
-  --distributions $DISTRIBUTIONS \
-  --environment-file "$SCRIPTS/environment.py" \
-  --text-count \
-  --error-label "Stat. Unc." \
-  data_prefix=$DATA_PREFIX \
-  year=$YEAR \
-  enable_systematics=False \
-  luminosity=$LUMINOSITY
-OUTPUT="results/plots_mc_fakes/$YEAR/tau$TAU_PT"
-"$OWLS/tools/plot.py" \
-  --output $OUTPUT \
-  --extensions $EXTENSIONS \
-  --model-file "$OWLS/definitions/models-v12.py" \
-  --model mc_fakes \
-  --regions-file "$OWLS/definitions/regions-v12.py" \
-  --regions $MC_REGIONS \
-  --distributions-file "$OWLS/definitions/distributions.py" \
-  --distributions $DISTRIBUTIONS_HIPT \
-  --environment-file "$SCRIPTS/environment.py" \
-  --text-count \
-  --error-label "Stat. Unc." \
-  data_prefix=$DATA_PREFIX \
-  year=$YEAR \
-  tau_pt=$TAU_PT \
-  enable_systematics=False \
-  luminosity=$LUMINOSITY
+#OUTPUT="results/plots_mc_fakes/$YEAR/tau25"
+#"$OWLS/tools/plot.py" \
+  #--output $OUTPUT \
+  #--extensions $EXTENSIONS \
+  #--model-file "$OWLS/definitions/models-v12.py" \
+  #--model mc_fakes \
+  #--regions-file "$OWLS/definitions/regions-v12.py" \
+  #--regions $MC_REGIONS \
+  #--distributions-file "$OWLS/definitions/distributions.py" \
+  #--distributions $DISTRIBUTIONS \
+  #--environment-file "$SCRIPTS/environment.py" \
+  #--text-count \
+  #--error-label "Stat. Unc." \
+  #data_prefix=$DATA_PREFIX \
+  #year=$YEAR \
+  #enable_systematics=False \
+  #luminosity=$LUMINOSITY
+
+#OUTPUT="results/plots_mc_fakes/$YEAR/tau$TAU_PT"
+#"$OWLS/tools/plot.py" \
+  #--output $OUTPUT \
+  #--extensions $EXTENSIONS \
+  #--model-file "$OWLS/definitions/models-v12.py" \
+  #--model mc_fakes \
+  #--regions-file "$OWLS/definitions/regions-v12.py" \
+  #--regions $MC_REGIONS \
+  #--distributions-file "$OWLS/definitions/distributions.py" \
+  #--distributions $DISTRIBUTIONS_HIPT \
+  #--environment-file "$SCRIPTS/environment.py" \
+  #--text-count \
+  #--error-label "Stat. Unc." \
+  #data_prefix=$DATA_PREFIX \
+  #year=$YEAR \
+  #tau_pt=$TAU_PT \
+  #enable_systematics=False \
+  #luminosity=$LUMINOSITY
 
 # OSSS
-OUTPUT="results/plots_osss_fakes/$YEAR/tau25"
-"$OWLS/tools/plot.py" \
-  --output $OUTPUT \
-  --extensions $EXTENSIONS \
-  --model-file "$OWLS/definitions/models-v12.py" \
-  --model osss_fakes2 \
-  --regions-file "$OWLS/definitions/regions-v12.py" \
-  --regions $OSSS_REGIONS \
-  --distributions-file "$OWLS/definitions/distributions.py" \
-  --distributions $DISTRIBUTIONS \
-  --environment-file "$SCRIPTS/environment.py" \
-  --text-count \
-  --error-label "Stat. Unc." \
-  data_prefix=$DATA_PREFIX \
-  year=$YEAR \
-  enable_systematics=False \
-  luminosity=$LUMINOSITY
-OUTPUT="results/plots_osss_fakes/$YEAR/tau$TAU_PT"
-"$OWLS/tools/plot.py" \
-  --output $OUTPUT \
-  --extensions $EXTENSIONS \
-  --model-file "$OWLS/definitions/models-v12.py" \
-  --model osss_fakes2 \
-  --regions-file "$OWLS/definitions/regions-v12.py" \
-  --regions $OSSS_REGIONS \
-  --distributions-file "$OWLS/definitions/distributions.py" \
-  --distributions $DISTRIBUTIONS_HIPT \
-  --environment-file "$SCRIPTS/environment.py" \
-  --text-count \
-  --error-label "Stat. Unc." \
-  data_prefix=$DATA_PREFIX \
-  year=$YEAR \
-  tau_pt=$TAU_PT \
-  enable_systematics=False \
-  luminosity=$LUMINOSITY
+#OUTPUT="results/plots_osss_fakes/$YEAR/tau25"
+#"$OWLS/tools/plot.py" \
+  #--output $OUTPUT \
+  #--extensions $EXTENSIONS \
+  #--model-file "$OWLS/definitions/models-v12.py" \
+  #--model osss_fakes2 \
+  #--regions-file "$OWLS/definitions/regions-v12.py" \
+  #--regions $OSSS_REGIONS \
+  #--distributions-file "$OWLS/definitions/distributions.py" \
+  #--distributions $DISTRIBUTIONS \
+  #--environment-file "$SCRIPTS/environment.py" \
+  #--text-count \
+  #--error-label "Stat. Unc." \
+  #data_prefix=$DATA_PREFIX \
+  #year=$YEAR \
+  #enable_systematics=False \
+  #luminosity=$LUMINOSITY
+
+#OUTPUT="results/plots_osss_fakes/$YEAR/tau$TAU_PT"
+#"$OWLS/tools/plot.py" \
+  #--output $OUTPUT \
+  #--extensions $EXTENSIONS \
+  #--model-file "$OWLS/definitions/models-v12.py" \
+  #--model osss_fakes2 \
+  #--regions-file "$OWLS/definitions/regions-v12.py" \
+  #--regions $OSSS_REGIONS \
+  #--distributions-file "$OWLS/definitions/distributions.py" \
+  #--distributions $DISTRIBUTIONS_HIPT \
+  #--environment-file "$SCRIPTS/environment.py" \
+  #--text-count \
+  #--error-label "Stat. Unc." \
+  #data_prefix=$DATA_PREFIX \
+  #year=$YEAR \
+  #tau_pt=$TAU_PT \
+  #enable_systematics=False \
+  #luminosity=$LUMINOSITY
 
 # OSSS; SYSTEMATICS
-OUTPUT="results/plots_osss_fakes_syst/$YEAR/tau25"
-"$OWLS/tools/plot.py" \
-  --output $OUTPUT \
-  --extensions $EXTENSIONS \
-  --model-file "$OWLS/definitions/models-v12.py" \
-  --model osss_fakes2 \
-  --regions-file "$OWLS/definitions/regions-v12.py" \
-  --regions $OSSS_SYST_REGIONS \
-  --distributions-file "$OWLS/definitions/distributions.py" \
-  --distributions $DISTRIBUTIONS \
-  --environment-file "$SCRIPTS/environment.py" \
-  --text-count \
-  --error-label "Stat. #oplus Syst. Unc." \
-  data_prefix=$DATA_PREFIX \
-  year=$YEAR \
-  enable_systematics=True \
-  luminosity=$LUMINOSITY
-OUTPUT="results/plots_osss_fakes_syst/$YEAR/tau$TAU_PT"
-"$OWLS/tools/plot.py" \
-  --output $OUTPUT \
-  --extensions $EXTENSIONS \
-  --model-file "$OWLS/definitions/models-v12.py" \
-  --model osss_fakes2 \
-  --regions-file "$OWLS/definitions/regions-v12.py" \
-  --regions $OSSS_SYST_REGIONS \
-  --distributions-file "$OWLS/definitions/distributions.py" \
-  --distributions $DISTRIBUTIONS_HIPT \
-  --environment-file "$SCRIPTS/environment.py" \
-  --text-count \
-  --error-label "Stat. #oplus Syst. Unc." \
-  data_prefix=$DATA_PREFIX \
-  year=$YEAR \
-  tau_pt=$TAU_PT \
-  enable_systematics=True \
-  luminosity=$LUMINOSITY
+#OUTPUT="results/plots_osss_fakes_syst/$YEAR/tau25"
+#"$OWLS/tools/plot.py" \
+  #--output $OUTPUT \
+  #--extensions $EXTENSIONS \
+  #--model-file "$OWLS/definitions/models-v12.py" \
+  #--model osss_fakes2 \
+  #--regions-file "$OWLS/definitions/regions-v12.py" \
+  #--regions $OSSS_SYST_REGIONS \
+  #--distributions-file "$OWLS/definitions/distributions.py" \
+  #--distributions $DISTRIBUTIONS \
+  #--environment-file "$SCRIPTS/environment.py" \
+  #--text-count \
+  #--error-label "Stat. #oplus Syst. Unc." \
+  #data_prefix=$DATA_PREFIX \
+  #year=$YEAR \
+  #enable_systematics=True \
+  #luminosity=$LUMINOSITY
+
+#OUTPUT="results/plots_osss_fakes_syst/$YEAR/tau$TAU_PT"
+#"$OWLS/tools/plot.py" \
+  #--output $OUTPUT \
+  #--extensions $EXTENSIONS \
+  #--model-file "$OWLS/definitions/models-v12.py" \
+  #--model osss_fakes2 \
+  #--regions-file "$OWLS/definitions/regions-v12.py" \
+  #--regions $OSSS_SYST_REGIONS \
+  #--distributions-file "$OWLS/definitions/distributions.py" \
+  #--distributions $DISTRIBUTIONS_HIPT \
+  #--environment-file "$SCRIPTS/environment.py" \
+  #--text-count \
+  #--error-label "Stat. #oplus Syst. Unc." \
+  #data_prefix=$DATA_PREFIX \
+  #year=$YEAR \
+  #tau_pt=$TAU_PT \
+  #enable_systematics=True \
+  #luminosity=$LUMINOSITY
 
 
 ###############################################################################
@@ -298,23 +301,24 @@ YEAR=2016
 DATA_PREFIX="/disk/d3/ohman/lhtnp_v19_merged"
 
 # MC
-OUTPUT="results/plots_mc_fakes/$YEAR/tau25"
-"$OWLS/tools/plot.py" \
-  --output $OUTPUT \
-  --extensions $EXTENSIONS \
-  --model-file "$OWLS/definitions/models-v12.py" \
-  --model mc_fakes \
-  --regions-file "$OWLS/definitions/regions-v12.py" \
-  --regions $MC_REGIONS \
-  --distributions-file "$OWLS/definitions/distributions.py" \
-  --distributions $DISTRIBUTIONS \
-  --environment-file "$SCRIPTS/environment.py" \
-  --text-count \
-  --error-label "Stat. Unc." \
-  data_prefix=$DATA_PREFIX \
-  year=$YEAR \
-  enable_systematics=False \
-  luminosity=$LUMINOSITY
+#OUTPUT="results/plots_mc_fakes/$YEAR/tau25"
+#"$OWLS/tools/plot.py" \
+  #--output $OUTPUT \
+  #--extensions $EXTENSIONS \
+  #--model-file "$OWLS/definitions/models-v12.py" \
+  #--model mc_fakes \
+  #--regions-file "$OWLS/definitions/regions-v12.py" \
+  #--regions $MC_REGIONS \
+  #--distributions-file "$OWLS/definitions/distributions.py" \
+  #--distributions $DISTRIBUTIONS \
+  #--environment-file "$SCRIPTS/environment.py" \
+  #--text-count \
+  #--error-label "Stat. Unc." \
+  #data_prefix=$DATA_PREFIX \
+  #year=$YEAR \
+  #enable_systematics=False \
+  #luminosity=$LUMINOSITY
+
 OUTPUT="results/plots_mc_fakes/$YEAR/tau$TAU_PT"
 "$OWLS/tools/plot.py" \
   --output $OUTPUT \
@@ -335,23 +339,24 @@ OUTPUT="results/plots_mc_fakes/$YEAR/tau$TAU_PT"
   luminosity=$LUMINOSITY
 
 # OSSS
-OUTPUT="results/plots_osss_fakes/$YEAR/tau25"
-"$OWLS/tools/plot.py" \
-  --output $OUTPUT \
-  --extensions $EXTENSIONS \
-  --model-file "$OWLS/definitions/models-v12.py" \
-  --model osss_fakes2 \
-  --regions-file "$OWLS/definitions/regions-v12.py" \
-  --regions $OSSS_REGIONS \
-  --distributions-file "$OWLS/definitions/distributions.py" \
-  --distributions $DISTRIBUTIONS \
-  --environment-file "$SCRIPTS/environment.py" \
-  --text-count \
-  --error-label "Stat. Unc." \
-  data_prefix=$DATA_PREFIX \
-  year=$YEAR \
-  enable_systematics=False \
-  luminosity=$LUMINOSITY
+#OUTPUT="results/plots_osss_fakes/$YEAR/tau25"
+#"$OWLS/tools/plot.py" \
+  #--output $OUTPUT \
+  #--extensions $EXTENSIONS \
+  #--model-file "$OWLS/definitions/models-v12.py" \
+  #--model osss_fakes2 \
+  #--regions-file "$OWLS/definitions/regions-v12.py" \
+  #--regions $OSSS_REGIONS \
+  #--distributions-file "$OWLS/definitions/distributions.py" \
+  #--distributions $DISTRIBUTIONS \
+  #--environment-file "$SCRIPTS/environment.py" \
+  #--text-count \
+  #--error-label "Stat. Unc." \
+  #data_prefix=$DATA_PREFIX \
+  #year=$YEAR \
+  #enable_systematics=False \
+  #luminosity=$LUMINOSITY
+
 OUTPUT="results/plots_osss_fakes/$YEAR/tau$TAU_PT"
 "$OWLS/tools/plot.py" \
   --output $OUTPUT \
@@ -372,23 +377,24 @@ OUTPUT="results/plots_osss_fakes/$YEAR/tau$TAU_PT"
   luminosity=$LUMINOSITY
 
 # OSSS; SYSTEMATICS
-OUTPUT="results/plots_osss_fakes_syst/$YEAR/tau25"
-"$OWLS/tools/plot.py" \
-  --output $OUTPUT \
-  --extensions $EXTENSIONS \
-  --model-file "$OWLS/definitions/models-v12.py" \
-  --model osss_fakes2 \
-  --regions-file "$OWLS/definitions/regions-v12.py" \
-  --regions $OSSS_SYST_REGIONS \
-  --distributions-file "$OWLS/definitions/distributions.py" \
-  --distributions $DISTRIBUTIONS \
-  --environment-file "$SCRIPTS/environment.py" \
-  --text-count \
-  --error-label "Stat. #oplus Syst. Unc." \
-  data_prefix=$DATA_PREFIX \
-  year=$YEAR \
-  enable_systematics=True \
-  luminosity=$LUMINOSITY
+#OUTPUT="results/plots_osss_fakes_syst/$YEAR/tau25"
+#"$OWLS/tools/plot.py" \
+  #--output $OUTPUT \
+  #--extensions $EXTENSIONS \
+  #--model-file "$OWLS/definitions/models-v12.py" \
+  #--model osss_fakes2 \
+  #--regions-file "$OWLS/definitions/regions-v12.py" \
+  #--regions $OSSS_SYST_REGIONS \
+  #--distributions-file "$OWLS/definitions/distributions.py" \
+  #--distributions $DISTRIBUTIONS \
+  #--environment-file "$SCRIPTS/environment.py" \
+  #--text-count \
+  #--error-label "Stat. #oplus Syst. Unc." \
+  #data_prefix=$DATA_PREFIX \
+  #year=$YEAR \
+  #enable_systematics=True \
+  #luminosity=$LUMINOSITY
+
 OUTPUT="results/plots_osss_fakes_syst/$YEAR/tau$TAU_PT"
 "$OWLS/tools/plot.py" \
   --output $OUTPUT \
