@@ -418,6 +418,10 @@ def do_efficiencies(distribution, region, rqcd_addons, efficiency_filter):
     write_counts('Data-bkg total/passed',
                  data_subtracted_total,
                  data_subtracted_passed)
+    write_bins('Total', signal_total, data_total,
+               background_total, data_subtracted_total)
+    write_bins('Passed', signal_passed, data_passed,
+               background_passed, data_subtracted_passed)
 
     ##############################################################
     # COMPUTE EFFICIENCIES FOR SYSTEMATIC VARIATIONS
@@ -526,6 +530,7 @@ def do_efficiencies(distribution, region, rqcd_addons, efficiency_filter):
                      integral(data_subtracted_passed),
                      sum_quadrature(passed_offset_up),
                      sum_quadrature(passed_offset_down))
+    write_efficiency(signal_efficiency, data_efficiency)
 
     return data_efficiency, signal_efficiency, \
             data_efficiency_up, data_efficiency_down
@@ -840,6 +845,26 @@ def write_counts(message, total, passed):
         text_file.write('{}: {:.1f}/{:.1f}\n'. \
                         format(message, integral(total), integral(passed)))
 
+def write_bins(message, signal, data, background, data_subtracted):
+    if arguments.text_output:
+        text_file.write('{} bin-by-bin\n'.format(message))
+        text_file.write('{:3s} ({:7s}, {:12s} {:12s} {:12s} {:12s})\n'.\
+              format('Bin', 'Centre', 'Signal', 'Data', 'Background', 'Data-Bkg'))
+        for i in range(signal.GetNbinsX()):
+            text_file.write('{:3d} ({:6.1f}, {:6.1f}±{:4.1f} {:6.1f}±{:4.1f} '
+                            '{:6.1f}±{:4.1f} {:6.1f}±{:4.1f})\n'.\
+                            format(i,
+                                   signal.GetBinCenter(i+1),
+                                   signal.GetBinContent(i+1),
+                                   signal.GetBinError(i+1),
+                                   data.GetBinContent(i+1),
+                                   data.GetBinError(i+1),
+                                   background.GetBinContent(i+1),
+                                   background.GetBinError(i+1),
+                                   data_subtracted.GetBinContent(i+1),
+                                   data_subtracted.GetBinError(i+1)))
+
+
 def write_binned_syst(what, raw, nominal, up, down):
     if arguments.text_output:
         text_file.write('--- {} ---\n'.format(what))
@@ -864,6 +889,24 @@ def write_total_syst(what, nominal_count, up_offset, down_offset):
                                nominal_count,
                                nominal_count + up_offset,
                                up_offset / nominal_count * 100.0))
+
+def write_efficiency(signal, data):
+    if arguments.text_output:
+        text_file.write('--- Efficiency ---\n')
+        x = signal.GetX()
+        signal_y = signal.GetY()
+        signal_yel = signal.GetEYlow()
+        signal_yeh = signal.GetEYhigh()
+        data_y = data.GetY()
+        data_yel = data.GetEYlow()
+        data_yeh = data.GetEYhigh()
+
+        for i in range(signal.GetN()):
+            text_file.write('{:4d} ({:4.0f}, {:5.3f}(↓{:5.3f}↑{:5.3f}) '
+                            '{:5.3f}(↓{:5.3f}↑{:5.3f}))\n'. \
+                            format(i, x[i],
+                                   signal_y[i], signal_yel[i], signal_yeh[i],
+                                   data_y[i], data_yel[i], data_yeh[i]))
 
 def write_counts_background(syst, what, nominal, up, down):
     def percentage(var):
