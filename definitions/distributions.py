@@ -570,3 +570,94 @@ tau_0_NOMINAL_TAU_EFF_SELECTION = Histogram(
         'tau_0_NOMINAL_TAU_EFF_SELECTION',
         'Events'
 )
+
+# Discrimination investigations
+jet_pt = Histogram(
+        'jet_0_pt',
+        (20, 0, 200),
+        '',
+        'Jet p_{T}',
+        'Events'
+        )
+
+jet_eta = Histogram(
+        'jet_0_eta',
+        (20, -3.0, 3.0),
+        '',
+        'Jet #eta',
+        'Events'
+        )
+
+jet_phi = Histogram(
+        'jet_0_phi',
+        (16, -3.2, 3.2),
+        '',
+        'Jet #phi',
+        'Events'
+        )
+
+jet_jvt = Histogram(
+        'jet_0_jvt',
+        (20, -0.5, 1.5),
+        '',
+        'Jet JVT',
+        'Events'
+        )
+
+coll_m = Histogram(
+        'lephad_coll_approx_m',
+        (20, 0, 200),
+        '',
+        'coll_m',
+        'Events / 20 GeV'
+        )
+
+cos_alpha = Histogram(
+        'lephad_cosalpha',
+        (20, -1.0, 1.0),
+        '',
+        'cos #alpha(#mu,#tau)',
+        'Events'
+        )
+
+sum_cos_dphi = Histogram(
+        'lephad_met_sum_cos_dphi',
+        (20, -2.0, 2.0),
+        '',
+        '#sum cos(#Delta #phi)',
+        'Events'
+        )
+
+met_centrality = Histogram(
+        'lephad_cosalpha',
+        (20, -5.0, 5.0),
+        '',
+        'cos #alpha(#mu,#tau)',
+        'Events'
+        )
+
+scal_sum_pt = Histogram(
+        'lephad_scal_sum_pt',
+        (20, 0, 200),
+        '',
+        'lephad_scal_sum_pt',
+        'Events'
+        )
+
+vect_sum_pt = Histogram(
+        'lephad_vect_sum_pt',
+        (20, 0, 200),
+        '',
+        'lephad_vect_sum_pt',
+        'Events'
+        )
+
+vis_mass = Histogram(
+        'lephad_vis_mass',
+        (20, 0, 200),
+        '',
+        'lephad_vis_mass',
+        'Events'
+        )
+
+
