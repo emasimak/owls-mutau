@@ -664,7 +664,7 @@ ss_data = Process(
         data.files()
     ),
     tree = nominal_tree,
-    label = 'MisID #tau (SS data)',
+    label = 'Mis-ID #tau (SS data)',
     sample_type = 'data',
     line_color = 1,
     fill_color = 410,
@@ -786,7 +786,7 @@ all_mc_true = all_mc.patched(
 
 all_mc_fake = all_mc.patched(
     tau_fake,
-    label = 'MisID #tau (MC)',
+    label = 'Mis-ID #tau (MC)',
     line_color = 1,
     fill_color = 401,
     # metadata = {'print_me': ['counts']},

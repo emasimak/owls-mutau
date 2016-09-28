@@ -212,32 +212,19 @@ def _vary_me(name, selection, weight, label, patches, metadata, variations):
 
 # mu+tau region and variations for publishing
 _variations = [
-    #(name_addon, selection_addon, weight_addon, label, rqcd_addon)
-    ('_1p',        '&& [1p]',             '',  '',  '1-track',                                '_1p'),
-    ('_3p',        '&& [3p]',             '',  '',  '3-track',                                '_3p'),
-    ('_tau25',     '&& [tau25]',          '',  '',  'HLT tau25 medium trigger',               '_tau25'),
-    ('_tau25_1p',  '&& [tau25] && [1p]',  '',  '',  ['1-track', 'HLT tau25 medium trigger'],  '_tau25_1p'),
-    ('_tau25_3p',  '&& [tau25] && [3p]',  '',  '',  ['3-track', 'HLT tau25 medium trigger'],  '_tau25_3p'),
+    #(name_addon, selection_addon, weight_addon, label_addon, more_labels, rqcd_addon)
+    ('_1p',       '&& [1p]',            '', ', 1-prong', '',                         '_1p'),
+    ('_3p',       '&& [3p]',            '', ', 3-prong', '',                         '_3p'),
+    ('_tau25',    '&& [tau25]',         '', '',        'HLT tau25 medium trigger', '_tau25'),
+    ('_tau25_1p', '&& [tau25] && [1p]', '', ', 1-prong', 'HLT tau25 medium trigger', '_tau25_1p'),
+    ('_tau25_3p', '&& [tau25] && [3p]', '', ', 3-prong', 'HLT tau25 medium trigger', '_tau25_3p'),
 ]
 
 _vary_me('mu_tau_publish',
          '[mu_trigger] && [mu_tau] && [medium_tau] && [tau_pt] && [2jets] && '
          '[bjet] && [iso_gradient]',
          '[weight]',
-         't#bar{t} #rightarrow #mu#tau_{had} T&P',
-         {
-             'mc': expr('[weight_mc] * [weight_pileup] * [weight_mu] * '
-                        '[weight_mu_trigger] * [weight_b] * '
-                        '[weight_tau_medium]')
-         },
-         {'rqcd': 'qcd_cr' + rqcd_addon},
-         _variations)
-
-_vary_me('ttbar_cr_publish',
-         '[mu_trigger] && [mu_tau] && [medium_tau] && [tau_pt] && [2jets] && '
-         '[bjet] && [iso_gradient]',
-         '[weight]',
-         ('t#bar{t} #rightarrow #mu#tau_{had} T&P', '≥ 2 b-jet selection'),
+         't#bar{t} #rightarrow #mu#tau_{had}',
          {
              'mc': expr('[weight_mc] * [weight_pileup] * [weight_mu] * '
                         '[weight_mu_trigger] * [weight_b] * '
@@ -249,7 +236,7 @@ _vary_me('ttbar_cr_publish',
 
 # Nominal mu+tau region and variations
 _variations = [
-    #(name_addon, selection_addon, weight_addon, label, rqcd_addon)
+    #(name_addon, selection_addon, weight_addon, label_addon, more_labels, rqcd_addon)
     ('_tau25',        '&& [tau25]',                  '',  '',                'HLT_tau25_medium1_tracktwo',  '_tau25'),
     ('_tau25_1p',     '&& [tau25] && [1p]',          '',  ' (1-prong)',      'HLT_tau25_medium1_tracktwo',  '_tau25_1p'),
     ('_tau25_3p',     '&& [tau25] && [3p]',          '',  ' (3-prong)',      'HLT_tau25_medium1_tracktwo',  '_tau25_3p'),

@@ -53,7 +53,11 @@ OUTPUT="results/plots_tau_efficiency/$YEAR/tau$TAU_PT"
 declare -A triggers=(
   ["tau25"]="tau_pt_trig_from60"
   ["tau35"]="tau_pt_trig_from60"
+  ["tau50_L1TAU12"]="tau_pt_trig_from60"
   ["tau80"]="tau_pt_tau80"
+  ["tau80_L1TAU60"]="tau_pt_tau80"
+  ["tau125"]="tau_pt_tau125"
+  ["tau160"]="tau_pt_tau160"
   )
 for REGION in ${REGIONS[@]}
 do

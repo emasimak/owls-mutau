@@ -103,7 +103,7 @@ parser.add_argument('-l',
                     metavar = '<items>')
 parser.add_argument('-a',
                     '--atlas-label',
-                    default = 'Internal',
+                    default = None,
                     help = 'the label to use for the ATLAS stamp',
                     metavar = '<atlas-label>')
 parser.add_argument('-x',
@@ -118,20 +118,26 @@ parser.add_argument('definitions',
 arguments = parser.parse_args()
 
 # Style for tau triger public plots
+# TODO: Plotting style should be more configurable
 if arguments.publish:
+    Plot.PLOT_MARGINS_WITH_RATIO = (0.125, 0.025, 0.025, 0.025)
+    Plot.PLOT_RATIO_MARGINS = (0.125, 0.025, 0.325, 0.035)
+    Plot.PLOT_HEADER_HEIGHT = 450 # px
+    Plot.PLOT_LEGEND_TOP_WITH_RATIO = 0.95
+    Plot.PLOT_LEGEND_LEFT = 0.62
+    Plot.PLOT_LEGEND_TEXT_SIZE_WITH_RATIO = 0.055
+    Plot.PLOT_LEGEND_ROW_SIZE_WITH_RATIO = 0.08
+    Plot.PLOT_ATLAS_STAMP_TOP_WITH_RATIO = 0.88
+    Plot.PLOT_ATLAS_STAMP_LEFT = 0.18
+    Plot.PLOT_ATLAS_STAMP_TEXT_SIZE_WITH_RATIO = 0.065
+    Plot.PLOT_RATIO_Y_AXIS_MINIMUM = 0.6
+    Plot.PLOT_RATIO_Y_AXIS_MAXIMUM = 1.4
+    Plot.PLOT_RATIO_Y_AXIS_NDIVISIONS = 204
+
     Plot.PLOT_ERROR_BAND_FILL_STYLE = 3013
     Plot.PLOT_ERROR_BAND_FILL_COLOR = 1
     Plot.PLOT_RATIO_ERROR_BAND_FILL_STYLE = 3001
     Plot.PLOT_RATIO_ERROR_BAND_FILL_COLOR = 632
-    Plot.PLOT_LEGEND_LEFT = 0.50
-    Plot.PLOT_LEGEND_N_COLUMNS = 2
-    Plot.PLOT_LEGEND_TEXT_SIZE = 0.035
-    Plot.PLOT_LEGEND_TEXT_SIZE_WITH_RATIO = 0.040
-    Plot.PLOT_LEGEND_ROW_SIZE = 0.05
-    Plot.PLOT_LEGEND_ROW_SIZE_WITH_RATIO = 0.055
-    Plot.PLOT_LEGEND_PIVOT_COLUMNS = False
-    Plot.PLOT_RATIO_Y_AXIS_MINIMUM = 0.0
-    Plot.PLOT_RATIO_Y_AXIS_MAXIMUM = 2.0
 
 # Parse definitions
 definitions = dict((d.split('=') for d in arguments.definitions))

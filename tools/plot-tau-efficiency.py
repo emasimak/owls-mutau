@@ -12,6 +12,8 @@ from array import array
 from uuid import uuid4
 from itertools import product
 
+from scipy.optimize import curve_fit
+
 # Six imports
 from six import itervalues, iteritems, iterkeys
 
@@ -116,7 +118,7 @@ parser.add_argument('-l',
                     metavar = '<items>')
 parser.add_argument('-a',
                     '--atlas-label',
-                    default = 'Internal',
+                    default = None,
                     help = 'the label to use for the ATLAS stamp',
                     metavar = '<atlas-label>')
 parser.add_argument('--no-prong-separated',
@@ -138,19 +140,17 @@ arguments = parser.parse_args()
 
 # Style for tau triger public plots
 if arguments.publish:
-    # Plot.PLOT_ERROR_BAND_FILL_STYLE = 3013
-    # Plot.PLOT_ERROR_BAND_FILL_COLOR = 1
-    # Plot.PLOT_RATIO_ERROR_BAND_FILL_STYLE = 3001
-    # Plot.PLOT_RATIO_ERROR_BAND_FILL_COLOR = 632
-    Plot.PLOT_LEGEND_LEFT = 0.50
-    Plot.PLOT_LEGEND_N_COLUMNS = 2
-    Plot.PLOT_LEGEND_TEXT_SIZE = 0.035
-    Plot.PLOT_LEGEND_TEXT_SIZE_WITH_RATIO = 0.040
-    Plot.PLOT_LEGEND_ROW_SIZE = 0.05
-    Plot.PLOT_LEGEND_ROW_SIZE_WITH_RATIO = 0.055
-    Plot.PLOT_LEGEND_PIVOT_COLUMNS = True
-    # Plot.PLOT_RATIO_Y_AXIS_MINIMUM = 0.0
-    # Plot.PLOT_RATIO_Y_AXIS_MAXIMUM = 2.0
+    Plot.PLOT_MARGINS_WITH_RATIO = (0.125, 0.025, 0.025, 0.025)
+    Plot.PLOT_RATIO_MARGINS = (0.125, 0.025, 0.325, 0.04)
+    Plot.PLOT_HEADER_HEIGHT = 450 # px
+    Plot.PLOT_LEGEND_TOP_WITH_RATIO = 0.95
+    Plot.PLOT_LEGEND_LEFT = 0.62
+    Plot.PLOT_LEGEND_TEXT_SIZE_WITH_RATIO = 0.055
+    Plot.PLOT_LEGEND_ROW_SIZE_WITH_RATIO = 0.08
+    Plot.PLOT_ATLAS_STAMP_TOP_WITH_RATIO = 0.88
+    Plot.PLOT_ATLAS_STAMP_LEFT = 0.18
+    Plot.PLOT_ATLAS_STAMP_TEXT_SIZE_WITH_RATIO = 0.065
+    # Plot.PLOT_RATIO_Y_AXIS_NDIVISIONS = 404
 
 # Parse definitions
 definitions = dict((d.split('=') for d in arguments.definitions))
@@ -795,6 +795,159 @@ def do_scale_factor(data_efficiency,
          #atlas_label = arguments.atlas_label,
          #extensions = arguments.extensions)
 
+def get_weighted_efficiency(centres, efficiencies, weights):
+    # Constant function for regression
+    def const_func(x, a):
+        return a
+    # Perform the regression
+    popt, _ = curve_fit(const_func, centres, efficiencies, sigma = weights)
+    # popt is a list of curve fit parameters; we're only interested in the
+    # constant term (a)
+    return popt[0]
+
+def get_weighted_uncertainty_efficiencies(centres,
+                                          nominal,
+                                          weights,
+                                          uncertainty):
+    nominal_up = [y+e for y, e in zip(nominal, uncertainty.GetEYhigh())]
+    nominal_down = [y-e for y, e in zip(nominal, uncertainty.GetEYlow())]
+    weighted_up = get_weighted_efficiency(centres, nominal_up, weights)
+    weighted_down = get_weighted_efficiency(centres, nominal_down, weights)
+    return (weighted_up, weighted_down)
+
+def estimate_systematic_effects(data_efficiency,
+                                data_efficiency_up,
+                                data_efficiency_down):
+    n = data_efficiency.GetN()
+    centres = [x for i, x in zip(range(n), data_efficiency.GetX())]
+    efficiencies = [x for i, x in zip(range(n), data_efficiency.GetY())]
+    stat_up = [x for i, x in zip(range(n), data_efficiency.GetEYhigh())]
+    stat_down = [x for i, x in zip(range(n), data_efficiency.GetEYlow())]
+    # Average uncertainty
+    # weights = [((u + d)/2)
+               # for i, u, d
+               # in zip(range(n), stat_up, stat_down)]
+    # Largest uncertainty
+    weights = [max(u, d)
+               for i, u, d
+               in zip(range(n), stat_up, stat_down)]
+
+    weighted_efficiency = \
+            get_weighted_efficiency(centres, efficiencies, weights)
+
+
+    rqcd_variations = ([u for u in data_efficiency_up
+                        if 'RQCD' in u.GetTitle()],
+                       [u for u in data_efficiency_down
+                        if 'RQCD' in u.GetTitle()])
+    bjet_variations = ([u for u in data_efficiency_up
+                        if 'BJET' in u.GetTitle()],
+                       [u for u in data_efficiency_down
+                        if 'BJET' in u.GetTitle()])
+    prw_variations = ([u for u in data_efficiency_up
+                       if 'PRW' in u.GetTitle()],
+                      [u for u in data_efficiency_down
+                       if 'PRW' in u.GetTitle()])
+    muon_variations = ([u for u in data_efficiency_up
+                        if 'MUON' in u.GetTitle()],
+                       [u for u in data_efficiency_down
+                        if 'MUON' in u.GetTitle()])
+
+    rqcd_uncertainty = compute_syst_error(data_efficiency, *rqcd_variations)
+    bjet_uncertainty = compute_syst_error(data_efficiency, *bjet_variations)
+    prw_uncertainty = compute_syst_error(data_efficiency, *prw_variations)
+    muon_uncertainty = compute_syst_error(data_efficiency, *muon_variations)
+    all_uncertainty = compute_syst_error(data_efficiency,
+                                         data_efficiency_up,
+                                         data_efficiency_down)
+
+    # up = [y for x, y in zip(centres, all_uncertainty.GetEYhigh())]
+    # down = [y for x, y in zip(centres, all_uncertainty.GetEYlow())]
+    # print('ALL syst')
+    # for x, y, u, d in zip(centres, efficiencies, up, down):
+        # print('{:5.1f} {:.3f}({:.3f}↓ {:.3f}↑)'.format(x, y, d, u))
+
+    # up = [y for x, y in zip(centres, rqcd_uncertainty.GetEYhigh())]
+    # down = [y for x, y in zip(centres, rqcd_uncertainty.GetEYlow())]
+    # print('RQCD syst')
+    # for x, y, u, d in zip(centres, efficiencies, up, down):
+        # print('{:5.1f} {:.3f}({:.3f}↓ {:.3f}↑)'.format(x, y, d, u))
+
+    # up = [y for x, y in zip(centres, prw_uncertainty.GetEYhigh())]
+    # down = [y for x, y in zip(centres, prw_uncertainty.GetEYlow())]
+    # print('PRW syst')
+    # for x, y, u, d in zip(centres, efficiencies, up, down):
+        # print('{:5.1f} {:.3f}({:.3f}↓ {:.3f}↑)'.format(x, y, d, u))
+
+    rqcd_efficiencies = get_weighted_uncertainty_efficiencies(centres,
+                                                              efficiencies,
+                                                              weights,
+                                                              rqcd_uncertainty)
+    bjet_efficiencies = get_weighted_uncertainty_efficiencies(centres,
+                                                              efficiencies,
+                                                              weights,
+                                                              bjet_uncertainty)
+    prw_efficiencies = get_weighted_uncertainty_efficiencies(centres,
+                                                              efficiencies,
+                                                              weights,
+                                                              prw_uncertainty)
+    muon_efficiencies = get_weighted_uncertainty_efficiencies(centres,
+                                                              efficiencies,
+                                                              weights,
+                                                              muon_uncertainty)
+    all_efficiencies = get_weighted_uncertainty_efficiencies(centres,
+                                                             efficiencies,
+                                                             weights,
+                                                             all_uncertainty)
+
+    rqcd_effects = tuple([abs((x - weighted_efficiency)/weighted_efficiency)
+                          for x in rqcd_efficiencies])
+    bjet_effects = tuple([abs((x - weighted_efficiency)/weighted_efficiency)
+                          for x in bjet_efficiencies])
+    prw_effects = tuple([abs((x - weighted_efficiency)/weighted_efficiency)
+                          for x in prw_efficiencies])
+    muon_effects = tuple([abs((x - weighted_efficiency)/weighted_efficiency)
+                          for x in muon_efficiencies])
+    all_effects = tuple([abs((x - weighted_efficiency)/weighted_efficiency)
+                         for x in all_efficiencies])
+
+    if arguments.text_output:
+        text_file.write('--- Systematic uncertainties bin-by-bin (syst. unc.) ---\n')
+        for i, x, e, u, d in zip(range(n),
+                                 centres,
+                                 efficiencies,
+                                 all_uncertainty.GetEYhigh(),
+                                 all_uncertainty.GetEYlow()):
+            text_file.write('{:4d} ({:5.1f}, {:5.3f}(↓{:5.3f}↑{:5.3f})) '
+                            '{:.3f}%\n'. \
+                            format(i, x, e, u, d, max(u, d)/e*100))
+        text_file.write('--- Weighted averages (syst. unc.) ---\n')
+        text_file.write('Weighted efficiency: {:.3f}\n'. \
+                        format(weighted_efficiency))
+        text_file.write('RQCD up/down:  {:.3f}/{:.3f} ({:.3f}%)\n'. \
+                        format(rqcd_efficiencies[0],
+                               rqcd_efficiencies[1],
+                               max(*rqcd_effects)*100))
+        text_file.write('BJET up/down:  {:.3f}/{:.3f} ({:.3f}%)\n'. \
+                        format(bjet_efficiencies[0],
+                               bjet_efficiencies[1],
+                               max(*bjet_effects)*100))
+        text_file.write('PRW up/down:   {:.3f}/{:.3f} ({:.3f}%)\n'. \
+                        format(prw_efficiencies[0],
+                               prw_efficiencies[1],
+                               max(*prw_effects)*100))
+        text_file.write('MUON up/down:  {:.3f}/{:.3f} ({:.3f}%)\n'. \
+                        format(muon_efficiencies[0],
+                               muon_efficiencies[1],
+                               max(*muon_effects)*100))
+        text_file.write('TOTAL up/down: {:.3f}/{:.3f} ({:.3f}%)\n'. \
+                        format(all_efficiencies[0],
+                               all_efficiencies[1],
+                               max(*all_effects)*100))
+
+
+
+
 def save_to_root(data_efficiency,
                  signal_efficiency,
                  data_syst_uncertainty,
@@ -892,7 +1045,7 @@ def write_total_syst(what, nominal_count, up_offset, down_offset):
 
 def write_efficiency(signal, data):
     if arguments.text_output:
-        text_file.write('--- Efficiency ---\n')
+        text_file.write('--- Efficiency (stat. unc.) ---\n')
         x = signal.GetX()
         signal_y = signal.GetY()
         signal_yel = signal.GetEYlow()
@@ -901,8 +1054,10 @@ def write_efficiency(signal, data):
         data_yel = data.GetEYlow()
         data_yeh = data.GetEYhigh()
 
+        text_file.write('      {:>5s}  {:18s}  {:18s}\n'. \
+                        format('pT', 'Signal (MC)', 'Data-bkg'))
         for i in range(signal.GetN()):
-            text_file.write('{:4d} ({:4.0f}, {:5.3f}(↓{:5.3f}↑{:5.3f}) '
+            text_file.write('{:4d} ({:5.1f}, {:5.3f}(↓{:5.3f}↑{:5.3f}) '
                             '{:5.3f}(↓{:5.3f}↑{:5.3f}))\n'. \
                             format(i, x[i],
                                    signal_y[i], signal_yel[i], signal_yeh[i],
@@ -960,7 +1115,12 @@ with caching_into(cache):
             if arguments.text_output and not parallel.capturing():
                 text_file.write('Efficiencies for {}\n'.format(eff_name))
 
-            label = region.label() + [eff['title'], eff['label']]
+            label = region.label()
+            if len(label) > 0:
+                label[0] += ', {}'.format(eff['title'])
+            else:
+                label.append(eff['title'])
+            label.append(eff['label'])
 
     ##############################################################
     # CREATE AND PLOT NOMINAL EFFICIENCIES AND SCALE FACTORS
@@ -977,6 +1137,11 @@ with caching_into(cache):
             # If capturing at pass 1, the efficiencies are bogus, continue
             if parallel.capturing():
                 continue
+
+            # Estimate the effects of each systematic on the efficiency
+            estimate_systematic_effects(data_efficiency,
+                                        data_efficiency_up,
+                                        data_efficiency_down)
 
             # Compute and plot the scale factors
             scale_factor, scale_factor_uncertainties = \
