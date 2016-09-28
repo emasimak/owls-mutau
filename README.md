@@ -61,8 +61,8 @@ Try the installation
    plotting, and also to turn off — by commenting out — plotting with
    systematic uncertainties.)
 3. Inspect the model and region files in `definitions`, e.g.
-    `definitions/models-2016-05-31.py`
-    `definitions/regions-2016-05-31.py`
+    `definitions/models-v12.py`
+    `definitions/regions-v12.py`
 4. Run the script
     `./scripts/plot-mutau-taupt.sh`
 
